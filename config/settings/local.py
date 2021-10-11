@@ -30,11 +30,12 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 LOCAL_APPS = [
-
+    'gaman.users',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -119,7 +120,7 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Auth user
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -130,6 +131,11 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer', 
     ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 3,
 }

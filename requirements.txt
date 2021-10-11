@@ -8,6 +8,9 @@ Django==3.2.8
 # Django REST Framework
 djangorestframework==3.12.4
 
+# Auth
+PyJWT==2.2.0
+
 # Enviroment
 django_environ==0.7.0
 
