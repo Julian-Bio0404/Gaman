@@ -20,7 +20,9 @@ from rest_framework.validators import UniqueValidator
 from .profiles import ProfileModelSerializer
 
 # Utils
-from gaman.utils.functions import send_confirmation_email, send_update_email, send_restore_password_email
+from gaman.utils.functions import (send_confirmation_email, 
+                                   send_update_email, 
+                                   send_restore_password_email)
 
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -254,6 +256,14 @@ class TokenUpdateEmailSerializers(serializers.Serializer):
     password = serializers.CharField(
         required=True, min_length=8, max_length=64)
 
+    def validate_new_email(self, data):
+        """Check new email address."""
+        user = User.objects.filter(email=data)
+        if user.exists():
+            raise serializers.ValidationError(
+                'There is already a user with this email.')
+        return data
+
     def validate(self, data):
         """Check password."""
         user = self.context['user']
@@ -272,6 +282,7 @@ class TokenUpdateEmailSerializers(serializers.Serializer):
 class UpdateEmailSerializers(serializers.Serializer):
     """Update Email serializer."""
 
+    old_email = serializers.EmailField()
     new_email = serializers.EmailField()
     token = serializers.CharField()
 
@@ -290,9 +301,24 @@ class UpdateEmailSerializers(serializers.Serializer):
         self.context['payload'] = payload
         return data
 
+    def validate_old_email(self, data):
+        """Check old email address."""
+        try:
+            user = User.objects.get(email=data)
+        except User.DoesNotExist:
+            raise serializers.ValidationError('There is not user with this email address.')
+        self.context['user'] = user
+        return data
+
+    def validate(self, data):
+        """Check new email address."""
+        if data['new_email'] != self.context['payload']['email']:
+            raise serializers.ValidationError('This is not you new email address.')
+        return data
+
     def save(self):
         """Update user's email."""
         payload = self.context['payload']
-        user = User.objects.get(username=payload['user'])
-        user.email = self.context['new_email']
+        user = self.context['user']
+        user.email = payload['email']
         user.save()

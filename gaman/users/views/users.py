@@ -110,12 +110,10 @@ class UserViewSet(mixins.ListModelMixin,
             'message': 'We have sent an email for you to update email address.'}
         return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['put'])
+    @action(detail=False, methods=['post'])
     def update_email(self, request, *args, **kwargs):
         """Update user's email address."""
-        serializer = UpdateEmailSerializers(
-            data=request.data, 
-            context={'user': request.user, 'new_email': request.data['new_email']})
+        serializer = UpdateEmailSerializers(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {'message': 'Updated email address'}

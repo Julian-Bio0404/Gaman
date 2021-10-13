@@ -46,7 +46,7 @@ def send_update_email(user_pk, email):
     """Send update email link to given user."""
     user = User.objects.get(pk=user_pk)
     type = 'update_email'
-    token = token_generation(user, type)
+    token = token_generation(user, type, email)
     subject = 'Hi @{}! Update your email'.format(user.get_full_name())
     from_email = 'Gaman <Gaman.com>'
     content = render_to_string(
@@ -56,12 +56,18 @@ def send_update_email(user_pk, email):
     msg.send()
 
 
-def token_generation(user, type):
+def token_generation(user, type, email=None):
     """Create JWT token."""
     exp_date = timezone.now() + timedelta(days=2)
-    payload = {
-        'user': user.username,
-        'exp': int(exp_date.timestamp()),
-        'type': type}
+    if type in ['email_confirmation', 'restore_password']:
+        payload = {
+            'user': user.username,
+            'exp': int(exp_date.timestamp()),
+            'type': type}
+    elif type in ['update_email']:
+        payload = {
+            'email': email,
+            'exp': int(exp_date.timestamp()),
+            'type': type}
     token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
     return token
