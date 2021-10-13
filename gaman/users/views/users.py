@@ -4,6 +4,7 @@
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from gaman.users import serializers
 
 # Models
 from gaman.users.models import User
@@ -13,9 +14,11 @@ from gaman.users.serializers import (AccountVerificationSerializer,
                                      RefreshTokenSerializer,
                                      RestorePasswordSerializer,
                                      TokenRestorePasswordSerializer,
+                                     UpdateEmailSerializers,
                                      UpdatePasswordSerializer,
                                      UserLoginSerializer, UserModelSerializer,
                                      UserSignUpSerializer)
+from gaman.users.serializers.users import TokenUpdateEmailSerializers
 
 
 class UserViewSet(mixins.ListModelMixin,
@@ -96,3 +99,24 @@ class UserViewSet(mixins.ListModelMixin,
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['post'])
+    def token_update_email(self, request, *args, **kwargs):
+        """Create a token for update email address."""
+        serializer = TokenUpdateEmailSerializers(
+            data=request.data, context={'user': request.user})
+        serializer.is_valid(raise_exception=True)
+        data = {
+            'message': 'We have sent an email for you to update email address.'}
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['put'])
+    def update_email(self, request, *args, **kwargs):
+        """Update user's email address."""
+        serializer = UpdateEmailSerializers(
+            data=request.data, 
+            context={'user': request.user, 'new_email': request.data['new_email']})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        data = {'message': 'Updated email address'}
+        return Response(data, status=status.HTTP_200_OK)

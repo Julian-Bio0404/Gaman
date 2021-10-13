@@ -20,7 +20,7 @@ from rest_framework.validators import UniqueValidator
 from .profiles import ProfileModelSerializer
 
 # Utils
-from gaman.utils.functions import send_confirmation_email, send_restore_password_email
+from gaman.utils.functions import send_confirmation_email, send_update_email, send_restore_password_email
 
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -210,7 +210,7 @@ class RestorePasswordSerializer(serializers.Serializer):
         return data
 
     def save(self):
-        """Update user's verified status."""
+        """Restore user's password."""
         payload = self.context['payload']
         user = User.objects.get(username=payload['user'])
         user.set_password(self.validated_data['password'])
@@ -243,4 +243,56 @@ class UpdatePasswordSerializer(serializers.Serializer):
         """Update user's password."""
         user = self.context['user']
         user.set_password(self.validated_data['password'])
+        user.save()
+
+
+class TokenUpdateEmailSerializers(serializers.Serializer):
+    """Token Update Email serializer."""
+
+    new_email = serializers.EmailField()
+
+    password = serializers.CharField(
+        required=True, min_length=8, max_length=64)
+
+    def validate(self, data):
+        """Check password."""
+        user = self.context['user']
+        if not user.check_password(data['password']):
+            raise serializers.ValidationError('Wrong password.')
+        send_update_email(user_pk=user.pk, email=data['new_email'])
+        return data
+
+    def save(self):
+        """Update user's password."""
+        user = self.context['user']
+        user.set_password(self.validated_data['password'])
+        user.save()
+
+
+class UpdateEmailSerializers(serializers.Serializer):
+    """Update Email serializer."""
+
+    new_email = serializers.EmailField()
+    token = serializers.CharField()
+
+    def validate_token(self, data):
+        """Verify token is valid."""
+        try:
+            payload = jwt.decode(
+                data, settings.SECRET_KEY, algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise serializers.ValidationError('Verification link has expired.')
+        except jwt.PyJWTError:
+            raise serializers.ValidationError('Invalid token')
+
+        if payload['type'] != 'update_email':
+            raise serializers.ValidationError('Invalid token')
+        self.context['payload'] = payload
+        return data
+
+    def save(self):
+        """Update user's email."""
+        payload = self.context['payload']
+        user = User.objects.get(username=payload['user'])
+        user.email = self.context['new_email']
         user.save()

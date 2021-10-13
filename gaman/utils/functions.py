@@ -42,9 +42,23 @@ def send_restore_password_email(user_pk):
     msg.send()
 
 
+def send_update_email(user_pk, email):
+    """Send update email link to given user."""
+    user = User.objects.get(pk=user_pk)
+    type = 'update_email'
+    token = token_generation(user, type)
+    subject = 'Hi @{}! Update your email'.format(user.get_full_name())
+    from_email = 'Gaman <Gaman.com>'
+    content = render_to_string(
+        'users/update_email.html', {'token': token, 'user': user})
+    msg = EmailMultiAlternatives(subject, content, from_email, [email])
+    msg.attach_alternative(content, 'text/html')
+    msg.send()
+
+
 def token_generation(user, type):
     """Create JWT token."""
-    exp_date = timezone.now() + timedelta(days=3)
+    exp_date = timezone.now() + timedelta(days=2)
     payload = {
         'user': user.username,
         'exp': int(exp_date.timestamp()),
