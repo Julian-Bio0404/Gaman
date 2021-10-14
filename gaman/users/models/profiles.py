@@ -35,6 +35,8 @@ class Profile(GamanModel):
     country = models.CharField(
         help_text='your country of origin', max_length=60, blank=True)
 
+    public = models.BooleanField(help_text='Profile privacy', default=True)
+
     web_site = models.URLField(
         help_text='personal web site', max_length=200, blank=True)
 

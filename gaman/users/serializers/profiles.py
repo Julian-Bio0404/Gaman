@@ -16,6 +16,6 @@ class ProfileModelSerializer(serializers.ModelSerializer):
         fields = [
             'photo', 'cover_photo',
             'about', 'birth_date',
-            'sport', 'country',
+            'sport', 'country', 'public',
             'web_site', 'social_link'
         ]

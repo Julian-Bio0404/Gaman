@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 # Models
-from gaman.users.models import User, Profile
+from gaman.users.models import User, Profile, FollowRequest
 
 
 @admin.register(User)
@@ -37,15 +37,33 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = [
         'pk', 'user', 'sport', 
         'birth_date', 'country',
-        'web_site', 'social_link',
+        'public', 'web_site',
+        'social_link',
         'created', 'updated'
     ]
 
     search_fields = [
         'user__username', 'user__email', 
         'user__first_name', 'user__last_name'
-        'sport', 'country'
+        'sport', 'country', 'public'
     ]
 
-    list_filter = ['sport', 'country']
+    list_filter = ['sport', 'country', 'public']
     ordering = ['user__first_name', 'user__last_name']
+
+
+@admin.register(FollowRequest)
+class FollowRequestAdmin(admin.ModelAdmin):
+    """Follow Request admin."""
+
+    list_display = [
+        'pk', 'follower', 'followed',
+        'accepted', 'created'
+    ]
+
+    search_fields = [
+        'follower__username', 'followed__username',
+        'accepted'
+    ]
+
+    list_filter = ['accepted']
