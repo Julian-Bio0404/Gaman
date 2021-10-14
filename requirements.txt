@@ -1,6 +1,7 @@
 # Base
 Pillow==8.3.2
 pytz==2021.3
+python-decouple==3.5
 
 # Django
 Django==3.2.8
@@ -10,6 +11,7 @@ djangorestframework==3.12.4
 
 # Auth
 PyJWT==2.2.0
+django-rest-framework-social-oauth2==1.1.0
 
 # Enviroment
 django_environ==0.7.0
