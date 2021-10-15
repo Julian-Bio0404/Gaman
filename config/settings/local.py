@@ -151,7 +151,7 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 
 # OAuth2 Facebook backend 
 DRFSO2_PROPRIETARY_BACKEND_NAME = 'Facebook'
-DRFSO2_URL_NAMESPACE = 'social'
+# DRFSO2_URL_NAMESPACE = 'social'
 
 SOCIAL_AUTH_FACEBOOK_EXTRA_DATA = [               
     ('name', 'name'),

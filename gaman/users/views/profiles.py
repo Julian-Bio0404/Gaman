@@ -9,8 +9,9 @@ from rest_framework.response import Response
 from gaman.users.models import Profile
 
 # Serializers
-from gaman.users.serializers import ProfileModelSerializer
-from gaman.users.serializers.users import UserModelSerializer
+from gaman.users.serializers import (FollowRequestModelSerializer,
+                                     ProfileModelSerializer, 
+                                     UserModelSerializer)
 
 
 class ProfileViewSet(mixins.ListModelMixin,
@@ -37,4 +38,39 @@ class ProfileViewSet(mixins.ListModelMixin,
         profile = self.get_object()
         following = profile.following
         data = UserModelSerializer(following, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def follow(self, request, *args, **kwargs):
+        """Follow or unfollow a user."""
+        profile = self.get_object()
+        followers = profile.followers.all()
+        user = request.user
+
+        if request.user == profile.user:
+            data = {'message': "You can't follow yourself."}
+            return Response(data, status=status.HTTP_403_FORBIDDEN)
+        # Follow
+        if request.user not in followers:
+            if profile.public == True:
+                profile.followers.add(request.user)
+                request.user.profile.following.add(profile.user)
+                data = {
+                    'message': f'You started following to {profile.user.username}'}
+            # Follow Request
+            else:
+                serializer = FollowRequestModelSerializer(
+                    data=request.data,
+                    context={'follower': request.user, 'followed': profile.user})
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # Unfollow
+        else:
+            profile.followers.remove(user)
+            request.user.profile.following.remove(user)
+            data = {
+                'message': f'you stopped following to {profile.user.username}'}
+        profile.save()
+        request.user.profile.save()
         return Response(data, status=status.HTTP_200_OK)
