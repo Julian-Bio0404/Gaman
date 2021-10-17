@@ -5,20 +5,45 @@ from rest_framework import serializers
 
 # Models
 from gaman.posts.models import Picture, Post, Video
+from gaman.users.models import User
 
 # Serializers
 from gaman.posts.serializers import ImageModelSerializer, VideoModelSerializer
+
+
+class PostSumaryModelSerializer(serializers.ModelSerializer):
+    """Post Sumary model serializer."""
+
+    author = serializers.StringRelatedField(read_only=True)
+    pictures = ImageModelSerializer(read_only=True, many=True)
+    videos = VideoModelSerializer(read_only=True, many=True)
+
+    class Meta:
+        """Meta options."""
+        model = Post
+        fields = [
+            'author','about',
+            'location', 'feeling',
+            'pictures', 'videos',
+            'created'
+        ]
+
+        read_only_fields = [
+            'author', 'pictures', 
+            'videos', 'created'
+        ]
 
 
 class PostModelSerializer(serializers.ModelSerializer):
     """Post model serializer."""
 
     author = serializers.StringRelatedField(read_only=True)
-
     pictures = ImageModelSerializer(read_only=True, many=True)
     videos = VideoModelSerializer(read_only=True, many=True)
-
-    tag_friends = serializers.StringRelatedField(many=True)
+    post = PostSumaryModelSerializer(read_only=True, required=False)
+    
+    tag_users = serializers.ListSerializer(
+        required=False, child=serializers.CharField())
 
     class Meta:
         """Meta options."""
@@ -27,18 +52,36 @@ class PostModelSerializer(serializers.ModelSerializer):
             'author','about',
             'privacy', 'location',
             'feeling', 'pictures',
-            'videos', 'tag_friends',
-            'reactions', 'comments',
-            'shares',
+            'videos', 'tag_users',
+            'post', 'reactions',
+            'comments', 'shares',
+            'created'
         ]
 
         read_only_fields = [
             'author', 'pictures', 
-            'videos', 'post',
-            'reactions', 'comments', 
-            'shares'
+            'videos', 'tag_users',
+            'post', 'reactions',
+            'comments', 'shares',
+            'created'
         ]
     
+    def validate(self, data):
+        """Verify tag friends."""
+        if 'tag_users' in data.keys():
+            tag_users = data['tag_users']
+            users = []
+            for username in tag_users:
+                try:
+                    user = User.objects.get(username=username)
+                    users.append(user)
+                except User.DoesNotExist:
+                    raise serializers.ValidationError(
+                        f'The user with username {username} does not exist.')
+            self.context['users'] = users
+            data.pop('tag_users')
+        return data
+
     def create(self, data):
         """Create a post."""
         author = self.context['author']
@@ -57,6 +100,13 @@ class PostModelSerializer(serializers.ModelSerializer):
                 post.videos.add(video)
         except AttributeError:
             pass
+
+        # Add users tagged
+        if 'users' in self.context.keys():
+            users = self.context['users']
+            for user in users:
+                post.tag_users.add(user)
+
         post.save()
         return post
 
@@ -65,7 +115,7 @@ class SharePostSerializer(serializers.ModelSerializer):
     """Share Post serializer."""
 
     author = serializers.StringRelatedField(read_only=True)
-    post = PostModelSerializer(read_only=True, required=False)
+    post = PostSumaryModelSerializer(read_only=True)
 
     class Meta:
         """Meta options."""
@@ -75,13 +125,13 @@ class SharePostSerializer(serializers.ModelSerializer):
             'privacy', 'location',
             'feeling', 'post',
             'reactions', 'comments',
-            'shares',
+            'shares', 'created'
         ]
 
         read_only_fields = [
             'author', 'post',
             'reactions', 'comments', 
-            'shares'
+            'shares', 'created'
         ]
 
     def create(self, data):
@@ -89,3 +139,4 @@ class SharePostSerializer(serializers.ModelSerializer):
         author = self.context['author']
         repost = self.context['post']
         post = Post.objects.create(**data, author=author, post=repost)
+        return post

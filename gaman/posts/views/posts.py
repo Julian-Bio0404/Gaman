@@ -58,7 +58,7 @@ class PostViewSet(viewsets.ModelViewSet):
             data = {'message': 'The reaction has been delete.'}
             return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def reactions(self, request, *args, **kwargs):
         """List all post's reactions."""
         post = self.get_object()
@@ -70,6 +70,8 @@ class PostViewSet(viewsets.ModelViewSet):
     def share(self, request, *args, **kwargs):
         """Handles share post."""
         post = self.get_object()
+        if post.post != None:
+            post = post.post
         serializer = SharePostSerializer(
             data=request.data, context={'author': request.user, 'post': post})
         serializer.is_valid(raise_exception=True)
