@@ -36,7 +36,7 @@ class GamanModel(BaseGamanModel):
     """
 
     updated = models.DateTimeField(
-        'updated at', auto_now_add=True,
+        'updated at', auto_now=True,
         help_text='Date time on which the was updated.')
 
     class Meta:

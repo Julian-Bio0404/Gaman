@@ -17,7 +17,7 @@ class Comment(GamanModel):
     reactions = models.PositiveBigIntegerField(default=0)
 
     comment = models.ForeignKey(
-        'self', help_text='Comment that is being answered.',
+        'self', help_text='Comment that is being replied.',
         on_delete=models.SET_NULL, null=True, related_name='principal_comment')
 
     def __str__(self):
