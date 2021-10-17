@@ -7,47 +7,78 @@ from rest_framework import serializers
 from gaman.posts.models import Comment
 
 
-class CommentModelSerializer(serializers.ModelSerializer):
-    """Comment model serializer."""
-
+class CommentSummarySerializer(serializers.ModelSerializer):
+    """Comment Summary model serializer."""
+    
     author = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         """Meta options."""
         model = Comment
-        fields = ['author', 'text', 'reactions']
+        fields = [
+            'author', 'text', 
+            'reactions', 'created'
+        ]
 
         read_only_fields = [
-            'author', 'reactions'
+            'author', 'reactions',
+            'created'
+        ]
+
+
+class CommentModelSerializer(serializers.ModelSerializer):
+    """Comment model serializer."""
+
+    author = serializers.StringRelatedField(read_only=True)
+    
+    replies = CommentSummarySerializer(
+        read_only=True, required=False, many=True)
+
+    class Meta:
+        """Meta options."""
+        model = Comment
+        fields = [
+            'author', 'text',
+            'reactions', 'replies',
+            'created'
+        ]
+
+        read_only_fields = [
+            'author', 'reactions',
+            'replies', 'created'
         ]
 
     def create(self, data):
         """Create a comment."""
-        # comment
         author = self.context['author']
         post = self.context['post']
         comment = Comment.objects.create(
             **data, author=author, post=post)
 
-        # Post
+        # Update Post
         post.comments += 1
         post.save()
         return comment
 
 
-class ComentReplySerializer(CommentModelSerializer):
+class CommentReplySerializer(CommentSummarySerializer):
     """Comment Reply serializer."""
 
     def create(self, data):
         """Create a comment reply."""
-        # comment reply
         author = self.context['author']
         post = self.context['post']
         comment = self.context['comment']
-        comment = Comment.objects.create(
-            **data, author=author, post=post, comment=comment)
+        
+        # comment reply
+        reply = Comment.objects.create(
+            **data, author=author, post=post)
 
-        # Post
+        # Update principal comment
+        comment.replies.add(reply)
+        comment.save()
+
+        # Update Post
         post.comments += 1
         post.save()
         return comment

@@ -16,13 +16,13 @@ class Comment(GamanModel):
     text = models.TextField(help_text='write a comment', max_length=250)
     reactions = models.PositiveBigIntegerField(default=0)
 
-    comment = models.ForeignKey(
-        'self', help_text='Comment that is being replied.',
-        on_delete=models.SET_NULL, null=True, related_name='principal_comment')
+    replies = models.ManyToManyField(
+        'self', help_text='Replies of the comment.',
+        blank=True, related_name='replies')
 
     def __str__(self):
         """Return username, post about and comment."""
-        return f'@{self.author} has commented: {self.text} on {self.post.about}'
+        return f'@{self.author} has commented: {self.text} on {self.post}'
 
     class Meta:
         """Meta options."""
