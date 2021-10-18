@@ -27,3 +27,14 @@ class CommentReaction(Reaction):
     def __str__(self):
         """Return user, post and reaction."""
         return f'@{self.user} reacted to your comment.'
+
+
+class ReplyReaction(Reaction):
+    """Reply reaction model."""
+
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    reply = models.ForeignKey('posts.Reply', on_delete=models.CASCADE)
+
+    def __str__(self):
+        """Return user, post and reaction."""
+        return f'@{self.user} reacted to your comment.'

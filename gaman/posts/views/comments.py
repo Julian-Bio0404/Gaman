@@ -1,18 +1,21 @@
 """Comments views."""
 
 # Django REST framework
-from rest_framework import mixins, status, viewsets
+from typing import Tuple
+from django.utils import tree
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 # Models
 from gaman.posts.models import Comment, CommentReaction, Post
+from gaman.posts.models.comments import Reply
 
 # Serializers
 from gaman.posts.serializers import (CommentModelSerializer,
                                      CommentReactionModelSerializer,
-                                     CommentReplySerializer)
+                                     ReplyModelSerializer)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -45,7 +48,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         """Handles comment creation."""
         serializer = CommentModelSerializer(
             data=request.data,
-            context={'user': request.user, 'post': self.object})
+            context={'author': request.user, 'post': self.object})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -77,11 +80,19 @@ class CommentViewSet(viewsets.ModelViewSet):
     def reply(self, request, *args, **kwargs):
         """Reply to a comment."""
         comment = self.get_object()
-        serializer = CommentReplySerializer(
+        serializer = ReplyModelSerializer(
             data=request.data,
             context={
                 'author': request.user, 
-                'post': self.object,'comment': comment})
+                'post': self.object, 'comment': comment})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    @action(detail=True, methods=['get'])
+    def replies(self, request, *args, **kwargs):
+        """List all comment's replies."""
+        comment = self.get_object()
+        replies = comment.replies.all()
+        data = ReplyModelSerializer(replies, many=True)
+        return Response(data, status=status.HTTP_200_OK)

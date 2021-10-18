@@ -46,6 +46,27 @@ class GamanModel(BaseGamanModel):
         ordering = ['-created', '-updated']
 
 
+class BaseComment(GamanModel):
+    """
+    Base Comment model.
+
+    BaseComment acts an abstract class inherits GamanModel.
+    Extend your models of this class to add the following 
+    fields:
+        + text (Text) Store the text of the comment
+        + reactions (PositiveInteger) = Store the 
+            count of the comment's reactions.
+    """
+    text = models.TextField(help_text='write a comment', max_length=250)
+    reactions = models.PositiveBigIntegerField(default=0)
+
+    class Meta:
+        """Meta option."""
+        abstract = True
+        get_latest_by = 'created'
+        ordering = ['-created', '-updated']
+
+
 class Reaction(BaseGamanModel):
     """
     Reaction model.
