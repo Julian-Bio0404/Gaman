@@ -6,11 +6,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 # Models
+from gaman.posts.models import Post
 from gaman.users.models import Profile
 
 # Serializers
+from gaman.posts.serializers import PostModelSerializer
 from gaman.users.serializers import (FollowRequestModelSerializer,
-                                     ProfileModelSerializer, 
+                                     ProfileModelSerializer,
                                      UserModelSerializer)
 
 
@@ -25,10 +27,26 @@ class ProfileViewSet(mixins.ListModelMixin,
     lookup_field = 'user__username'
 
     @action(detail=True, methods=['get'])
+    def posts(self, request, *args, **kwargs):
+        """
+        List profile's posts. 
+        Restric according to the user requesting and privacy of posts.
+        """
+        profile = self.get_object()
+        followers = profile.followers.all()
+
+        if request.user.profile == profile or request.user in followers:
+            posts = Post.objects.filter(author=profile.user)
+        else:
+            posts = Post.objects.filter(author=profile.user, privacy='Public')
+        data = PostModelSerializer(posts, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'])
     def followers(self, request, *args, **kwargs):
         """List all followers."""
         profile = self.get_object()
-        followers = profile.followers
+        followers = profile.followers.all()
         data = UserModelSerializer(followers, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
@@ -36,7 +54,7 @@ class ProfileViewSet(mixins.ListModelMixin,
     def following(self, request, *args, **kwargs):
         """List all following."""
         profile = self.get_object()
-        following = profile.following
+        following = profile.following.all()
         data = UserModelSerializer(following, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 

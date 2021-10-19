@@ -4,7 +4,10 @@
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from gaman.users import serializers
+
+# Permissions
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from gaman.users.permissions import IsAccountOwner
 
 # Models
 from gaman.users.models import User
@@ -14,11 +17,12 @@ from gaman.users.serializers import (AccountVerificationSerializer,
                                      RefreshTokenSerializer,
                                      RestorePasswordSerializer,
                                      TokenRestorePasswordSerializer,
+                                     TokenUpdateEmailSerializers,
                                      UpdateEmailSerializers,
                                      UpdatePasswordSerializer,
-                                     UserLoginSerializer, UserModelSerializer,
+                                     UserLoginSerializer,
+                                     UserModelSerializer,
                                      UserSignUpSerializer)
-from gaman.users.serializers.users import TokenUpdateEmailSerializers
 
 
 class UserViewSet(mixins.ListModelMixin,
@@ -34,6 +38,19 @@ class UserViewSet(mixins.ListModelMixin,
     queryset = User.objects.filter(verified=True)
     serializer_class = UserModelSerializer
     lookup_field = 'username'
+
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in [
+                'signup', 'login', 'verify', 'update_email',
+                'refresh_token', 'token_restore_psswd', 'restore_psswd']:
+            permissions = [AllowAny]
+        elif self.action in [
+                'retrieve', 'update', 'partial_update', 'token_update_email', 'update_psswd']:
+            permissions = [IsAuthenticated, IsAccountOwner]
+        else:
+            permissions = [IsAuthenticated]
+        return [p() for p in permissions]
 
     @action(detail=False, methods=['post'])
     def signup(self, request):
