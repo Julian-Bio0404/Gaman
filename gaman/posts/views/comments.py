@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 # Models
 from gaman.posts.models import Comment, CommentReaction, Post
+from gaman.posts.models.comments import Reply
 
 # Serializers
 from gaman.posts.serializers import (CommentModelSerializer,
@@ -20,7 +21,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     Handle list, create, detail, update, destroy, 
     react comment or list comment's reactions.
     """
-    
+
     serializer_class = CommentModelSerializer
 
     def dispatch(self, request, *args, **kwargs):
@@ -31,15 +32,16 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         """Delete a comment and subtract -1 from comments on the post."""
-        self.object.comments -= 1
+        self.object.comments -= instance.replies.all().count() + 1
         self.object.save()
+        instance.replies.all().delete()
         instance.delete()
-    
+
     def get_queryset(self):
         """Return post's comments."""
         comments = Comment.objects.filter(post=self.object)
         return comments
-    
+
     def create(self, request, *args, **kwargs):
         """Handles comment creation."""
         serializer = CommentModelSerializer(
@@ -63,7 +65,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         except AssertionError:
             data = {'message': "The comment's reaction has been delete."}
             return Response(data, status=status.HTTP_200_OK)
-    
+
     @action(detail=True, methods=['get'])
     def reactions(self, request, *args, **kwargs):
         """List all comment's reactions."""

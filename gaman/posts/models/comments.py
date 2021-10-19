@@ -37,4 +37,6 @@ class Reply(BaseComment):
         
     class Meta:
         """Meta options."""
+        verbose_name = 'reply'
+        verbose_name_plural = 'replies'
         ordering = ['created']

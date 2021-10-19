@@ -7,7 +7,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 # Models
-from gaman.posts.models.comments import Reply
+from gaman.posts.models.comments import Comment
 
 # Serializers
 from gaman.posts.serializers import (CommentReactionModelSerializer,
@@ -21,12 +21,13 @@ class ReplyViewSet(viewsets.ModelViewSet):
     Handle list, create, detail, update, destroy,
     react reply or list reply's reactions.
     """
+    
     serializer_class = ReplyModelSerializer
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the comment exists."""
-        id = kwargs['id']
-        self.comment = get_object_or_404(Reply, id=id)
+        id = kwargs['id2']
+        self.comment = get_object_or_404(Comment, id=id)
         self.object = self.comment.post
         return super(ReplyViewSet, self).dispatch(request, *args, **kwargs)
 

@@ -41,6 +41,8 @@ class UserModelSerializer(serializers.ModelSerializer):
         ]
 
         read_only_fields = [
+            'username', 'first_name',
+            'last_name', 'email',
             'profile', 'verified'
         ]
 

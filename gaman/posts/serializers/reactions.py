@@ -89,7 +89,7 @@ class ReplyReactionModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         """Meta options."""
-        model = CommentReaction
+        model = ReplyReaction
         fields = ['user', 'reaction']
         read_only_fields = ['user']
 
