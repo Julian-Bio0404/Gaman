@@ -5,6 +5,10 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+# Permissions
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from gaman.users.permissions import IsProfileOwner
+
 # Models
 from gaman.posts.models import Post
 from gaman.users.models import Profile
@@ -20,11 +24,25 @@ class ProfileViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
                      mixins.UpdateModelMixin,
                      viewsets.GenericViewSet):
-    """Profile view set."""
+    """
+    Profile viewset.
+    Handle profile update, partial update, retrieve and list profile,
+    as well as follow, the list of followers and followed.
+    """
 
     queryset = Profile.objects.filter(user__verified=True)
     serializer_class = ProfileModelSerializer
     lookup_field = 'user__username'
+
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in ['retrieve']:
+            permissions = [AllowAny]
+        elif self.action in ['update', 'partial_update']:
+           permissions = [IsAuthenticated, IsProfileOwner]
+        else:
+            permissions = [IsAuthenticated]
+        return[p() for p in permissions]
 
     @action(detail=True, methods=['get'])
     def posts(self, request, *args, **kwargs):

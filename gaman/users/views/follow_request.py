@@ -1,9 +1,13 @@
-"""Friend requests views."""
+"""Follow Request views."""
 
 # Django REST framework
 from rest_framework import mixins, status, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+
+# Permissions
+from rest_framework.permissions import IsAuthenticated
+from gaman.users.permissions import IsFollowedUser, IsFollowerOrFollowed
 
 # Models
 from gaman.users.models import FollowRequest, User
@@ -25,6 +29,16 @@ class FollowRequestViewSet(mixins.ListModelMixin,
 
     serializer_class = FollowRequestModelSerializer
 
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in ['retrieve', 'update']:
+           permissions = [IsAuthenticated, IsFollowedUser]
+        elif self.action in ['destroy']:
+            permissions = [IsFollowerOrFollowed]
+        else:
+            permissions = [IsAuthenticated]
+        return[p() for p in permissions]
+
     def dispatch(self, request, *args, **kwargs):
         """Verify that the user exists."""
         username = kwargs['username']
@@ -33,8 +47,7 @@ class FollowRequestViewSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         """Return the follow request of user."""
-        follow_request = FollowRequest.objects.filter(
-            followed=self.user)
+        follow_request = FollowRequest.objects.filter(followed=self.user)
         return follow_request
 
     def list(self, request, *args, **kwargs):
