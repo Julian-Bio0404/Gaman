@@ -7,18 +7,20 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 # Models
-from gaman.posts.models import Comment, CommentReaction, Post
-from gaman.posts.models.comments import Reply
+from gaman.posts.models import (Comment, 
+                                CommentReaction, Post,
+                                PrincipalComment)
 
 # Serializers
 from gaman.posts.serializers import (CommentModelSerializer,
-                                     CommentReactionModelSerializer)
+                                     CommentReactionModelSerializer,
+                                     ReplyModelSerializer)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     """
     Comment view set.
-    Handle list, create, detail, update, destroy, 
+    Handle list, create, detail, update, destroy, reply,
     react comment or list comment's reactions.
     """
 
@@ -31,7 +33,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         return super(CommentViewSet, self).dispatch(request, *args, **kwargs)
 
     def perform_destroy(self, instance):
-        """Delete a comment and subtract -1 from comments on the post."""
+        """Delete a comment and its replies."""
         self.object.comments -= instance.replies.all().count() + 1
         self.object.save()
         instance.replies.all().delete()
@@ -39,7 +41,10 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Return post's comments."""
-        comments = Comment.objects.filter(post=self.object)
+        if self.action in ['list', 'retrieve', 'reply', 'replies']:
+            comments = PrincipalComment.objects.filter(post=self.object)
+        else:
+            comments = Comment.objects.filter(post=self.object)
         return comments
 
     def create(self, request, *args, **kwargs):
@@ -73,3 +78,22 @@ class CommentViewSet(viewsets.ModelViewSet):
         reactions = CommentReaction.objects.filter(comment=comment)
         serializer = CommentReactionModelSerializer(reactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def reply(self, request, *args, **kwargs):
+        """Reply to a comment."""
+        comment = self.get_object()
+        serializer = ReplyModelSerializer(
+            data=request.data,
+            context={'author': request.user, 'post': self.object, 'comment': comment})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['get'])
+    def replies(self, request, *args, **kwargs):
+        """List all replies to a comment."""
+        comment = self.get_object()
+        replies = comment.replies.all()
+        data = ReplyModelSerializer(replies, many=True).data
+        return Response(data, status=status.HTTP_200_OK)

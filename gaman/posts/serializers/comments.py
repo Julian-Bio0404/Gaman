@@ -32,7 +32,8 @@ class ReplyModelSerializer(serializers.ModelSerializer):
         comment = self.context['comment']
 
         # comment reply
-        reply = Comment.objects.create(**data, author=author)
+        reply = Comment.objects.create(
+            **data, author=author, post=post, type='Reply')
 
         # Update principal comment
         comment.replies.add(reply)
@@ -71,7 +72,7 @@ class CommentModelSerializer(serializers.ModelSerializer):
         author = self.context['author']
         post = self.context['post']
         comment = Comment.objects.create(
-            **data, author=author, post=post)
+            **data, author=author, post=post, type='Principal-Comment')
 
         # Update Post
         post.comments += 1

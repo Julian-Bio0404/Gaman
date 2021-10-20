@@ -34,10 +34,10 @@ class Comment(GamanModel):
     def __str__(self):
         """Return username, post about and comment."""
         return f'@{self.author} has commented: {self.text} on {self.post}'
-
+    
     class Meta:
         """Meta options."""
-        ordering = ['reactions', 'created']
+        ordering = ['created']
 
 
 class PrincipalComment(Comment):
@@ -47,7 +47,7 @@ class PrincipalComment(Comment):
         
     class Meta:
         """Meta options."""
-        ordering = ['reactions', 'created']
+        ordering = ['-reactions', 'created']
         proxy = True
 
 
