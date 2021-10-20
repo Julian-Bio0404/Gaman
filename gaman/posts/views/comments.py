@@ -6,6 +6,11 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
+# Permissions
+from rest_framework.permissions import IsAuthenticated
+from gaman.posts.permissions import IsCommentOwner, IsCommentOrPostOwner, IsFollowerPostOwner
+
+
 # Models
 from gaman.posts.models import (Comment, 
                                 CommentReaction, Post,
@@ -46,6 +51,19 @@ class CommentViewSet(viewsets.ModelViewSet):
         else:
             comments = Comment.objects.filter(post=self.object)
         return comments
+
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in [
+            'create', 'retrieve', 'react', 'reactions', 'reply', 'replies']:
+            permissions = [IsAuthenticated, IsFollowerPostOwner]
+        elif self.action in ['update', 'partial_update']:
+           permissions = [IsAuthenticated, IsCommentOwner]
+        elif self.action in ['destroy']:
+            permissions = [IsAuthenticated, IsCommentOrPostOwner]
+        else:
+            permissions = [IsAuthenticated]
+        return[p() for p in permissions]
 
     def create(self, request, *args, **kwargs):
         """Handles comment creation."""

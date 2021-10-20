@@ -8,6 +8,10 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+# Permissions
+from rest_framework.permissions import IsAuthenticated
+from gaman.posts.permissions import IsFollower, IsPostOwner
+
 # Models
 from gaman.posts.models import Post, PostReaction
 
@@ -35,6 +39,17 @@ class PostViewSet(viewsets.ModelViewSet):
             queryset = Post.objects.filter(
                 Q(author=user) | Q(author__in=following))
         return queryset
+
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in [
+            'retrieve', 'react', 'reactions', 'share']:
+            permissions = [IsFollower]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+           permissions = [IsAuthenticated, IsPostOwner]
+        else:
+            permissions = [IsAuthenticated]
+        return[p() for p in permissions]
 
     def create(self, request):
         """Handles post creation."""
