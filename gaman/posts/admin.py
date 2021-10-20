@@ -4,7 +4,7 @@
 from django.contrib import admin
 
 # Models
-from gaman.posts.models import Comment, CommentReaction, Post, PostReaction, Reply, ReplyReaction
+from gaman.posts.models import Comment, CommentReaction, Post, PostReaction
 
 
 @admin.register(Post)
@@ -40,37 +40,18 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = [
         'pk', 'author',
         'post', 'text',
-        'reactions', 'created',
-        'updated'
-    ]
-
-    search_fields = [
-        'author__username', 'post'
-    ]
-
-    list_filter = [
-        'author__username', 'post'
-    ]
-
-    ordering = ['-created']
-
-
-@admin.register(Reply)
-class ReplyAdmin(admin.ModelAdmin):
-    """Reply model admin."""
-
-    list_display = [
-        'pk', 'author',
-        'text', 'reactions',
+        'reactions', 'type',
         'created', 'updated'
     ]
 
     search_fields = [
         'author__username',
+        'post', 'type'
     ]
 
     list_filter = [
-        'author__username'
+        'author__username',
+        'post', 'type'
     ]
 
     ordering = ['-created']

@@ -4,7 +4,7 @@
 from rest_framework import serializers
 
 # Models
-from gaman.posts.models import Comment, Reply
+from gaman.posts.models import Comment
 
 
 class ReplyModelSerializer(serializers.ModelSerializer):
@@ -14,7 +14,7 @@ class ReplyModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         """Meta options."""
-        model = Reply
+        model = Comment
         fields = [
             'author', 'text', 
             'reactions', 'created'
@@ -32,7 +32,7 @@ class ReplyModelSerializer(serializers.ModelSerializer):
         comment = self.context['comment']
 
         # comment reply
-        reply = Reply.objects.create(**data, author=author)
+        reply = Comment.objects.create(**data, author=author)
 
         # Update principal comment
         comment.replies.add(reply)
