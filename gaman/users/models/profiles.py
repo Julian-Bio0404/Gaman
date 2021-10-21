@@ -26,7 +26,7 @@ class Profile(GamanModel):
     about = models.TextField(
         help_text='write something about you', blank=True)
 
-    birth_date = models.DateTimeField(
+    birth_date = models.DateField(
         auto_now=False, auto_now_add=False, blank=True, null=True)
     
     sport = models.CharField(
