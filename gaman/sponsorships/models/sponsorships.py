@@ -2,7 +2,6 @@
 
 # Django
 from django.db import models
-from django.db.models.fields.related import ForeignKey
 
 # Utils
 from utils.models import GamanModel
@@ -11,9 +10,12 @@ from utils.models import GamanModel
 class Sponsorship(GamanModel):
     """Sponsorship model."""
 
-    sponsor = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True)
+    sponsor = models.ForeignKey(
+        'users.User', on_delete=models.SET_NULL, null=True, related_name='sponsor')
     
-    athlete = models,ForeignKey('users.User', on_delete=models.CASCADE)
+    athlete = models.ForeignKey(
+        'users.User', on_delete=models.CASCADE, related_name='athlete')
+
     club = models.ForeignKey('sports.Club', on_delete=models.SET_NULL, null=True)
 
     brand = models.ForeignKey(
@@ -28,5 +30,5 @@ class Sponsorship(GamanModel):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        """Return user's username."""
+        """Return Sponsorship's sponsor."""
         return f'{self.sponsor}'

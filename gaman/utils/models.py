@@ -71,3 +71,28 @@ class Reaction(BaseGamanModel):
         abstract = True
         get_latest_by = 'created'
         ordering = ['-created']
+
+
+class BaseDataModel(models.Model):
+    """
+    Base data model.
+
+    BaseDataModel acts as an abstract class inherits from
+    class Model. Extends your models of this class to add
+    the following fields:
+        + slugname (SlugField): Store the slugname.
+        + about (TextField): Store the about
+        + official_web (URLField): Store the oficial web site 
+    """
+
+    slugname = models.SlugField(unique=40)
+
+    about = models.TextField(
+        help_text='write about something', blank=True)
+
+    official_web = models.URLField(
+        help_text='Web site', max_length=200, blank=True)
+
+    class Meta:
+        """Meta option."""
+        abstract = True

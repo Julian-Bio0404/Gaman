@@ -14,7 +14,7 @@ class BrandAdmin(admin.ModelAdmin):
     list_display = [
         'pk', 'slugname',
         'photo', 'cover_photo',
-        'about', 'official_web'
+        'about', 'official_web',
         'verified'
     ]
 
