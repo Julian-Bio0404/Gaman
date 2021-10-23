@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 # Models
-from gaman.users.models import User, Profile, FollowRequest
+from gaman.users.models import FollowRequest, FollowUp, Profile, User
 
 
 @admin.register(User)
@@ -67,3 +67,14 @@ class FollowRequestAdmin(admin.ModelAdmin):
     ]
 
     list_filter = ['accepted']
+
+
+@admin.register(FollowUp)
+class FollowUpAdmin(admin.ModelAdmin):
+    """FollowUp model admin."""
+
+    list_display = [
+        'pk', 'follower',
+        'brand', 'club',
+        'created'
+    ]

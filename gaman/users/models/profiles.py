@@ -43,12 +43,6 @@ class Profile(GamanModel):
     social_link = models.URLField(
         help_text='social media', max_length=200, blank=True)
 
-    followers = models.ManyToManyField(
-        'users.User', blank=True, related_name='followers')
-
-    following = models.ManyToManyField(
-        'users.User', blank=True, related_name='following')
-
     def __str__(self):
         """Return user's username."""
         return self.user.username
