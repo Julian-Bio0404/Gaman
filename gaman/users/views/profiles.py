@@ -1,5 +1,8 @@
 """Profiles views."""
 
+# Django
+from django.db.models import Q
+
 # Django REST framework
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -11,11 +14,13 @@ from gaman.users.permissions import IsProfileOwner
 
 # Models
 from gaman.posts.models import Post
-from gaman.users.models import Profile
+from gaman.users.models import Profile, FollowRequest, FollowUp
 
 # Serializers
 from gaman.posts.serializers import PostModelSerializer
 from gaman.users.serializers import (FollowRequestModelSerializer,
+                                     FollowingSerializer,
+                                     FollowerSerializer,
                                      ProfileModelSerializer,
                                      UserModelSerializer)
 
@@ -64,33 +69,40 @@ class ProfileViewSet(mixins.ListModelMixin,
     def followers(self, request, *args, **kwargs):
         """List all followers."""
         profile = self.get_object()
-        followers = profile.followers.all()
-        data = UserModelSerializer(followers, many=True).data
+        followers = FollowUp.objects.filter(user=profile.user)
+        data = FollowerSerializer(followers, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
     def following(self, request, *args, **kwargs):
         """List all following."""
         profile = self.get_object()
-        following = profile.following.all()
-        data = UserModelSerializer(following, many=True).data
+        following = FollowUp.objects.filter(follower=profile.user)
+        data = FollowingSerializer(following, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
     def follow(self, request, *args, **kwargs):
         """Follow or unfollow a user."""
         profile = self.get_object()
-        followers = profile.followers.all()
-        user = request.user
-
         if request.user == profile.user:
             data = {'message': "You can't follow yourself."}
             return Response(data, status=status.HTTP_403_FORBIDDEN)
+        # Unfollow
+        followup = FollowUp.objects.filter(
+            user=profile.user, follower=request.user)
+        if followup.exists():
+            follow_request = FollowRequest.objects.filter(
+                Q (follower=request.user, followed=profile.user)|
+                Q (followed=request.user, follower=profile.user))
+            follow_request.delete()
+            followup.delete()
+            data = {
+                'message': f'you stopped following to {profile.user.username}'}
         # Follow
-        if request.user not in followers:
+        else:
             if profile.public == True:
-                profile.followers.add(request.user)
-                request.user.profile.following.add(profile.user)
+                FollowUp.objects.create(user=profile.user, follower=request.user)
                 data = {
                     'message': f'You started following to {profile.user.username}'}
             # Follow Request
@@ -101,12 +113,4 @@ class ProfileViewSet(mixins.ListModelMixin,
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # Unfollow
-        else:
-            profile.followers.remove(user)
-            request.user.profile.following.remove(user)
-            data = {
-                'message': f'you stopped following to {profile.user.username}'}
-        profile.save()
-        request.user.profile.save()
         return Response(data, status=status.HTTP_200_OK)

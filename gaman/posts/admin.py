@@ -67,8 +67,12 @@ class ReactionPostAdmin(admin.ModelAdmin):
         'created'
     ]
 
-    search_fields = ['post']
-    list_filter = ['post']
+    search_fields = [
+        'user__username',
+        'post__author__username'
+    ]
+
+    list_filter = ['post__author__username']
 
 
 @admin.register(CommentReaction)
@@ -81,5 +85,10 @@ class ReactionCommentAdmin(admin.ModelAdmin):
         'created'
     ]
 
-    search_fields = ['comment']
-    list_filter = ['comment']
+    search_fields = [
+        'comment__author__username'
+    ]
+    
+    list_filter = [
+        'comment__author__username'
+    ]

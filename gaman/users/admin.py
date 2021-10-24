@@ -75,6 +75,11 @@ class FollowUpAdmin(admin.ModelAdmin):
 
     list_display = [
         'pk', 'follower',
-        'brand', 'club',
-        'created'
+        'user', 'brand',
+        'club', 'created'
+    ]
+
+    search_fields = [
+        'follower__username', 'user__username',
+        'brand__slugname', 'club__slugname'
     ]

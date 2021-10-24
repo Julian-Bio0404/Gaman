@@ -1,10 +1,13 @@
 """Follow Request serializers."""
 
+# Django
+from django.db.models import Q
+
 # Django REST Framework
 from rest_framework import serializers
 
 # Models
-from gaman.users.models import FollowRequest
+from gaman.users.models import FollowRequest, FollowUp
 
 
 class FollowRequestModelSerializer(serializers.ModelSerializer):
@@ -32,17 +35,12 @@ class FollowRequestModelSerializer(serializers.ModelSerializer):
         followed = self.context['followed']
 
         follow_request = FollowRequest.objects.filter(
-            follower=follower, followed=followed)
+            Q (follower=follower, followed=followed) |
+            Q (followed=follower, follower=followed))
 
         if follow_request.exists():
             raise serializers.ValidationError(
-                'You already sent a follow up request.')
-        else:
-            follow_request2 = FollowRequest.objects.filter(
-                follower=followed, followed=follower)
-            if follow_request2.exists():
-                raise serializers.ValidationError(
-                    'You already have a follow up request.')
+                'You already have a follow up request.')
         return data
 
     def create(self, data):
@@ -72,12 +70,32 @@ class AcceptFollowRequestSerializer(serializers.Serializer):
         follow_request.accepted = True
         follow_request.save()
 
-        # Update user's profile
-        follower = follow_request.follower
-        followed = follow_request.followed
+        # Create FollowUp
+        FollowUp.objects.create(
+            follower=follow_request.follower, user=follow_request.followed)
 
-        follower.profile.following.add(followed)
-        followed.profile.followers.add(follower)
 
-        follower.profile.save()
-        followed.profile.save()
+class FollowingSerializer(serializers.ModelSerializer):
+    """Following model serializer."""
+
+    user = serializers.StringRelatedField(read_only=True, required=False)
+    brand = serializers.StringRelatedField(read_only=True, required=False)
+    club = serializers.StringRelatedField(read_only=True, required=False)
+
+    class Meta:
+        """Meta options."""
+        model = FollowUp
+        fields = ['user', 'brand', 'club']
+        read_only_fields = ['user', 'brand', 'club']
+
+
+class FollowerSerializer(serializers.ModelSerializer):
+    """Follower model serializer."""
+
+    follower = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        """Meta options."""
+        model = FollowUp
+        fields = ['follower']
+        read_only_fields = ['follower']

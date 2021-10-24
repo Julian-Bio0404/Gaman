@@ -8,8 +8,9 @@ from rest_framework.response import Response
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
-from gaman.posts.permissions import IsCommentOwner, IsCommentOrPostOwner, IsFollowerPostOwner
-
+from gaman.posts.permissions import (IsCommentOwner,
+                                     IsCommentOrPostOwner,
+                                     IsFollowerPostOwner)
 
 # Models
 from gaman.posts.models import (Comment, 

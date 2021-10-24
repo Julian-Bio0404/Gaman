@@ -12,13 +12,19 @@ class ClubAdmin(admin.ModelAdmin):
     """Club model admin."""
 
     lis_display = [
-        'pk', 'slugname',
-        'about', 'city',
+        'pk', 'league',
+        'slugname', 'about', 'city',
         'trainer', 'official_web'
     ]
 
-    search_fields = ['slugname', 'city']
-    list_filter = ['city']
+    search_fields = [
+        'slugname', 'city',
+        'league__slugname'
+    ]
+    
+    list_filter = [
+        'city', 'league__slugname'
+    ]
 
 
 @admin.register(League)

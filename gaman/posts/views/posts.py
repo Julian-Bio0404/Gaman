@@ -14,6 +14,8 @@ from gaman.posts.permissions import IsFollower, IsPostOwner
 
 # Models
 from gaman.posts.models import Post, PostReaction
+from gaman.users.models import FollowUp
+from gaman.users.models import User
 
 # Serializers
 from gaman.posts.serializers import (PostModelSerializer,
@@ -34,7 +36,8 @@ class PostViewSet(viewsets.ModelViewSet):
         """Restrict posts to only followed users."""
         queryset = Post.objects.all()
         user = self.request.user
-        following = user.profile.following.all()
+        following = User.objects.filter(
+            pk__in=[FollowUp.objects.filter(follower=user).values('user__pk')])
         if self.action == 'list':
             queryset = Post.objects.filter(
                 Q(author=user) | Q(author__in=following))

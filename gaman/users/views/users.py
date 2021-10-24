@@ -78,7 +78,7 @@ class UserViewSet(mixins.ListModelMixin,
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {
-            'message': 'Congratulations, you can now start using Facebook and connecting with friends.'}
+            'message': 'Congratulations, you can now start using Gaman and connecting with friends and sponsors.'}
         return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])

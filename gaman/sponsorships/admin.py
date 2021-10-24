@@ -31,8 +31,15 @@ class RatingAdmin(admin.ModelAdmin):
         'comment', 'rating'
     ]
 
-    search_fields = ['sponsorship', 'qualifier']
-    list_filter = ['sponsorship', 'qualifier']
+    search_fields = [
+        'sponsorship__sponsor__username',
+        'qualifier__username'
+    ]
+
+    list_filter = [
+        'sponsorship__sponsor__username',
+        'qualifier__username'
+    ]
 
 
 @admin.register(Sponsorship)
@@ -47,11 +54,15 @@ class SponsorshipAdmin(admin.ModelAdmin):
     ]
 
     search_fields = [
-        'sponsor', 'athlete',
-        'club', 'brand', 'active'
+        'sponsor__username',
+        'athlete__username',
+        'club__slugname',
+        'brand__slugname', 'active'
     ]
 
     list_filter = [
-        'sponsor', 'athlete',
-        'club', 'brand', 'active'
+        'sponsor__username',
+        'athlete__username',
+        'club__slugname',
+        'brand__slugname', 'active'
     ]
