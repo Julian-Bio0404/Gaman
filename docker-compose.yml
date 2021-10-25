@@ -6,7 +6,7 @@ services:
     deploy:
       resources:
           limits:
-            memory: 500M
+            memory: 400M
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     environment:
@@ -16,21 +16,51 @@ services:
     ports:
       - "5432:5432"
     restart: always
+    container_name: postgres
+
+  redis:
+    image: redis:6.2.6-alpine
+    deploy:
+      resources:
+          limits:
+            memory: 400M
+    container_name: redis
 
   django:
-    build: .
+    build:
+      context: .
+      dockerfile: ./compose/Dockerfile
     volumes:
       - .:/code
     deploy:
       resources:
           limits:
-            memory: 500M
+            memory: 400M
     ports:
       - "8000:8000"
     depends_on:
       - postgres
     command: /code/compose/django/start.sh
     restart: always
+    container_name: django
+
+  celeryworker:
+    build:
+      context: .
+      dockerfile: ./compose/Dockerfile
+    volumes:
+        - .:/code
+    deploy:
+      resources:
+          limits:
+            memory: 400M
+    ports: []
+    depends_on:
+        - redis
+        - django
+    command: /code/compose/celery/worker/start.sh
+    restart: always
+    container_name: celery-worker
 
 volumes:
   postgres:

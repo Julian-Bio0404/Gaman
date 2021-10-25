@@ -6,7 +6,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 
 # Utils
-from utils.models import GamanModel
+from gaman.utils.models import GamanModel
 
 
 class User(GamanModel, AbstractUser):

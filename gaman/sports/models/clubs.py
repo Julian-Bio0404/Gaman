@@ -4,7 +4,7 @@
 from django.db import models
 
 # Utils
-from utils.models import BaseDataModel, GamanModel
+from gaman.utils.models import BaseDataModel, GamanModel
 
 
 class Club(GamanModel, BaseDataModel):

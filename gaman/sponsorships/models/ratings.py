@@ -4,7 +4,7 @@
 from django.db import models
 
 # Utils
-from utils.models import BaseGamanModel
+from gaman.utils.models import BaseGamanModel
 
 
 class Rating(BaseGamanModel):

@@ -8,21 +8,21 @@ from django.conf import settings
 from django.contrib.auth import authenticate, password_validation
 from django.core.validators import RegexValidator
 
-# Models
-from gaman.users.models import Profile, User
-
 # Django REST Framework
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 
+# Models
+from gaman.users.models import Profile, User
+
 # Serializers
 from .profiles import ProfileModelSerializer
 
-# Utils
-from gaman.utils.functions import (send_confirmation_email, 
-                                   send_update_email, 
-                                   send_restore_password_email)
+# Taskapp
+from taskapp.tasks.users import (send_confirmation_email,
+                                 send_update_email,
+                                 send_restore_password_email)
 
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -97,7 +97,7 @@ class UserSignUpSerializer(serializers.Serializer):
         data.pop('password_confirmation')
         user = User.objects.create_user(**data)
         Profile.objects.create(user=user)
-        send_confirmation_email(user_pk=user.pk)
+        send_confirmation_email.delay(user_pk=user.pk)
         return user
 
 class UserLoginSerializer(serializers.Serializer):
@@ -168,7 +168,7 @@ class RefreshTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError('Invalid credentials.')
         if user.verified == True:
             raise serializers.ValidationError('You are already verified.')
-        send_confirmation_email(user_pk=user.pk)
+        send_confirmation_email.delay(user_pk=user.pk)
         return user
 
 
@@ -183,7 +183,7 @@ class TokenRestorePasswordSerializer(serializers.Serializer):
             user = User.objects.get(email=data)
         except User.DoesNotExist:
             raise serializers.ValidationError('User does not exist.')
-        send_restore_password_email(user_pk=user.pk)
+        send_restore_password_email.delay(user_pk=user.pk)
         return user
 
 
@@ -271,7 +271,7 @@ class TokenUpdateEmailSerializers(serializers.Serializer):
         user = self.context['user']
         if not user.check_password(data['password']):
             raise serializers.ValidationError('Wrong password.')
-        send_update_email(user_pk=user.pk, email=data['new_email'])
+        send_update_email.delay(user_pk=user.pk, email=data['new_email'])
         return data
 
     def save(self):
