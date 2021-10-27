@@ -12,5 +12,6 @@ urlpatterns = [
     path(r'auth/', include('rest_framework_social_oauth2.urls')),
     path('', include(('gaman.users.urls', 'users'), namespace='users')),
     path('', include(('gaman.posts.urls', 'posts'), namespace='posts')),
+    path('', include(('gaman.sponsorships.urls', 'sponsorships'), namespace='sponsorships'))
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
