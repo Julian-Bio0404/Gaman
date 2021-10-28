@@ -14,7 +14,7 @@ class Sponsorship(GamanModel):
         'users.User', on_delete=models.SET_NULL, null=True, related_name='sponsor')
     
     athlete = models.ForeignKey(
-        'users.User', on_delete=models.CASCADE, related_name='athlete')
+        'users.User', on_delete=models.SET_NULL, null=True, related_name='athlete')
 
     club = models.ForeignKey('sports.Club', on_delete=models.SET_NULL, null=True)
 

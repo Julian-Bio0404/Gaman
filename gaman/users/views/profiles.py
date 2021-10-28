@@ -21,8 +21,7 @@ from gaman.posts.serializers import PostModelSerializer
 from gaman.users.serializers import (FollowRequestModelSerializer,
                                      FollowingSerializer,
                                      FollowerSerializer,
-                                     ProfileModelSerializer,
-                                     UserModelSerializer)
+                                     ProfileModelSerializer)
 
 
 class ProfileViewSet(mixins.ListModelMixin,

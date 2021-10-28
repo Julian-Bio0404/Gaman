@@ -20,7 +20,6 @@ class User(GamanModel, AbstractUser):
         ('Athlete', 'Athlete'),
         ('Sponsor', 'Sponsor'),
         ('Coach', 'Coach'),
-        ('Team', 'Team'),
         ('League president', 'League president')
     ]
 

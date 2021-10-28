@@ -1,14 +1,17 @@
 """Brands views."""
 
 # Django REST Framework
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from gaman.sponsorships.permissions import IsBrandOwner, IsProfileCompleted
 
 # Models
 from gaman.sponsorships.models import Brand
+from gaman.users.models import FollowUp
 
 # Serializers
 from gaman.sponsorships.serializers import BrandModelSerializer
@@ -17,8 +20,8 @@ from gaman.sponsorships.serializers import BrandModelSerializer
 class BrandViewSet(viewsets.ModelViewSet):
     """
     Brand viewset.
-    Handle list, create, update, destroy and
-    retrieve Brand.
+    Handle list, create, update, destroy
+    retrieve and follow Brand.
     """
 
     queryset = Brand.objects.all()
@@ -39,3 +42,17 @@ class BrandViewSet(viewsets.ModelViewSet):
         context = super(BrandViewSet, self).get_serializer_context()
         context['sponsor'] = self.request.user
         return context
+
+    @action(detail=True, methods=['post'])
+    def follow(self, request, *args, **kwarg):
+        """Handle the follow-up to brand."""
+        brand = self.get_object()
+        follower = request.user
+        followup = FollowUp.objects.filter(follower=follower, brand=brand)
+        if followup.exists():
+            followup.delete()
+            data = {'message': 'You stopped follow to this brand.'}
+        else:
+            FollowUp.objects.create(follower=follower, brand=brand)
+            data = {'message': 'You started follow to this brand.'}
+        return Response(data=data, status=status.HTTP_200_OK)
