@@ -3,6 +3,10 @@
 # Django REST Framework
 from rest_framework import viewsets
 
+# Permissions
+from rest_framework.permissions import IsAuthenticated
+from gaman.sponsorships.permissions import IsBrandOwner, IsProfileCompleted
+
 # Models
 from gaman.sponsorships.models import Brand
 
@@ -20,6 +24,15 @@ class BrandViewSet(viewsets.ModelViewSet):
     queryset = Brand.objects.all()
     serializer_class = BrandModelSerializer
     lookup_field = 'slugname'
+
+    def get_permissions(self):
+        """Asign permissions based on action."""
+        permissions = [IsAuthenticated]
+        if self.action in ['update', 'partial_update', 'destroy']:
+            permissions.append(IsBrandOwner)
+        elif self.action in ['create']:
+            permissions.append(IsProfileCompleted)
+        return [p() for p in permissions]
 
     def get_serializer_context(self):
         """Add sponsor to serializer context."""

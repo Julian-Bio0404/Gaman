@@ -43,6 +43,21 @@ class Profile(GamanModel):
     social_link = models.URLField(
         help_text='social media', max_length=200, blank=True)
 
+
+    def is_data_completed(self):
+        """Return the status of the profile data."""
+        data = [
+            self.photo, self.cover_photo,
+            self.about, self.birth_date,
+            self.country, self.web_site,
+            self.social_link
+        ]
+
+        for i in data:
+            if i == None:
+                return False
+        return True
+
     def __str__(self):
         """Return user's username."""
         return self.user.username
