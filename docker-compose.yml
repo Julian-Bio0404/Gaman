@@ -64,3 +64,9 @@ services:
 
 volumes:
   postgres:
+
+# networks:
+#   gaman_monolithic_default:
+#     driver: bridge
+#   readposts-microservice_default:
+#     external: true

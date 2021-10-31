@@ -69,6 +69,7 @@ def send_restore_password_email(user_pk):
 
 
 # Asynch task
+@app.task
 def send_update_email(user_pk, email):
     """Send update email link to given user."""
     user = User.objects.get(pk=user_pk)
