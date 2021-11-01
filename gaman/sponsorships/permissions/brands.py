@@ -15,13 +15,10 @@ class IsBrandOwner(BasePermission):
 class IsProfileCompleted(BasePermission):
     """Allow access only user with profile data completed."""
 
+    message = 'Complete your profile and user data.'
+
     def has_permission(self, request, view):
         """Check that requesting user has profile and user data completed."""
         user = request.user
         profile = request.user.profile
-        if user.role == 'Sponsor':
-            self.message = 'Complete your profile and user data.'
-            return user.is_data_completed() and profile.is_data_completed()
-        else:
-            self.message = 'You are not a sponsor.'
-            return False
+        return user.is_data_completed() and profile.is_data_completed()

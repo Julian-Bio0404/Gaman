@@ -121,6 +121,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+timezone = TIME_ZONE
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'

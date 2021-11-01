@@ -3,11 +3,13 @@
 # Django REST Framework
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from gaman.sponsorships.permissions import IsBrandOwner, IsProfileCompleted
+from gaman.sponsorships.permissions import (IsBrandOwner,
+                                            IsProfileCompleted,
+                                            IsSponsor)
 
 # Models
 from gaman.sponsorships.models import Brand
@@ -35,6 +37,7 @@ class BrandViewSet(viewsets.ModelViewSet):
             permissions.append(IsBrandOwner)
         elif self.action in ['create']:
             permissions.append(IsProfileCompleted)
+            permissions.append(IsSponsor)
         return [p() for p in permissions]
 
     def get_serializer_context(self):

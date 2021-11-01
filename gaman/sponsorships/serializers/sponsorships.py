@@ -1,5 +1,11 @@
 """Sponsorships serializers."""
 
+# Utilities
+import datetime
+
+# Django
+from django.utils import timezone
+
 # Django REST Framework
 from rest_framework import serializers
 
@@ -74,7 +80,11 @@ class CreateSponsorshipSerializer(serializers.Serializer):
             except Brand.DoesNotExist:
                 raise serializers.ValidationError('The brand does not exists.')
 
-        if data['start'] > data['finish']:
+        if data['start'] <= datetime.date.today() or data['finish'] <= datetime.date.today():
+            raise serializers.ValidationError(
+                'The dates be must after that the current date.')
+
+        if data['start'] >= data['finish']:
             raise serializers.ValidationError(
                 'The start date be must before that the finish date.')
         return data
