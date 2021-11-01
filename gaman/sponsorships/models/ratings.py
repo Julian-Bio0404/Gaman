@@ -15,7 +15,7 @@ class Rating(BaseGamanModel):
 
     qualifier = models.ForeignKey('users.User', on_delete=models.CASCADE)
     comment = models.CharField(max_length=250, blank=True)
-    rating = models.DecimalField(max_digits=1, decimal_places=1)
+    rating = models.DecimalField(max_digits=2, decimal_places=1)
 
     def __str__(self):
         """Return rating."""

@@ -27,7 +27,7 @@ class RatingAdmin(admin.ModelAdmin):
     """Rating model admin."""
 
     list_display = [
-        'sponsorship', 'qualifier',
+        'pk', 'sponsorship', 'qualifier',
         'comment', 'rating'
     ]
 
@@ -47,7 +47,7 @@ class SponsorshipAdmin(admin.ModelAdmin):
     """Sponsorship model admin."""
 
     list_display = [
-        'sponsor', 'athlete',
+        'pk', 'sponsor', 'athlete',
         'club', 'brand',
         'start', 'finish',
         'active'
