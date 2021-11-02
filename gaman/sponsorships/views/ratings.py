@@ -1,7 +1,7 @@
 """Ratings views."""
 
 # Django REST framework
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.generics import get_object_or_404
 
 # Persmissions
@@ -12,18 +12,21 @@ from gaman.sponsorships.permissions import IsQualifier, IsSponsored
 from gaman.sponsorships.models import Sponsorship
 
 # Serializers
-from gaman.sponsorships.serializers import (RatingModelSerializer,
+from gaman.sponsorships.serializers import (CreateRatingSerializer,
+                                            RatingModelSerializer,
                                             RatingSumaryModelserializer)
 
 
-class RatingViewSet(viewsets.ModelViewSet):
+class RatingViewSet(mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.RetrieveModelMixin,
+                    viewsets.GenericViewSet):
     """
     Rating view set.
-    Handle list, create, detail, update,
-    destroy rating of the a sponsorship.
+    Handle list, create, retrieve, update,
+    rating of the a sponsorship.
     """
-
-    serializer_class = RatingModelSerializer
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the post exists."""
@@ -54,8 +57,8 @@ class RatingViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """Return serializer based on action."""
-        if self.action == 'create':
-            return RatingModelSerializer
-        elif self.action == 'list':
+        if self.action == 'list':
             return RatingSumaryModelserializer
+        elif self.action == 'create':
+            return CreateRatingSerializer
         return RatingModelSerializer

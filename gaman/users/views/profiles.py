@@ -14,7 +14,7 @@ from gaman.users.permissions import IsProfileOwner
 
 # Models
 from gaman.posts.models import Post
-from gaman.users.models import Profile, FollowRequest, FollowUp
+from gaman.users.models import Profile, FollowRequest, FollowUp, User
 
 # Serializers
 from gaman.posts.serializers import PostModelSerializer
@@ -24,8 +24,7 @@ from gaman.users.serializers import (FollowRequestModelSerializer,
                                      ProfileModelSerializer)
 
 
-class ProfileViewSet(mixins.ListModelMixin,
-                     mixins.RetrieveModelMixin,
+class ProfileViewSet(mixins.RetrieveModelMixin,
                      mixins.UpdateModelMixin,
                      viewsets.GenericViewSet):
     """
@@ -55,7 +54,8 @@ class ProfileViewSet(mixins.ListModelMixin,
         Restric according to the user requesting and privacy of posts.
         """
         profile = self.get_object()
-        followers = profile.followers.all()
+        followers = User.objects.filter(
+            pk__in=[FollowUp.objects.filter(user=request.user).values('user__pk')])
 
         if request.user.profile == profile or request.user in followers:
             posts = Post.objects.filter(author=profile.user)

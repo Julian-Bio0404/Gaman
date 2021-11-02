@@ -15,21 +15,20 @@ class IsPostOwner(BasePermission):
         return request.user == obj.author
 
 
-class IsFollower(BasePermission):
+class IsFollowerOrPostOwner(BasePermission):
     """Allow access only to followers of a user."""
 
     message = 'This content isn`t available right now.'
 
     def has_object_permission(self, request, view, obj):
-        """Check privacy obj and if user is friend of the post owner. """
+        """Check privacy post and if user is follower of the post owner."""
         post_owner = obj.author
         
-        if obj.privacy == 'Public':
+        if obj.privacy == 'Public' or request.user == post_owner:
             return True
         elif obj.privacy == 'Private':
             folloup = FollowUp.objects.filter(
                 follower=request.user, user=post_owner)
-            if folloup.exists() or request.user == post_owner:
+            if folloup.exists():
                 return True
-            else:
-                return False
+            return False

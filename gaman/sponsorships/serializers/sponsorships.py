@@ -3,9 +3,6 @@
 # Utilities
 import datetime
 
-# Django
-from django.utils import timezone
-
 # Django REST Framework
 from rest_framework import serializers
 
@@ -55,7 +52,9 @@ class CreateSponsorshipSerializer(serializers.Serializer):
 
     def validate(self, data):
         """Verify brand, athlete, club and dates."""
-        if 'athlete' in data.keys():
+        if 'athlete' in data.keys() and 'club' in data.keys():
+            raise serializers.ValidationError('You must choose an athlete or a club, not both')
+        elif 'athlete' in data.keys():
             try:
                 athlete = User.objects.get(username=data['athlete'])
                 self.context['athlete'] = athlete
@@ -69,6 +68,8 @@ class CreateSponsorshipSerializer(serializers.Serializer):
                 data.pop('club')
             except Club.DoesNotExist:
                 raise serializers.ValidationError('The club does not exists.')
+        else:
+            raise serializers.ValidationError('You must choose an athlete or a club.')
 
         if 'brand' in data.keys():
             try:
@@ -76,7 +77,7 @@ class CreateSponsorshipSerializer(serializers.Serializer):
                 if brand.sponsor != self.context['sponsor']:
                     raise serializers.ValidationError('You are not the owner this brand.')
                 self.context['brand'] = brand
-                data.pop['brand']
+                data.pop('brand')
             except Brand.DoesNotExist:
                 raise serializers.ValidationError('The brand does not exists.')
 

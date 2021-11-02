@@ -7,8 +7,12 @@ from rest_framework.permissions import BasePermission
 class IsFollowedUser(BasePermission):
     """Allow access only to objects owned by the requesting user."""
 
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         """Check user requested and user are the same."""
+        return request.user == view.user
+
+    def has_object_permission(self, request, view, obj):
+        """Check user requested and followed are the same."""
         return request.user == obj.followed
 
 

@@ -24,7 +24,7 @@ class IsSponsored(BasePermission):
         from the sponsorship.
         """
         # Si el patrocinado no es un atleta individual, es un atleta de un club patrocinado
-        # Por lo tanto, evalua si es el atleta o pertenece o es el entrenador de dicho club
+        # Por lo tanto, evalua si el atleta pertenece o es el entrenador de dicho club
         if view.sponsorship.athlete != None:
             return request.user == view.sponsorship.athlete
         else:

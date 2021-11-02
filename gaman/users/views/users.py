@@ -115,7 +115,8 @@ class UserViewSet(mixins.ListModelMixin,
             data=request.data, context={'user': request.user})
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        data = {'message': 'Your password has been updated.'}
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
     def token_update_email(self, request, *args, **kwargs):

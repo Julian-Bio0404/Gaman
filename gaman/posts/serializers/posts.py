@@ -77,7 +77,7 @@ class PostModelSerializer(serializers.ModelSerializer):
                     users.append(user)
                 except User.DoesNotExist:
                     raise serializers.ValidationError(
-                        f'The user with username {username} does not exist.')
+                        f'The user with username {username} does not exists.')
             self.context['users'] = users
             data.pop('tag_users')
         return data

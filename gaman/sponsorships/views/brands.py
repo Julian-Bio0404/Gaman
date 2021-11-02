@@ -16,7 +16,7 @@ from gaman.sponsorships.models import Brand
 from gaman.users.models import FollowUp
 
 # Serializers
-from gaman.sponsorships.serializers import BrandModelSerializer
+from gaman.sponsorships.serializers import BrandModelSerializer, CreateBrandSerializer
 
 
 class BrandViewSet(viewsets.ModelViewSet):
@@ -27,7 +27,6 @@ class BrandViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Brand.objects.all()
-    serializer_class = BrandModelSerializer
     lookup_field = 'slugname'
 
     def get_permissions(self):
@@ -45,6 +44,12 @@ class BrandViewSet(viewsets.ModelViewSet):
         context = super(BrandViewSet, self).get_serializer_context()
         context['sponsor'] = self.request.user
         return context
+
+    def get_serializer_class(self):
+        """Return serializer based on action."""
+        if self.action == 'create':
+            return CreateBrandSerializer
+        return BrandModelSerializer
 
     @action(detail=True, methods=['post'])
     def follow(self, request, *args, **kwarg):

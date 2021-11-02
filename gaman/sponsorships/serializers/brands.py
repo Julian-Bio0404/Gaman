@@ -2,6 +2,7 @@
 
 # Django REST Framework
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 # Models
 from gaman.sponsorships.models import Brand
@@ -23,9 +24,22 @@ class BrandModelSerializer(serializers.ModelSerializer):
         ]
 
         read_only_fields = [
-            'sponsor', 'created',
-            'verified'
+            'slugname', 'sponsor',
+            'created', 'verified'
         ]
+
+
+class CreateBrandSerializer(serializers.Serializer):
+    """Create Brand serializer."""
+
+    slugname = serializers.CharField(
+        min_length=2, max_length=40,
+        validators=[UniqueValidator(queryset=Brand.objects.all())])
+    
+    about = serializers.CharField(min_length=10, max_length=350, required=False)
+    photo = serializers.ImageField(required=False)
+    cover_photo = serializers.ImageField(required=False)
+    official_web = serializers.URLField(required=False)
 
     def create(self, data):
         """Create a brand."""

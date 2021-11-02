@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from gaman.posts.permissions import (IsCommentOwner,
                                      IsCommentOrPostOwner,
-                                     IsFollowerPostOwner)
+                                     IsFollower)
 
 # Models
 from gaman.posts.models import (Comment, 
@@ -56,8 +56,9 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         """Assign permissions based on action."""
         if self.action in [
-            'create', 'retrieve', 'react', 'reactions', 'reply', 'replies']:
-            permissions = [IsAuthenticated, IsFollowerPostOwner]
+            'create', 'retrieve', 'list',
+            'react', 'reactions', 'reply', 'replies']:
+            permissions = [IsAuthenticated, IsFollower]
         elif self.action in ['update', 'partial_update']:
            permissions = [IsAuthenticated, IsCommentOwner]
         elif self.action in ['destroy']:

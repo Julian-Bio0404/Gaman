@@ -31,7 +31,7 @@ class FollowRequestViewSet(mixins.ListModelMixin,
 
     def get_permissions(self):
         """Assign permissions based on action."""
-        if self.action in ['retrieve', 'update']:
+        if self.action in ['retrieve', 'update', 'list']:
            permissions = [IsAuthenticated, IsFollowedUser]
         elif self.action in ['destroy']:
             permissions = [IsFollowerOrFollowed]
@@ -47,19 +47,9 @@ class FollowRequestViewSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         """Return the follow request of user."""
-        follow_request = FollowRequest.objects.filter(followed=self.user)
+        follow_request = FollowRequest.objects.filter(
+            followed=self.user, accepted=False)
         return follow_request
-
-    def list(self, request, *args, **kwargs):
-        """List all user's friend request."""
-        if request.user == self.user:
-            follow_requests = FollowRequest.objects.filter(
-                followed=request.user, accepted=False)
-            data = FollowRequestModelSerializer(follow_requests, many=True).data
-            return Response(data, status=status.HTTP_200_OK)
-        else:
-            data = {'message': 'You do not have permission for this action.'}
-            return Response(data, status=status.HTTP_403_FORBIDDEN)
 
     def update(self, request, *args, **kwargs):
         follow_request = self.get_object()

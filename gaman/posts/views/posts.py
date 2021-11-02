@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
-from gaman.posts.permissions import IsFollower, IsPostOwner
+from gaman.posts.permissions import IsFollowerOrPostOwner, IsPostOwner
 
 # Models
 from gaman.posts.models import Post, PostReaction
@@ -47,7 +47,7 @@ class PostViewSet(viewsets.ModelViewSet):
         """Assign permissions based on action."""
         if self.action in [
             'retrieve', 'react', 'reactions', 'share']:
-            permissions = [IsFollower]
+            permissions = [IsFollowerOrPostOwner]
         elif self.action in ['update', 'partial_update', 'destroy']:
            permissions = [IsAuthenticated, IsPostOwner]
         else:
