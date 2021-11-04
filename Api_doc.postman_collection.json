@@ -1,0 +1,5499 @@
+{
+	"info": {
+		"_postman_id": "af622ecc-5b18-4ca0-821d-07d46852ddf3",
+		"name": "Gaman",
+		"description": "# Gaman API\n### Una aplicación web que conecta a deportistas con sponsors. También ayuda a personas interesadas en practicar algun deporte, encontrar los disponibles en su zona.\n\nPara comunicarse con esta API, siga la documentación descrita a continuación\n\n**sugerencia:** \n- Los campos con '*' en el request-body son requeridos.\n- Los endpoints aplican permisos de acceso, así que en algunos de ellos necesitará un token de acceso para identificarlo. El token se generará una vez hace login.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Signup-User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"sofia24@gmail.com\",\r\n    \"username\": \"Sofiagta\",\r\n    \"first_name\": \"Karen Sofía\",\r\n    \"last_name\": \"Gonzalez\",\r\n    \"phone_number\": \"+57 3203335555\",\r\n    \"role\": \"Athlete\",\r\n    \"password\": \"prueba123\",\r\n    \"password_confirmation\": \"prueba123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/signup/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"signup",
+										""
+									]
+								},
+								"description": "**descripción**\nRegistro de usuarios. si se realiza exitosamente, se genera un token de verificación de cuenta.\n\n**request-body**\n- `email (string)`: correo electrónico. Debe ser único*\n- `username (string)`: nombre de usuario. Debe ser único *\n- `first_name (string)`: nombres *\n- `last_name (string)`: apellidos *\n- `phone_number string`: numero telefónico en formato +99 9999999999\n- `role (string)`: rol del usuario. Opcional [Athlete, Sponsor, Coach, League president] *\n- `password (string)`: contraseña. Debe ser minimo de 8 acaracteres *\n- `password_confirmation (string)`: confirmación de contraseña *"
+							},
+							"response": [
+								{
+									"name": "Signup-User-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"sofia24@gmail.com\",\r\n    \"username\": \"Sofiagta\",\r\n    \"first_name\": \"Karen Sofía\",\r\n    \"last_name\": \"Gonzalez\",\r\n    \"phone_number\": \"+57 3203335555\",\r\n    \"role\": \"Athlete\",\r\n    \"password\": \"prueba123\",\r\n    \"password_confirmation\": \"prueba123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/signup/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"signup",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 03:53:30 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "310"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"username\": \"Sofiagta\",\n    \"first_name\": \"Karen Sofía\",\n    \"last_name\": \"Gonzalez\",\n    \"email\": \"sofia24@gmail.com\",\n    \"phone_number\": \"+57 3203335555\",\n    \"profile\": {\n        \"photo\": null,\n        \"cover_photo\": null,\n        \"about\": \"\",\n        \"birth_date\": null,\n        \"sport\": \"\",\n        \"country\": \"\",\n        \"public\": true,\n        \"web_site\": \"\",\n        \"social_link\": \"\"\n    },\n    \"verified\": false,\n    \"role\": \"Athlete\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Verify-Account-User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiU29maWFndGEiLCJleHAiOjE2MzU5OTgyNDUsInR5cGUiOiJlbWFpbF9jb25maXJtYXRpb24ifQ.sXKqClM85sCxOKL-_DMvEAmzuqeeg2EQoa3B4Fox6d4\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/verify/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"verify",
+										""
+									]
+								},
+								"description": "**descripción**\nPaso para la verificación de cuenta. Se envía el token enviado al correo. Podrá ver el token de verificación en consola, si la API está corriendo en desarrollo.\n\n**request-body**\n- `token (string)`: token de verificación *"
+							},
+							"response": [
+								{
+									"name": "Verify-Account-User-200",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiU29maWFndGEiLCJleHAiOjE2MzU5OTgyNDUsInR5cGUiOiJlbWFpbF9jb25maXJtYXRpb24ifQ.sXKqClM85sCxOKL-_DMvEAmzuqeeg2EQoa3B4Fox6d4\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/verify/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"verify",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 04:01:18 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "102"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"Congratulations, you can now start using Gaman and connecting with friends and sponsors.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Token-Restore-Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"sofia25@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/token_restore_psswd/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"token_restore_psswd",
+										""
+									]
+								},
+								"description": "**descripción**\nEnvío de token al correo del usuario para recuperar contraseña\n\n**request-body**\n- `email (string)`: email de usuario. Debe ser el email de un usuario inscrito *"
+							},
+							"response": [
+								{
+									"name": "Token-Restore-Password-200",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"sofia25@gmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/token_restore_psswd/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"token_restore_psswd",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 21:11:28 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "67"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"We have sent an email for you to reset your password.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Restore-Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"password\": \"prueba1234\",\r\n    \"password_confirmation\": \"prueba1234\",\r\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiU29maWFndGEiLCJleHAiOjE2MzYwNjAyODksInR5cGUiOiJyZXN0b3JlX3Bhc3N3b3JkIn0.qGyzX-sXa7xpHNXQ5b02skal_HfkMxPmcZ985raMGgg\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/restore_psswd/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"restore_psswd",
+										""
+									]
+								},
+								"description": "**descripción**\nEnvío de token al correo del usuario para recuperar contraseña\n\n**request-body**\n- `email (string)`: email de usuario. Debe ser el email de un usuario inscrito *"
+							},
+							"response": [
+								{
+									"name": "Restore-Password",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"password\": \"prueba1234\",\r\n    \"password_confirmation\": \"prueba1234\",\r\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiU29maWFndGEiLCJleHAiOjE2MzYwNjAyODksInR5cGUiOiJyZXN0b3JlX3Bhc3N3b3JkIn0.qGyzX-sXa7xpHNXQ5b02skal_HfkMxPmcZ985raMGgg\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/restore_psswd/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"restore_psswd",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 21:22:18 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "43"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"Your password has been reset.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update-Password",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"old_password\": \"prueba1234\",\r\n    \"password\": \"prueba123\",\r\n    \"password_confirmation\": \"prueba123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/Sofiagta/update_psswd/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"Sofiagta",
+										"update_psswd",
+										""
+									]
+								},
+								"description": "**descripción**\nEnvío de token al correo del usuario para recuperar contraseña\n\n**request-body**\n- `email (string)`: email de usuario. Debe ser el email de un usuario inscrito *\n- `old_password (string)`: anterior contraseña *\n- `password (string)`: nueva contraseña *\n- `password_confirmation (string)`: confirmación de la nueva contraseña *"
+							},
+							"response": [
+								{
+									"name": "Update-Password-200",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"old_password\": \"prueba1234\",\r\n    \"password\": \"prueba123\",\r\n    \"password_confirmation\": \"prueba123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/Sofiagta/update_psswd/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"Sofiagta",
+												"update_psswd",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 21:40:12 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "PUT, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "45"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"Your password has been updated.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Login-User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"sofia25@gmail.com\",\r\n    \"password\": \"prueba123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/login/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"login",
+										""
+									]
+								},
+								"description": "**descripción**\nLogin de usuario. Se genera un token de autenticación con el cual, el usuario se identificará.\n\n**request-body**\n- `email (string)`: correo electrónico *\n- `password (string)`: contraseña *"
+							},
+							"response": [
+								{
+									"name": "Login-User-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"sofia24@gmail.com\",\r\n    \"password\": \"prueba123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/login/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"login",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 04:34:10 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "376"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"user\": {\n        \"username\": \"Sofiagta\",\n        \"first_name\": \"Karen Sofía\",\n        \"last_name\": \"Gonzalez\",\n        \"email\": \"sofia24@gmail.com\",\n        \"phone_number\": \"+57 3203335555\",\n        \"profile\": {\n            \"photo\": null,\n            \"cover_photo\": null,\n            \"about\": \"\",\n            \"birth_date\": null,\n            \"sport\": \"\",\n            \"country\": \"\",\n            \"public\": true,\n            \"web_site\": \"\",\n            \"social_link\": \"\"\n        },\n        \"verified\": true,\n        \"role\": \"Athlete\"\n    },\n    \"access_token\": \"731888748137823b567ebc690a239fc5329a2801\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Refresh-Token-Account-Verification",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"sofia24@gmail.com\",\r\n    \"password\": \"prueba123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/refresh_token/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"refresh_token",
+										""
+									]
+								},
+								"description": "**descripción**\nEn caso de que el usuario necesite renovar el token para verificar su correo electrónico registrado en la cuenta.\n\n**request-body**\n- `email (string)`: correo electrónico *\n- `password`: contraseña *"
+							},
+							"response": [
+								{
+									"name": "Refresh-Token-Account-Verification-200",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"sofia24@gmail.com\",\r\n    \"password\": \"prueba123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/refresh_token/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"refresh_token",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 03:57:25 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "76"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"We send you an new account verification message to your email.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update-Email-Token-User",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"new_email\": \"sofia25@gmail.com\",\r\n    \"password\": \"prueba123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/Sofiagta/token_update_email/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"Sofiagta",
+										"token_update_email",
+										""
+									]
+								},
+								"description": "**descripción**\nGeneración del token para la actualización de email. Este se enviará al nuevo correo electronico. En desarrollo, se envía a la consola.\n\n**request-body**\n`new_email (string)`: nuevo correo electrónico *\n`password (string)`: contraseña *"
+							},
+							"response": [
+								{
+									"name": "Update-Email-Token-User-200",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"new_email\": \"sofia25@gmail.com\",\r\n    \"password\": \"prueba123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/Sofiagta/token_update_email/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"Sofiagta",
+												"token_update_email",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 04:43:40 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "68"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"We have sent an email for you to update email address.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update-Email-User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"old_email\": \"sofia24@gmail.com\",\r\n    \"new_email\": \"sofia25@gmail.com\",\r\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNvZmlhMjVAZ21haWwuY29tIiwiZXhwIjoxNjM2MDAxMDIwLCJ0eXBlIjoidXBkYXRlX2VtYWlsIn0.gfQwlJMTQwAklEqzg_zkmqCNX1MOiLEr4o6tKPNL544\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/update_email/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"update_email",
+										""
+									]
+								},
+								"description": "**descripción**\nActualización del correo electrónico\n\n**request-body**\n- `old_email (string)`: anterior correo electrónico *\n- `new_email (string)`: nuevo correo electrónico *\n- `token (string)`: token de actualización enviado al nuevo correo electronico *"
+							},
+							"response": [
+								{
+									"name": "Update-Email-User-200",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"old_email\": \"sofia24@gmail.com\",\r\n    \"new_email\": \"sofia25@gmail.com\",\r\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNvZmlhMjVAZ21haWwuY29tIiwiZXhwIjoxNjM2MDAxMDIwLCJ0eXBlIjoidXBkYXRlX2VtYWlsIn0.gfQwlJMTQwAklEqzg_zkmqCNX1MOiLEr4o6tKPNL544\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/update_email/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"update_email",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 04:48:35 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "35"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"Updated email address\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Detail-User",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/Sofiagta/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"Sofiagta",
+										""
+									]
+								},
+								"description": "**descripción**\ndetalle de usuario"
+							},
+							"response": [
+								{
+									"name": "Detail-User-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/Sofiagta/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"Sofiagta",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 04:52:21 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "309"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"username\": \"Sofiagta\",\n    \"first_name\": \"Karen Sofía\",\n    \"last_name\": \"Gonzalez\",\n    \"email\": \"sofia25@gmail.com\",\n    \"phone_number\": \"+57 3203335555\",\n    \"profile\": {\n        \"photo\": null,\n        \"cover_photo\": null,\n        \"about\": \"\",\n        \"birth_date\": null,\n        \"sport\": \"\",\n        \"country\": \"\",\n        \"public\": true,\n        \"web_site\": \"\",\n        \"social_link\": \"\"\n    },\n    \"verified\": true,\n    \"role\": \"Athlete\"\n}"
+								}
+							]
+						},
+						{
+							"name": "List-User",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								},
+								"description": "**descripción**\nLista de usuarios"
+							},
+							"response": [
+								{
+									"name": "List-User-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 05:08:38 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "1255"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"count\": 6,\n    \"next\": \"http://localhost:8000/users/?limit=3&offset=3\",\n    \"previous\": null,\n    \"results\": [\n        {\n            \"username\": \"Sofiagta\",\n            \"first_name\": \"Karen Sofía\",\n            \"last_name\": \"Gonzalez\",\n            \"email\": \"sofia25@gmail.com\",\n            \"phone_number\": \"+57 3118904286\",\n            \"profile\": {\n                \"photo\": null,\n                \"cover_photo\": null,\n                \"about\": \"\",\n                \"birth_date\": null,\n                \"sport\": \"\",\n                \"country\": \"\",\n                \"public\": true,\n                \"web_site\": \"\",\n                \"social_link\": \"\"\n            },\n            \"verified\": true,\n            \"role\": \"Athlete\"\n        },\n        {\n            \"username\": \"ElonMusk\",\n            \"first_name\": \"Elon\",\n            \"last_name\": \"Musk\",\n            \"email\": \"ElonMusk@gmail.com\",\n            \"phone_number\": \"+57 3114553555\",\n            \"profile\": {\n                \"photo\": \"http://localhost:8000/media/users/photos/2021/10/28/profile_elon.jpg\",\n                \"cover_photo\": \"http://localhost:8000/media/users/cover_photos/2021/10/28/Terraformaci%C3%B3n.jfif\",\n                \"about\": \"Apasionado por la tecnología\",\n                \"birth_date\": \"1970-05-12\",\n                \"sport\": \"\",\n                \"country\": \"South Africa\",\n                \"public\": false,\n                \"web_site\": \"https://www.tesla.com/elon-musk\",\n                \"social_link\": \"https://twitter.com/elonmusk\"\n            },\n            \"verified\": true,\n            \"role\": \"Sponsor\"\n        },\n        {\n            \"username\": \"ErickR\",\n            \"first_name\": \"Erick\",\n            \"last_name\": \"Retayack\",\n            \"email\": \"erick@gmail.com\",\n            \"phone_number\": \"+57 3114553899\",\n            \"profile\": {\n                \"photo\": null,\n                \"cover_photo\": null,\n                \"about\": \"\",\n                \"birth_date\": null,\n                \"sport\": \"\",\n                \"country\": \"\",\n                \"public\": true,\n                \"web_site\": \"\",\n                \"social_link\": \"\"\n            },\n            \"verified\": true,\n            \"role\": \"Coach\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Update-User",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"phone_number\": \"+57 3118904286\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/Sofiagta/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"Sofiagta",
+										""
+									]
+								},
+								"description": "**descripción**\nActualización de número telefónico de usuario\n\n**request-body**\n`phone_number (string)`: numero telefónico en formato +99 9999999999"
+							},
+							"response": [
+								{
+									"name": "Update-User",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"phone_number\": \"+57 3118904286\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/users/Sofiagta/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"users",
+												"Sofiagta",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 04:55:18 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "309"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"username\": \"Sofiagta\",\n    \"first_name\": \"Karen Sofía\",\n    \"last_name\": \"Gonzalez\",\n    \"email\": \"sofia25@gmail.com\",\n    \"phone_number\": \"+57 3118904286\",\n    \"profile\": {\n        \"photo\": null,\n        \"cover_photo\": null,\n        \"about\": \"\",\n        \"birth_date\": null,\n        \"sport\": \"\",\n        \"country\": \"\",\n        \"public\": true,\n        \"web_site\": \"\",\n        \"social_link\": \"\"\n    },\n    \"verified\": true,\n    \"role\": \"Athlete\"\n}"
+								}
+							]
+						}
+					],
+					"description": "Almacena endpoints de usuario"
+				},
+				{
+					"name": "Profile",
+					"item": [
+						{
+							"name": "Detail-Profile",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{host}}/profiles/Sofiagta/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profiles",
+										"Sofiagta",
+										""
+									]
+								},
+								"description": "**descripción**\nDetalle de perfil"
+							},
+							"response": [
+								{
+									"name": "Detail-Profile-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{host}}/profiles/Sofiagta/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"profiles",
+												"Sofiagta",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 05:00:40 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "131"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"photo\": null,\n    \"cover_photo\": null,\n    \"about\": \"\",\n    \"birth_date\": null,\n    \"sport\": \"\",\n    \"country\": \"\",\n    \"public\": true,\n    \"web_site\": \"\",\n    \"social_link\": \"\"\n}"
+								}
+							]
+						},
+						{
+							"name": "List-Profile-Posts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{host}}/profiles/Sofiagta/posts/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profiles",
+										"Sofiagta",
+										"posts",
+										""
+									]
+								},
+								"description": "**descripción**\nLista de posts hechos por el usuario del perfil.\n\nSi el usuario quien hace el request es dueño del perfil o es un seguidor, se listarán todos los posts del usuario dueño del perfil. Por el contrario, sólamente se listarán los posts públicos."
+							},
+							"response": [
+								{
+									"name": "List-Profile-Posts-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{host}}/profiles/Sofiagta/posts/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"profiles",
+												"Sofiagta",
+												"posts",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 05:27:44 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "2"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "[]"
+								}
+							]
+						},
+						{
+							"name": "Update-Profile",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"about\": \"Practicante de Karate desde hace 11 años\",\r\n    \"birth_date\": \"1996-09-24\",\r\n    \"sport\": \"Karate\",\r\n    \"country\": \"Colombia\",\r\n    \"public\": false,\r\n    \"web_site\": \"https://es.wikipedia.org/wiki/Sof%C3%ADa_Vergara\",\r\n    \"social_link\": \"https://www.instagram.com/sofiavergara/?hl=es-la\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/profiles/Sofiagta/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profiles",
+										"Sofiagta",
+										""
+									]
+								},
+								"description": "**descripción**\nActualización de datos de perfil\n\n**request-body**\n- `about (string)`: breve descripción\n- `birth_date (date)`: fecha de nacimiento\n- `sport (string)`: deporte que practica\n- `photo (image)`: foto de perfil\n- `cover_photo (image)`: foto de portada\n- `public (boolean)`: público o no\n- `web_site (URL)`: sitio web personal\n- `social_link (URL)`: url de alguna red social"
+							},
+							"response": [
+								{
+									"name": "Update-Profile-200",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"about\": \"Practicante de Karate desde hace 11 años\",\r\n    \"birth_date\": \"1996-09-24\",\r\n    \"sport\": \"Karate\",\r\n    \"country\": \"Colombia\",\r\n    \"public\": false,\r\n    \"web_site\": \"https://es.wikipedia.org/wiki/Sof%C3%ADa_Vergara\",\r\n    \"social_link\": \"https://www.instagram.com/sofiavergara/?hl=es-la\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/profiles/Sofiagta/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"profiles",
+												"Sofiagta",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 05:39:20 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "291"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"photo\": null,\n    \"cover_photo\": null,\n    \"about\": \"Practicante de Karate desde hace 11 años\",\n    \"birth_date\": \"1996-09-24\",\n    \"sport\": \"Karate\",\n    \"country\": \"Colombia\",\n    \"public\": false,\n    \"web_site\": \"https://es.wikipedia.org/wiki/Sof%C3%ADa_Vergara\",\n    \"social_link\": \"https://www.instagram.com/sofiavergara/?hl=es-la\"\n}"
+								}
+							]
+						},
+						{
+							"name": "List-Followers",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{host}}/profiles/Julian0404/followers/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profiles",
+										"Julian0404",
+										"followers",
+										""
+									]
+								},
+								"description": "**descripción**\nLista de seguidores del perfil"
+							},
+							"response": [
+								{
+									"name": "List-Followers-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{host}}/profiles/Julian0404/followers/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"profiles",
+												"Julian0404",
+												"followers",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 05:48:53 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "25"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"follower\": \"Martin10\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Follow-Profile",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{host}}/profiles/Julian0404/follow/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profiles",
+										"Julian0404",
+										"follow",
+										""
+									]
+								},
+								"description": "**descripción**\nSeguir un perfil.\n\nSi el perfil es privado, se creará una solicitud de seguimiento y esta tendrá que ser aceptada por el usuario seguido para añadirlo a la lista de seguidores.\nSi ya se envió una solicitud, el servidor se lo dirá.\n\nPor el contrario, si el perfil es público, automáticamente se añadirá a la lista de seguidores."
+							},
+							"response": [
+								{
+									"name": "Follow-Profile-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{host}}/profiles/Julian0404/follow/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"profiles",
+												"Julian0404",
+												"follow",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 05:50:19 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "109"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"follower\": \"Sofiagta\",\n    \"followed\": \"Julian0404\",\n    \"accepted\": false,\n    \"created\": \"2021-11-02T00:50:19.510361-05:00\"\n}"
+								}
+							]
+						}
+					],
+					"description": "Almacena endpoints de Profile"
+				},
+				{
+					"name": "Follow-Request",
+					"item": [
+						{
+							"name": "List-Request",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/profiles/Julian0404/requests/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profiles",
+										"Julian0404",
+										"requests",
+										""
+									]
+								},
+								"description": "**descripción**\nLista de solicitudes de seguimiento no aceptadas"
+							},
+							"response": [
+								{
+									"name": "List-Request-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/profiles/Julian0404/requests/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"profiles",
+												"Julian0404",
+												"requests",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 06:09:24 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "161"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"count\": 1,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"follower\": \"ElonMusk\",\n            \"followed\": \"Julian0404\",\n            \"accepted\": false,\n            \"created\": \"2021-11-02T01:08:35.151316-05:00\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Confirm-Request",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"accepted\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/profiles/Julian0404/requests/3/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profiles",
+										"Julian0404",
+										"requests",
+										"3",
+										""
+									]
+								},
+								"description": "**descripción**\nconfirmar solicitud de seguimiento. Al hacerlo el usuario que envió la solicitud se añadirá a la lista de seguidores."
+							},
+							"response": [
+								{
+									"name": "Confirm-Request-200",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"accepted\": true\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/profiles/Julian0404/requests/3/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"profiles",
+												"Julian0404",
+												"requests",
+												"3",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 06:17:24 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "108"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"follower\": \"ElonMusk\",\n    \"followed\": \"Julian0404\",\n    \"accepted\": true,\n    \"created\": \"2021-11-02T01:08:35.151316-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Detail-Request",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/profiles/Julian0404/requests/3/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profiles",
+										"Julian0404",
+										"requests",
+										"3",
+										""
+									]
+								},
+								"description": "**descripción**\ndetalle de una solicitud de seguimiento.\nsólo se podrá ir al detalle de solicitudes que no han sido aceptadas"
+							},
+							"response": [
+								{
+									"name": "Detail-Request-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/profiles/Julian0404/requests/3/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"profiles",
+												"Julian0404",
+												"requests",
+												"3",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 06:18:18 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "109"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"follower\": \"ElonMusk\",\n    \"followed\": \"Julian0404\",\n    \"accepted\": false,\n    \"created\": \"2021-11-02T01:08:35.151316-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete-Request",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/profiles/Julian0404/requests/3/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profiles",
+										"Julian0404",
+										"requests",
+										"3",
+										""
+									]
+								},
+								"description": "Eliminar una solicitud de seguimiento no aceptada."
+							},
+							"response": [
+								{
+									"name": "Delete-Request-204",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/profiles/Julian0404/requests/3/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"profiles",
+												"Julian0404",
+												"requests",
+												"3",
+												""
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": "plain",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 06:20:57 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": null
+								}
+							]
+						}
+					],
+					"description": "Aquí se almacenan los endpoints de follow-request"
+				}
+			],
+			"description": "En este folder encontrará tres subdirectorios que almacenan todos los endpoints relacionados a usuarios:\n- User\n- Profile\n- Follow"
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Post",
+					"item": [
+						{
+							"name": "Create-Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"about\": \"Hoy es un lindo día para refactorizar el código\",\r\n    \"feeling\": \"Curious\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										""
+									]
+								},
+								"description": "**descripción**\nCrear un post\n\n**request-body**\n- `about (string)`: texto del post\n- `privacy (string)`: privacidad del post, opcional[Private, Public] por defecto Public.\n- `location (string)`: lugar de ubicación\n- `pictures (images)`: fotos\n- `videos (videos)`: videos\n- `feeling (string)`: sentimiento. opcional[Happy, Loved, Excited, Crazy, Thankful, Fantastic, Motived, Tired, Alone, Angry, Sorry, Confused, Strong, Stressed, Scared, Sick, Sarcastic, Anxious, Nostalgic, Proud, Curious, Surprised]\n- `tag_users (list)`: lista de usernames de usuarios a etiquetar"
+							},
+							"response": [
+								{
+									"name": "Create-Post-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"about\": \"Mi primer Post en Gaman\",\r\n    \"location\": \"USA\",\r\n    \"feeling\": \"Curious\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 06:41:41 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, POST, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "247"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"author\": \"Sofiagta\",\n    \"about\": \"Mi primer Post en Gaman\",\n    \"privacy\": \"Public\",\n    \"location\": \"USA\",\n    \"feeling\": \"Curious\",\n    \"pictures\": [],\n    \"videos\": [],\n    \"tag_users\": [],\n    \"post\": null,\n    \"reactions\": 0,\n    \"comments\": 0,\n    \"shares\": 0,\n    \"created\": \"2021-11-02T01:41:41.601598-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Detail-Post",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/4/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"4",
+										""
+									]
+								},
+								"description": "**descripción**\nDetalle de un post.\n\nSi el post es público, todos podrán acceder a él. Si es privado, sólo el author y los seguidores podrán verlo."
+							},
+							"response": [
+								{
+									"name": "Detail-Post-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 06:49:22 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "254"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"author\": \"Julian0404\",\n    \"about\": \"Mi primer Post en Gaman\",\n    \"privacy\": \"Private\",\n    \"location\": \"Bogotá\",\n    \"feeling\": \"Curious\",\n    \"pictures\": [],\n    \"videos\": [],\n    \"tag_users\": [],\n    \"post\": null,\n    \"reactions\": 0,\n    \"comments\": 0,\n    \"shares\": 0,\n    \"created\": \"2021-10-24T13:17:00.632096-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update-Post",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"about\": \"Genial! Mi primer Post con foto.\",\r\n    \"feeling\": \"Loved\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/5/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"5",
+										""
+									]
+								},
+								"description": "**descripción**\nActualización de Post\n\n- `about (string)`: texto del post\n- `privacy (string)`: privacidad [Private o Publuc]\n- `location (string)`: ubicación\n- `feeling (string)`: sentimiento"
+							},
+							"response": [
+								{
+									"name": "Update-Post-200",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"about\": \"Genial! Mi primer Post editado en Gaman.\",\r\n    \"feeling\": \"Loved\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/4/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"4",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 13:28:05 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "262"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"author\": \"Sofiagta\",\n    \"about\": \"Genial! Mi primer Post editado en Gaman.\",\n    \"privacy\": \"Public\",\n    \"location\": \"USA\",\n    \"feeling\": \"Loved\",\n    \"pictures\": [],\n    \"videos\": [],\n    \"tag_users\": [],\n    \"post\": null,\n    \"reactions\": 0,\n    \"comments\": 0,\n    \"shares\": 0,\n    \"created\": \"2021-11-02T01:41:41.601598-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "List-Post",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										""
+									]
+								},
+								"description": "**descripción**\nLista de posts.\n\nSe listarán los posts tanto de los seguidos por el usuario que hace el request como de los propios, del más reciente al más antiguo."
+							},
+							"response": [
+								{
+									"name": "List-Post-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 13:40:21 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, POST, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "940"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"count\": 4,\n    \"next\": \"http://localhost:8000/posts/?limit=3&offset=3\",\n    \"previous\": null,\n    \"results\": [\n        {\n            \"author\": \"Julian0404\",\n            \"about\": \"Genial! Mi primer Post con foto.\",\n            \"privacy\": \"Public\",\n            \"location\": \"\",\n            \"feeling\": \"Loved\",\n            \"pictures\": [\n                {\n                    \"content\": \"http://localhost:8000/media/posts/pictures/2021/11/02/golang.png\"\n                }\n            ],\n            \"videos\": [],\n            \"tag_users\": [],\n            \"post\": null,\n            \"reactions\": 0,\n            \"comments\": 0,\n            \"shares\": 0,\n            \"created\": \"2021-11-02T08:37:26.430908-05:00\"\n        },\n        {\n            \"author\": \"Sofiagta\",\n            \"about\": \"Genial! Mi primer Post editado en Gaman.\",\n            \"privacy\": \"Public\",\n            \"location\": \"USA\",\n            \"feeling\": \"Loved\",\n            \"pictures\": [],\n            \"videos\": [],\n            \"tag_users\": [],\n            \"post\": null,\n            \"reactions\": 0,\n            \"comments\": 0,\n            \"shares\": 0,\n            \"created\": \"2021-11-02T01:41:41.601598-05:00\"\n        },\n        {\n            \"author\": \"Julian0404\",\n            \"about\": \"Mi primer Post en Gaman\",\n            \"privacy\": \"Private\",\n            \"location\": \"USA\",\n            \"feeling\": \"Curious\",\n            \"pictures\": [],\n            \"videos\": [],\n            \"tag_users\": [],\n            \"post\": null,\n            \"reactions\": 0,\n            \"comments\": 0,\n            \"shares\": 0,\n            \"created\": \"2021-11-02T01:41:02.726520-05:00\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "React-Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"reaction\": \"Love\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/4/react/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"4",
+										"react",
+										""
+									]
+								},
+								"description": "**descripción**\nReaccionar a un post. \n\nSi el post es público, todos podrán reaccionar a este, si no, sólo el author y los seguidores padrán hacerlo."
+							},
+							"response": [
+								{
+									"name": "React-Post-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"reaction\": \"Love\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/4/react/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"4",
+												"react",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 13:45:10 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "37"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"user\": \"ElonMusk\",\n    \"reaction\": \"Love\"\n}"
+								},
+								{
+									"name": "Delete-React-Post-200",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"reaction\": \"Love\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/4/react/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"4",
+												"react",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 13:50:11 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "43"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"The reaction has been delete.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Reactions-Post",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/4/reactions/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"4",
+										"reactions",
+										""
+									]
+								},
+								"description": "**descripción**\nListar las reacciones de un posts.\n\nTodos podrán acceder si el posts es publico, si no, sólo el autor y los seguidores podrán hacerlo."
+							},
+							"response": [
+								{
+									"name": "Reactions-Post-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/4/reactions/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"4",
+												"reactions",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 13:52:49 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "151"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"user\": \"ErickR\",\n        \"reaction\": \"Love\"\n    },\n    {\n        \"user\": \"ElonMusk\",\n        \"reaction\": \"Love\"\n    },\n    {\n        \"user\": \"Martin10\",\n        \"reaction\": \"Like\"\n    },\n    {\n        \"user\": \"Sofiagta\",\n        \"reaction\": \"Like\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Share-Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"about\": \"Confirmo <3.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/7/share/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"7",
+										"share",
+										""
+									]
+								},
+								"description": "**descripción**\nCompartir (repostear) un post.\n\nTodos podrán repostear un post público, si este es privado, sólo el autor y los seguidores podrán hacerlo.\n\nSi el post al que se intenta reposter ya es un repost de otro, se reposteará el post original.\n\n**request-body**\n- `about (string)`: texto del post\n- `feeling (string)`: sentimiento\n- `location (string)`: ubicación\n- `privacy (string)`: privacidad. opcional[Public, Private] por defecto Public."
+							},
+							"response": [
+								{
+									"name": "Share-Post-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"about\": \"Mi primer post compartido.\",\r\n    \"feeling\": \"Excited\",\r\n    \"location\": \"Neiva\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/share/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"share",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 14:00:09 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "376"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"author\": \"Sofiagta\",\n    \"about\": \"Mi primer post compartido.\",\n    \"privacy\": \"Public\",\n    \"location\": \"Neiva\",\n    \"feeling\": \"Excited\",\n    \"post\": {\n        \"author\": \"Julian0404\",\n        \"about\": \"Mi primer Post en Gaman\",\n        \"location\": \"Bogotá\",\n        \"feeling\": \"Curious\",\n        \"pictures\": [],\n        \"videos\": [],\n        \"created\": \"2021-10-24T13:17:00.632096-05:00\"\n    },\n    \"reactions\": 0,\n    \"comments\": 0,\n    \"shares\": 0,\n    \"created\": \"2021-11-02T09:00:09.171937-05:00\"\n}"
+								}
+							]
+						}
+					],
+					"description": "Aquí se almacenan los endpoints de posts."
+				},
+				{
+					"name": "Comment",
+					"item": [
+						{
+							"name": "Create-Comment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"text\": \"Hello Julian\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/1/comments/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"1",
+										"comments",
+										""
+									]
+								},
+								"description": "**descripción**\nCrear un comentario.\n\nSi el post es público, todos podrán comentarlo, si no lo es, sólo el autor y los seguidores de este podrán hacerlo.\n\n**request-body**\n- `text (string)`: texto del comentario *"
+							},
+							"response": [
+								{
+									"name": "Create-Comment-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"text\": \"Mi primer comentario\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/comments/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 14:08:33 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, POST, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "123"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"author\": \"Sofiagta\",\n    \"text\": \"Mi primer comentario\",\n    \"reactions\": 0,\n    \"replies\": [],\n    \"created\": \"2021-11-02T09:08:32.919291-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Detail-Comment",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/1/comments/1/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"1",
+										"comments",
+										"1",
+										""
+									]
+								},
+								"description": "**descripción**\nDetalle de un comentario.\n\nTodos podrán acceder a él si el post al que pertenece es público. si no, sólo el autor y los seguidores de este podrán verlo."
+							},
+							"response": [
+								{
+									"name": "Detail-Comment-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/comments/1/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												"1",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 14:30:53 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "123"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"author\": \"Sofiagta\",\n    \"text\": \"Mi primer comentario\",\n    \"reactions\": 0,\n    \"replies\": [],\n    \"created\": \"2021-11-02T09:08:32.919291-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update-Comment",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"text\": \"Comentario editado\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/1/comments/1/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"1",
+										"comments",
+										"1",
+										""
+									]
+								},
+								"description": "**descripción**\nActualización de un comentario."
+							},
+							"response": [
+								{
+									"name": "Update-Comment-200",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"text\": \"Comentario editado\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/comments/1/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												"1",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 17:47:07 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "121"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"author\": \"Sofiagta\",\n    \"text\": \"Comentario editado\",\n    \"reactions\": 1,\n    \"replies\": [],\n    \"created\": \"2021-11-02T09:08:32.919291-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "List-comments",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{host}}/posts/1/comments/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"1",
+										"comments",
+										""
+									]
+								},
+								"description": "Listar comentarios de un post.\n\nSi el post es publico, todos podrán listar los comentarios de este, si no, sólo el autor del post y los seguidores podrán hacerlo.\n\nLos comentarios se listarán en orden descendente al numero de reacciones de estos."
+							},
+							"response": [
+								{
+									"name": "List-comments-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{host}}/posts/1/comments/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 14:32:54 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, POST, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "291"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"count\": 2,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"author\": \"Sofiagta\",\n            \"text\": \"Mi primer comentario\",\n            \"reactions\": 0,\n            \"replies\": [],\n            \"created\": \"2021-11-02T09:08:32.919291-05:00\"\n        },\n        {\n            \"author\": \"ElonMusk\",\n            \"text\": \"Hello Julian\",\n            \"reactions\": 0,\n            \"replies\": [],\n            \"created\": \"2021-11-02T09:29:40.637301-05:00\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete-Comment",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/1/comments/2/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"1",
+										"comments",
+										"2",
+										""
+									]
+								},
+								"description": "**descripción**\nEliminar un comentario.\n\nSi el comentario a eliminar contiene respuestas, estas también se eliminarán. Tanto el autor del post como el autor del comentario, podrán eliminarlo"
+							},
+							"response": [
+								{
+									"name": "Delete-Comment-204",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/comments/2/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												"2",
+												""
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": "plain",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 14:30:20 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": null
+								}
+							]
+						},
+						{
+							"name": "Comment-Replies",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/1/comments/3/replies/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"1",
+										"comments",
+										"3",
+										"replies",
+										""
+									]
+								},
+								"description": "**descripcion**\nListar respuestas de un comentario.\n\nLas respuestas a comentarios se listarán en orden de la fecha de creación"
+							},
+							"response": [
+								{
+									"name": "Comment-Replies-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/comments/3/replies/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												"3",
+												"replies",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 15:46:26 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "233"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"author\": \"Sofiagta\",\n        \"text\": \"Mi primera respuesta a un comentario\",\n        \"reactions\": 0,\n        \"created\": \"2021-11-02T10:40:51.750370-05:00\"\n    },\n    {\n        \"author\": \"Martin10\",\n        \"text\": \"Hola hermanito\",\n        \"reactions\": 0,\n        \"created\": \"2021-11-02T10:46:01.910851-05:00\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Reply-Comment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"text\": \"Hola hermanito\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/1/comments/3/reply/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"1",
+										"comments",
+										"3",
+										"reply",
+										""
+									]
+								},
+								"description": "**descripción**\nResponder a un comentario.\n\nSi el post al que pertenece el comentario, es público, todos los comentarios del post podrán ser respondidos por todos los usuarios. Si no, sólo el autor del post y los seguidores podrán responder.\n\n**request-body**\n`text (string)`: texto de la respuesta *"
+							},
+							"response": [
+								{
+									"name": "Reply-Comment-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"text\": \"Mi primera respuesta a un comentario\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/comments/3/reply/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												"3",
+												"reply",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 15:40:51 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "126"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"author\": \"Sofiagta\",\n    \"text\": \"Mi primera respuesta a un comentario\",\n    \"reactions\": 0,\n    \"created\": \"2021-11-02T10:40:51.750370-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "React-Comment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"reaction\": \"Love\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/1/comments/1/react/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"1",
+										"comments",
+										"1",
+										"react",
+										""
+									]
+								},
+								"description": "**descripción**\nReccionar a un comentario.\n\nSi el post al que pertenece el comentario, es público, todos podrán reaccionar a este. Si no, sólo el autor y los seguidores podrán hacerlo.\n\nEn este endpoint, se puede reaccionar tanto a comentarios principales como a respuestas, ya que ambos son un mismo tipo de objeto comentario.\n\nSi la reacción del usuario ya existe para un comentario, esta se eliminará al ejecutar el siguiente request, sin importar el request-body, el servidor avisará que la reacción fue eliminada.\n\n**request-body**\n`reaction (string)`: opcional[Like, Love, Curious, Haha, Sad, Angry] *"
+							},
+							"response": [
+								{
+									"name": "React-Comment-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"reaction\": \"Love\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/comments/1/react/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												"1",
+												"react",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 15:53:36 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "39"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"user\": \"Julian0404\",\n    \"reaction\": \"Love\"\n}"
+								},
+								{
+									"name": "React-Comment-Delete",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"reaction\": \"Love\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/comments/1/react/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												"1",
+												"react",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 15:54:22 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "53"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"The comment's reaction has been delete.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Reactions-Comment",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/1/comments/1/reactions/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										"1",
+										"comments",
+										"1",
+										"reactions",
+										""
+									]
+								},
+								"description": "**descripción**\nListar las reacciones de un comentario o de una respuesta.\n\nSi el post al que pertenece el comentario es publico, todos podrán ver las reacciones de tal comentario. Si no, sólo el autor y los seguidores de este podrán hacerlo."
+							},
+							"response": [
+								{
+									"name": "Reactions-Comment-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/posts/1/comments/1/reactions/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"posts",
+												"1",
+												"comments",
+												"1",
+												"reactions",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 16:13:19 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "41"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"user\": \"Julian0404\",\n        \"reaction\": \"Love\"\n    }\n]"
+								}
+							]
+						}
+					],
+					"description": "Aquí se almacenan los endpoints de comments"
+				}
+			],
+			"description": "En este folder encontrará subdirectorios donde se alojan todos los endpoints relacionados a posts:\n- Post\n- Comment"
+		},
+		{
+			"name": "Sponsorships",
+			"item": [
+				{
+					"name": "Brand",
+					"item": [
+						{
+							"name": "Create-Brand",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"slugname\": \"SpaceX\",\r\n    \"about\": \"Queremos llegar a Marte\",\r\n    \"official_web\": \"https://www.spacex.com/\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/brands/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"brands",
+										""
+									]
+								},
+								"description": "**descripción**\nRegistrar una marca.\n\nSólo los usuarios con rol de Sponsor y con los datos de usuario y perfil completados, podrán registrar su marca.\n\n**request-body**\n- `slugname (string)`: nombre de la marca, debe ser unica *\n- `photo (image)`: foto de perfil\n- `cover_photo (image)`: foto de portada\n- `about (string)`: descripción de la marcca\n- `official_web (URL)`: Url del sitio web oficial de la marca"
+							},
+							"response": [
+								{
+									"name": "Create-Brand-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"slugname\": \"SpaceX\",\r\n    \"about\": \"Queremos llegar a Marte\",\r\n    \"official_web\": \"https://www.spacex.com/\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/brands/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"brands",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 18:05:36 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, POST, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "211"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"slugname\": \"SpaceX\",\n    \"about\": \"Queremos llegar a Marte\",\n    \"sponsor\": \"ElonMusk\",\n    \"photo\": null,\n    \"cover_photo\": null,\n    \"verified\": false,\n    \"official_web\": \"https://www.spacex.com/\",\n    \"created\": \"2021-11-02T13:05:36.029976-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update-Brand",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"about\": \"Queremos terraformar a Marte\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/brands/SpaceX/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"brands",
+										"SpaceX",
+										""
+									]
+								},
+								"description": "**descripción**\nActualización de la marca\n\n**request-body**\n- `about (string)`: descripción de la marca\n- `photo (image)`: foto de perfil\n- `cover_photo (image)`: foto de portada\n- `official_web (URL)`: Url del sitio oficial de la marca"
+							},
+							"response": [
+								{
+									"name": "Update-Brand-200",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"about\": \"Queremos terraformar a Marte\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/brands/SpaceX/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"brands",
+												"SpaceX",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 18:10:39 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "216"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"slugname\": \"SpaceX\",\n    \"about\": \"Queremos terraformar a Marte\",\n    \"sponsor\": \"ElonMusk\",\n    \"photo\": null,\n    \"cover_photo\": null,\n    \"verified\": false,\n    \"official_web\": \"https://www.spacex.com/\",\n    \"created\": \"2021-11-02T13:05:36.029976-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Detail-Brand",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/brands/Nike/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"brands",
+										"Nike",
+										""
+									]
+								},
+								"description": "**descripción**\nDetalle de una marca"
+							},
+							"response": [
+								{
+									"name": "Detail-Brand-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/brands/Nike/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"brands",
+												"Nike",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 18:14:12 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "200"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"slugname\": \"Nike\",\n    \"about\": \"Marca deportiva\",\n    \"sponsor\": \"ErickR\",\n    \"photo\": null,\n    \"cover_photo\": null,\n    \"verified\": false,\n    \"official_web\": \"https://www.nike.com/es/\",\n    \"created\": \"2021-10-27T11:55:39.355008-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "List-Brands",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/brands/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"brands",
+										""
+									]
+								},
+								"description": "**descripción**\nListar marcas registradas en la app."
+							},
+							"response": [
+								{
+									"name": "List-Brands-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/brands/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"brands",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 18:15:35 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, POST, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "469"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"count\": 2,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"slugname\": \"SpaceX\",\n            \"about\": \"Queremos terraformar a Marte\",\n            \"sponsor\": \"ElonMusk\",\n            \"photo\": null,\n            \"cover_photo\": null,\n            \"verified\": false,\n            \"official_web\": \"https://www.spacex.com/\",\n            \"created\": \"2021-11-02T13:05:36.029976-05:00\"\n        },\n        {\n            \"slugname\": \"Nike\",\n            \"about\": \"Marca deportiva\",\n            \"sponsor\": \"ErickR\",\n            \"photo\": null,\n            \"cover_photo\": null,\n            \"verified\": false,\n            \"official_web\": \"https://www.nike.com/es/\",\n            \"created\": \"2021-10-27T11:55:39.355008-05:00\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Follow-Brand",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/brands/Nike/follow/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"brands",
+										"Nike",
+										"follow",
+										""
+									]
+								},
+								"description": "**descripción**\n- Seguir una marca\n\nSi el usuario ya sigue la marca, dejará de seguirla en el proximo request"
+							},
+							"response": [
+								{
+									"name": "Follow-Brand-200",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/brands/Nike/follow/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"brands",
+												"Nike",
+												"follow",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 18:19:18 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "47"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"You started follow to this brand.\"\n}"
+								},
+								{
+									"name": "UnFollow-Brand-200",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/brands/Nike/follow/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"brands",
+												"Nike",
+												"follow",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 18:20:32 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "47"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"You stopped follow to this brand.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete-Brand",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/brands/SpaceX/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"brands",
+										"SpaceX",
+										""
+									]
+								},
+								"description": "**descripción**\nEliminar una marca"
+							},
+							"response": [
+								{
+									"name": "Delete-Brand-204",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/brands/SpaceX/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"brands",
+												"SpaceX",
+												""
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": "plain",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 18:22:20 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": null
+								}
+							]
+						}
+					],
+					"description": "Aquí encontrará los endpoints de Brand."
+				},
+				{
+					"name": "Sponsorship",
+					"item": [
+						{
+							"name": "Create-Sponsorship",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"brand\": \"SpaceX\",\r\n    \"athlete\": \"Sofiagta\",\r\n    \"start\": \"2021-12-01\",\r\n    \"finish\": \"2022-12-01\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/sponsorships/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sponsorships",
+										""
+									]
+								},
+								"description": "**descripción**\nCrear un proceso de patrocinio.\n\nSólo el usuario con rol de Sponsor y con datos de usuario y perfil completados, podrá hacer esta acción.\n\nEl sponsor podrá crear un sponsorship para un athlete o un club. (No para ambos) y podrá enviar el slugname de su marca si cuenta con una.\n\n**request-body**\n- `brand (string)`: nombre de la marca patrocinadora\n- `athlete (string)`: username de atleta al que quiere patrocinar (opcional)\n- `club (string)`: slugname del club al que quiere patrocinar (opcional)\n- `start (date)`: fecha de inicio en la que empezará el patrocinio. Debe ser después de la fecha actual * \n- `finish (date)`: fecha de finalización. Debe ser después de la fecha de inicio *"
+							},
+							"response": [
+								{
+									"name": "Create-Sponsorship-201",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"brand\": \"SpaceX\",\r\n    \"athlete\": \"Sofiagta\",\r\n    \"start\": \"2021-12-01\",\r\n    \"finish\": \"2022-12-01\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/sponsorships/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"sponsorships",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 19:20:38 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "POST, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "109"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"brand\": \"SpaceX\",\n    \"athlete\": \"Sofiagta\",\n    \"club\": null,\n    \"start\": \"2021-12-01\",\n    \"finish\": \"2022-12-01\",\n    \"active\": false\n}"
+								}
+							]
+						},
+						{
+							"name": "Detail-Sponsorship",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{host}}/sponsorships/9/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sponsorships",
+										"9",
+										""
+									]
+								},
+								"description": "**descripción**\nDetalle de un sponsorship"
+							},
+							"response": [
+								{
+									"name": "Detail-Sponsorship-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{host}}/sponsorships/9/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"sponsorships",
+												"9",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 19:24:44 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "126"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"sponsor\": \"ElonMusk\",\n    \"brand\": null,\n    \"athlete\": \"Martin10\",\n    \"club\": null,\n    \"start\": \"2021-12-01\",\n    \"finish\": \"2022-12-01\",\n    \"active\": false\n}"
+								}
+							]
+						}
+					],
+					"description": "Aquí se alojan los endpoints de patrocinios"
+				},
+				{
+					"name": "Rating",
+					"item": [
+						{
+							"name": "Create-Rating",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"comment\": \"Excelente patrocinio, gracias a ello pude impulsar mi carrera deportiva\",\r\n    \"rating\": 9.7\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/sponsorships/9/ratings/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sponsorships",
+										"9",
+										"ratings",
+										""
+									]
+								},
+								"description": "**descripción**\nCalificar un sponosorship.\n\nSólo el deportista patrocinado puede calificar el sponsorship. Si el sponsorship fue para un club, sólo los deportistas o el entrenador de ese club, podrán calificarlo.\n\n- `comment (string)`: comentario de opinion. Mayor a 30 caracteres*\n- `rating (float)`: calificacion de 0.0 a 9.9 *"
+							},
+							"response": [
+								{
+									"name": "Create-Rating-200",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"comment\": \"Excelente patrocinio, gracias a ello pude impulsar mi carrera deportiva\",\r\n    \"rating\": 9.7\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/sponsorships/9/ratings/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"sponsorships",
+												"9",
+												"ratings",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 21:02:11 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, POST, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "100"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"comment\": \"Excelente patrocinio, gracias a ello pude impulsar mi carrera deportiva\",\n    \"rating\": \"9.7\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Detail-Rating",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/sponsorships/9/ratings/9/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sponsorships",
+										"9",
+										"ratings",
+										"9",
+										""
+									]
+								},
+								"description": "**descripción**\nDetalle de un rating"
+							},
+							"response": [
+								{
+									"name": "Detail-Rating-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/sponsorships/9/ratings/6/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"sponsorships",
+												"9",
+												"ratings",
+												"6",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 20:23:02 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "257"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"sponsorship\": {\n        \"sponsor\": \"ElonMusk\",\n        \"brand\": null,\n        \"athlete\": \"Martin10\",\n        \"club\": null,\n        \"start\": \"2021-12-01\",\n        \"finish\": \"2022-12-01\",\n        \"active\": false\n    },\n    \"qualifier\": \"Martin10\",\n    \"comment\": \"Muy buen patrocinio\",\n    \"rating\": \"5.0\",\n    \"created\": \"2021-11-02T14:41:07.274724-05:00\"\n}"
+								}
+							]
+						},
+						{
+							"name": "List-Ratings",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/sponsorships/9/ratings/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sponsorships",
+										"9",
+										"ratings",
+										""
+									]
+								},
+								"description": "**descripción**\nListar ratings de un sponsorship"
+							},
+							"response": [
+								{
+									"name": "List-Ratings-200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/sponsorships/9/ratings/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"sponsorships",
+												"9",
+												"ratings",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 21:03:14 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, POST, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "220"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"count\": 1,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"qualifier\": \"Martin10\",\n            \"comment\": \"Excelente patrocinio, gracias a ello pude impulsar mi carrera deportiva\",\n            \"rating\": \"9.7\",\n            \"created\": \"2021-11-02T16:02:11.686031-05:00\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Update-Rating",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"rating\": 9.9\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/sponsorships/9/ratings/9/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sponsorships",
+										"9",
+										"ratings",
+										"9",
+										""
+									]
+								},
+								"description": "**descripción**\nActualización de un rating."
+							},
+							"response": [
+								{
+									"name": "Update-Rating-200",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"rating\": 9.9\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/sponsorships/9/ratings/9/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"sponsorships",
+												"9",
+												"ratings",
+												"9",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 02 Nov 2021 21:04:10 GMT"
+										},
+										{
+											"key": "Server",
+											"value": "WSGIServer/0.2 CPython/3.9.7"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, PUT, PATCH, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Length",
+											"value": "309"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"sponsorship\": {\n        \"sponsor\": \"ElonMusk\",\n        \"brand\": null,\n        \"athlete\": \"Martin10\",\n        \"club\": null,\n        \"start\": \"2021-12-01\",\n        \"finish\": \"2022-12-01\",\n        \"active\": false\n    },\n    \"qualifier\": \"Martin10\",\n    \"comment\": \"Excelente patrocinio, gracias a ello pude impulsar mi carrera deportiva\",\n    \"rating\": \"9.9\",\n    \"created\": \"2021-11-02T16:02:11.686031-05:00\"\n}"
+								}
+							]
+						}
+					],
+					"description": "Aquí se alojan los endpoints de calificaciones de patrocinios."
+				}
+			],
+			"description": "En este folder encontrará tres subdirectorios relacionados a sponsorships:\n- Brnad\n- Sponsorship\n- Rating"
+		}
+	]
+}

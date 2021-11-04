@@ -40,7 +40,10 @@ class SponsorshipModelSerializer(serializers.ModelSerializer):
 
 
 class CreateSponsorshipSerializer(serializers.Serializer):
-    """Create Sponsorship serializer."""
+    """
+    Create Sponsorship serializer.
+    Handles the creation of sponsorships.
+    """
 
     brand = serializers.CharField(required=False)
     athlete = serializers.CharField(required=False)

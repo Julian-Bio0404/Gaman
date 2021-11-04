@@ -11,7 +11,10 @@ from gaman.users.models import FollowRequest, FollowUp
 
 
 class FollowRequestModelSerializer(serializers.ModelSerializer):
-    """Follow Request model serializer."""
+    """
+    Follow Request model serializer.
+    Handles the creation follow requet.
+    """
 
     follower = serializers.StringRelatedField(read_only=True)
     followed = serializers.StringRelatedField(read_only=True)
@@ -30,7 +33,7 @@ class FollowRequestModelSerializer(serializers.ModelSerializer):
         ]
     
     def validate(self, data):
-        """Verify friend request """
+        """Verify that follow request does not exists yet."""
         follower = self.context['follower']
         followed = self.context['followed']
 
@@ -53,7 +56,10 @@ class FollowRequestModelSerializer(serializers.ModelSerializer):
 
 
 class AcceptFollowRequestSerializer(serializers.Serializer):
-    """Accept Follow Request serializer."""
+    """
+    Accept Follow Request serializer.
+    Handle the confirmation of a follow request.
+    """
 
     accepted = serializers.BooleanField()
 
@@ -65,7 +71,7 @@ class AcceptFollowRequestSerializer(serializers.Serializer):
             
     def save(self):
         """Accept friend request."""
-        # Follow request
+        # Update follow request
         follow_request = self.context['follow_request']
         follow_request.accepted = True
         follow_request.save()
@@ -76,7 +82,10 @@ class AcceptFollowRequestSerializer(serializers.Serializer):
 
 
 class FollowingSerializer(serializers.ModelSerializer):
-    """Following model serializer."""
+    """
+    Following model serializer.
+    Serialize the followed of a user.
+    """
 
     user = serializers.StringRelatedField(read_only=True, required=False)
     brand = serializers.StringRelatedField(read_only=True, required=False)
@@ -90,7 +99,10 @@ class FollowingSerializer(serializers.ModelSerializer):
 
 
 class FollowerSerializer(serializers.ModelSerializer):
-    """Follower model serializer."""
+    """
+    Follower model serializer.
+    Serialize users's followers.
+    """
 
     follower = serializers.StringRelatedField(read_only=True)
 

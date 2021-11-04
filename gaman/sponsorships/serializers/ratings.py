@@ -11,7 +11,10 @@ from .sponsorships import SponsorshipModelSerializer
 
 
 class RatingSumaryModelserializer(serializers.ModelSerializer):
-    """Rating sumary model serializer."""
+    """
+    Rating sumary model serializer.
+    It is used when list ratings of a sponsorship.
+    """
 
     qualifier = serializers.StringRelatedField(read_only=True)
 
@@ -49,9 +52,12 @@ class RatingModelSerializer(RatingSumaryModelserializer):
 
 
 class CreateRatingSerializer(serializers.Serializer):
-    """Create Rating serializer."""
+    """
+    Create Rating serializer.
+    Handles the creation of a rating.
+    """
 
-    comment = serializers.CharField(min_length=30, max_length=200)
+    comment = serializers.CharField(min_length=30, max_length=250)
     rating = serializers.DecimalField(
         max_digits=2, decimal_places=1, min_value=1.0, max_value=10.0)
 

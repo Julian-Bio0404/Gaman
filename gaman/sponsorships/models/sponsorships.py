@@ -8,7 +8,20 @@ from gaman.utils.models import GamanModel
 
 
 class Sponsorship(GamanModel):
-    """Sponsorship model."""
+    """
+    Sponsorship model.
+
+    The fields that are SET_NULL, are for: 
+
+        - sponsor: for not lose the info of the
+        sponosorships in case the sponsor is deleted.
+
+        - brand: it is optional, in case the sponsor
+        does not has a brand.
+
+        - athlete and club for allow to sponsor
+        create a instance with two options: athlete or club.
+    """
 
     sponsor = models.ForeignKey(
         'users.User', on_delete=models.SET_NULL, null=True, related_name='sponsor')

@@ -26,7 +26,7 @@ from gaman.posts.serializers import (CommentModelSerializer,
 class CommentViewSet(viewsets.ModelViewSet):
     """
     Comment view set.
-    Handle list, create, detail, update, destroy, reply,
+    Handles list, create, detail, update, destroy, reply,
     react comment or list comment's reactions.
     """
 
@@ -78,7 +78,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def react(self, request, *args, **kwargs):
-        """Handles comment's reaction creation."""
+        """Handles the creation or deletion of comment's reaction."""
         comment = self.get_object()
         serializer = CommentReactionModelSerializer(
             data=request.data,

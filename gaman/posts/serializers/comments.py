@@ -8,7 +8,10 @@ from gaman.posts.models import Comment
 
 
 class ReplyModelSerializer(serializers.ModelSerializer):
-    """Reply model serializer."""
+    """
+    Reply model serializer.
+    Handles the creation of reply type comment. 
+    """
 
     author = serializers.StringRelatedField(read_only=True)
 
@@ -35,7 +38,7 @@ class ReplyModelSerializer(serializers.ModelSerializer):
         reply = Comment.objects.create(
             **data, author=author, post=post, type='Reply')
 
-        # Update principal comment
+        # Add reply to principal comment
         comment.replies.add(reply)
         comment.save()
 
@@ -46,7 +49,10 @@ class ReplyModelSerializer(serializers.ModelSerializer):
 
 
 class CommentModelSerializer(serializers.ModelSerializer):
-    """Comment model serializer."""
+    """
+    Comment model serializer.
+    Handles the creation of principal comment.
+    """
 
     author = serializers.StringRelatedField(read_only=True)
     

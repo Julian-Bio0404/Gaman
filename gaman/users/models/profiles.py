@@ -44,7 +44,7 @@ class Profile(GamanModel):
         help_text='social media', max_length=200, blank=True)
 
 
-    def is_data_completed(self):
+    def is_data_completed(self) -> bool:
         """Return the status of the profile data."""
         data = [
             self.photo, self.cover_photo,

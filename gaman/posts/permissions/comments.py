@@ -27,7 +27,10 @@ class IsFollower(BasePermission):
     """Allow access only to followers of the post owner."""
 
     def has_permission(self, request, view):
-        """Check privacy post and if user is follower of the post owner."""
+        """
+        Check privacy post and if user is follower of the
+        post owner or if requesting user is the post owner.
+        """
         post = view.object
         post_owner = post.author
         

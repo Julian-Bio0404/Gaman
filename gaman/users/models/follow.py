@@ -26,7 +26,10 @@ class FollowRequest(BaseGamanModel):
 
 
 class FollowUp(BaseGamanModel):
-    """Follow Up model."""
+    """
+    Follow Up model.
+    The followed can be a user, brand or club.
+    """
 
     follower = models.ForeignKey('users.User', on_delete=models.CASCADE)
 
@@ -37,6 +40,14 @@ class FollowUp(BaseGamanModel):
 
     club = models.ForeignKey('sports.Club', on_delete=models.SET_NULL, null=True)
 
+    def specify_followed(self) -> str:
+        if self.user != None:
+            return self.user.username
+        if self.brand != None:
+            return self.brand.slugname
+        if self.club != None:
+            return self.club.slugname
+
     def __str__(self):
         """Return follower and following."""
-        return f'@{self.follower} -> @{self.user}'
+        return f'@{self.follower} -> @{self.specify_followed()}'

@@ -20,11 +20,11 @@ class IsSponsored(BasePermission):
 
     def has_permission(self, request, view):
         """
-        Check that requesting user is a sponsored
-        from the sponsorship.
+        Check that requesting user is a individual
+        athlete sponsored or belongs or is a trainer
+        of the club sponsored.
         """
-        # Si el patrocinado no es un atleta individual, es un atleta de un club patrocinado
-        # Por lo tanto, evalua si el atleta pertenece o es el entrenador de dicho club
+        
         if view.sponsorship.athlete != None:
             return request.user == view.sponsorship.athlete
         else:

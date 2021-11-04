@@ -16,14 +16,20 @@ class IsPostOwner(BasePermission):
 
 
 class IsFollowerOrPostOwner(BasePermission):
-    """Allow access only to followers of a user."""
+    """
+    Allow access only to followers of a
+    user or to post owner.
+    """
 
     message = 'This content isn`t available right now.'
 
     def has_object_permission(self, request, view, obj):
-        """Check privacy post and if user is follower of the post owner."""
+        """
+        Check privacy post and if user is follower of the
+        post owner or if requesting user is the post owner.
+        """
         post_owner = obj.author
-        
+
         if obj.privacy == 'Public' or request.user == post_owner:
             return True
         elif obj.privacy == 'Private':

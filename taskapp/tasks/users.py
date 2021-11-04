@@ -19,7 +19,7 @@ from taskapp.celery import app
 from gaman.users.models import User
 
 
-def token_generation(user, type, email=None):
+def token_generation(user: User, type: str, email=None) -> str:
     """Create JWT token."""
     exp_date = timezone.now() + timedelta(days=2)
     if type in ['email_confirmation', 'restore_password']:
@@ -38,7 +38,7 @@ def token_generation(user, type, email=None):
 
 # Asynch task
 @app.task
-def send_confirmation_email(user_pk):
+def send_confirmation_email(user_pk: int):
     """Send account verification link to given user."""
     user = User.objects.get(pk=user_pk)
     type = 'email_confirmation'
@@ -54,7 +54,7 @@ def send_confirmation_email(user_pk):
 
 # Asynch task
 @app.task
-def send_restore_password_email(user_pk):
+def send_restore_password_email(user_pk: int):
     """Send restore password link to given user."""
     user = User.objects.get(pk=user_pk)
     type = 'restore_password'
@@ -70,7 +70,7 @@ def send_restore_password_email(user_pk):
 
 # Asynch task
 @app.task
-def send_update_email(user_pk, email):
+def send_update_email(user_pk: int, email: str):
     """Send update email link to given user."""
     user = User.objects.get(pk=user_pk)
     type = 'update_email'

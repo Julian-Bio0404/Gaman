@@ -8,7 +8,10 @@ from gaman.posts.models import CommentReaction, PostReaction
 
 
 class PostReactionModelSerializer(serializers.ModelSerializer):
-    """Post Reaction model serializer."""
+    """
+    Post Reaction model serializer.
+    Handles the creation Post reaction.
+    """
 
     user = serializers.StringRelatedField(read_only=True)
 
@@ -23,13 +26,12 @@ class PostReactionModelSerializer(serializers.ModelSerializer):
         user = self.context['user']
         post = self.context['post']
         reaction = PostReaction.objects.filter(user=user, post=post)
-        # Si la reaccion del usuario existe, esta se elimina
+        # If the user's reaction exists, this is deleted
         if reaction.exists():
             reaction.delete()
             post.reactions -= 1
             post.save()
-        else:
-            return data
+        return data
 
     def create(self, data):
         """Create a post reaction."""
@@ -44,7 +46,10 @@ class PostReactionModelSerializer(serializers.ModelSerializer):
 
 
 class CommentReactionModelSerializer(serializers.ModelSerializer):
-    """Comment reaction model serializer."""
+    """
+    Comment reaction model serializer.
+    Handle the creation Comment reaction.
+    """
 
     user = serializers.StringRelatedField(read_only=True)
 
@@ -59,14 +64,12 @@ class CommentReactionModelSerializer(serializers.ModelSerializer):
         user = self.context['user']
         comment = self.context['comment']
         reaction = CommentReaction.objects.filter(user=user, comment=comment)
-        # Si la reaccion del usuario existe, esta se elimina
+        # If the user's reaction exists, this is deleted
         if reaction.exists():
             reaction.delete()
             comment.reactions -= 1
             comment.save()
-        # Si no existe, procede a crearse
-        else:
-            return data
+        return data
 
     def create(self, data):
         """Create a comment reaction."""

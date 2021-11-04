@@ -26,7 +26,7 @@ from gaman.posts.serializers import (PostModelSerializer,
 class PostViewSet(viewsets.ModelViewSet):
     """
     Post viewset.
-    Handle list, create, update, destroy, sharing,
+    Handles list, create, update, destroy, sharing,
     react to a post and list post's reactions.
     """
 
@@ -64,7 +64,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def react(self, request, *args, **kwargs):
-        """Handles post's reaction."""
+        """Handles the creation or deletion of post's reaction."""
         post = self.get_object()
         serializer = PostReactionModelSerializer(
             data=request.data, context={'user': request.user, 'post': post})

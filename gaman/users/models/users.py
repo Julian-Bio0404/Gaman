@@ -44,7 +44,7 @@ class User(GamanModel, AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'role']
 
-    def is_data_completed(self):
+    def is_data_completed(self) -> bool:
         """Return the status of the user data."""
         if self.phone_number == None:
             return False

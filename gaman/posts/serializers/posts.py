@@ -12,7 +12,10 @@ from gaman.posts.serializers import ImageModelSerializer, VideoModelSerializer
 
 
 class PostSumaryModelSerializer(serializers.ModelSerializer):
-    """Post Sumary model serializer."""
+    """
+    Post Sumary model serializer.
+    It's util for serialize post nested in other post (repost).
+    """
 
     author = serializers.StringRelatedField(read_only=True)
     pictures = ImageModelSerializer(read_only=True, many=True)
@@ -34,12 +37,12 @@ class PostSumaryModelSerializer(serializers.ModelSerializer):
         ]
 
 
-class PostModelSerializer(serializers.ModelSerializer):
-    """Post model serializer."""
+class PostModelSerializer(PostSumaryModelSerializer):
+    """
+    Post model serializer.
+    Handles the creation of Post.
+    """
 
-    author = serializers.StringRelatedField(read_only=True)
-    pictures = ImageModelSerializer(read_only=True, many=True)
-    videos = VideoModelSerializer(read_only=True, many=True)
     post = PostSumaryModelSerializer(read_only=True, required=False)
     
     tag_users = serializers.ListSerializer(
@@ -112,7 +115,10 @@ class PostModelSerializer(serializers.ModelSerializer):
 
 
 class SharePostSerializer(serializers.ModelSerializer):
-    """Share Post serializer."""
+    """
+    Share Post serializer.
+    It's util when reqeusting user wants share a post.
+    """
 
     author = serializers.StringRelatedField(read_only=True)
     post = PostSumaryModelSerializer(read_only=True)

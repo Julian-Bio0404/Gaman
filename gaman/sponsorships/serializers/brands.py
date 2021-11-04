@@ -30,7 +30,10 @@ class BrandModelSerializer(serializers.ModelSerializer):
 
 
 class CreateBrandSerializer(serializers.Serializer):
-    """Create Brand serializer."""
+    """
+    Create Brand serializer.
+    Handles the creation of a Brand.
+    """
 
     slugname = serializers.CharField(
         min_length=2, max_length=40,
