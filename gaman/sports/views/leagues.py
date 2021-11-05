@@ -1,10 +1,10 @@
 """Leagues views."""
 
 # Django REST Framework
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.response import Response
+
+# Permissions
+from rest_framework.permissions import IsAuthenticated
 
 # Models
 from gaman.sports.models import League
@@ -21,6 +21,7 @@ class LeagueListView(ListAPIView):
 
     queryset = League.objects.all()
     serializer_class = LeagueModelSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class LeagueDetailView(RetrieveAPIView):
@@ -32,3 +33,4 @@ class LeagueDetailView(RetrieveAPIView):
     queryset = League.objects.all()
     serializer_class = LeagueModelSerializer
     lookup_field = 'slugname'
+    permission_classes = [IsAuthenticated]

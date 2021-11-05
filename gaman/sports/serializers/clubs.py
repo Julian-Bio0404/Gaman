@@ -21,7 +21,7 @@ class ClubModelSerializer(serializers.ModelSerializer):
             'slugname', 'league',
             'about', 'photo',
             'cover_photo', 'city',
-            'official_web'
+            'trainer', 'official_web'
         ]
 
         read_only_fields = [
@@ -51,13 +51,15 @@ class CreateClubSerializer(serializers.Serializer):
 
     def validate(self, data):
         """Verify that league exists."""
-        league = data.get('league', None)
-        if league:
+        league_slugname = data.get('league', None)
+        if league_slugname:
             try:
-                league = League.objects.get(slugname=league)
+                league = League.objects.get(slugname=league_slugname)
                 self.context['league'] = league
+                data.pop('league')
             except League.DoesNotExist:
                 raise serializers.ValidationError('The League does not exists.')
+        
         return data
 
     def create(self, data):
