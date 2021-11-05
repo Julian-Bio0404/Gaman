@@ -71,8 +71,8 @@ class PostModelSerializer(PostSumaryModelSerializer):
     
     def validate(self, data):
         """Verify tag friends."""
-        if 'tag_users' in data.keys():
-            tag_users = data['tag_users']
+        tag_users = data.get('tag_users', None)
+        if tag_users:
             users = []
             for username in tag_users:
                 try:
@@ -105,11 +105,10 @@ class PostModelSerializer(PostSumaryModelSerializer):
             pass
 
         # Add users tagged
-        if 'users' in self.context.keys():
-            users = self.context['users']
+        users = self.context.get('users', None)
+        if users:
             for user in users:
                 post.tag_users.add(user)
-
         post.save()
         return post
 
@@ -117,7 +116,7 @@ class PostModelSerializer(PostSumaryModelSerializer):
 class SharePostSerializer(serializers.ModelSerializer):
     """
     Share Post serializer.
-    It's util when reqeusting user wants share a post.
+    It's util when requesting user wants share a post.
     """
 
     author = serializers.StringRelatedField(read_only=True)

@@ -7,15 +7,11 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 # Views
-from .views import ClubViewSet, LeagueListView, LeagueDetailView
+from .views import ClubViewSet, LeagueViewSet
 
 
 router = DefaultRouter()
 router.register(r'clubs', ClubViewSet, basename='clubs')
+router.register(r'leagues', LeagueViewSet, basename='leagues')
 
-urlpatterns = [
-    path('leagues/', LeagueListView.as_view(), name='leagues'),
-    path('leagues/<str:slugname>/', LeagueDetailView.as_view(), name='league-detail'),
-    path('', include(router.urls)),
-
-]
+urlpatterns = [path('', include(router.urls))]

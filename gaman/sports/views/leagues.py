@@ -1,7 +1,7 @@
 """Leagues views."""
 
 # Django REST Framework
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework import mixins, viewsets
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
@@ -13,21 +13,12 @@ from gaman.sports.models import League
 from gaman.sports.serializers import LeagueModelSerializer
 
 
-class LeagueListView(ListAPIView):
+class LeagueViewSet(mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin,
+                    viewsets.GenericViewSet):
     """
-    League List view.
-    Handles list of the leagues.
-    """
-
-    queryset = League.objects.all()
-    serializer_class = LeagueModelSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class LeagueDetailView(RetrieveAPIView):
-    """
-    League Detail view.
-    Handles the retrieve league.
+    League View.
+    Handles the list and retrieve league.
     """
 
     queryset = League.objects.all()

@@ -59,12 +59,11 @@ class CreateClubSerializer(serializers.Serializer):
                 data.pop('league')
             except League.DoesNotExist:
                 raise serializers.ValidationError('The League does not exists.')
-        
         return data
 
     def create(self, data):
         """Create a Club."""
         trainer = self.context['trainer']
-        league = self.context['league']
+        league = self.context.get('league', None)
         club = Club.objects.create(**data, trainer=trainer, league=league)
         return club
