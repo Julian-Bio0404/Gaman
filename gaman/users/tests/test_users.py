@@ -1,11 +1,11 @@
-"""Users Sign-Up test."""
+"""Users tests."""
 
 # Django REST Framework
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 # Model
-from gaman.users.models import User
+from gaman.users.models import Profile, User
 from rest_framework.authtoken.models import Token
 
 # Taskapp
@@ -82,7 +82,10 @@ class UserSignUpAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_signup_success(self):
-        """Verifies that the user registers success."""
+        """
+        Verifies that the user sign-up and
+        profle creation is success.
+        """
         request_body = {
             'email': 'test03@gmail.com',
             'username': 'test01',
@@ -94,6 +97,8 @@ class UserSignUpAPITestCase(APITestCase):
             'password_confirmation': 'nKSAJBBCJW_'
         }
         response = self.client.post(self.url, request_body)
+        user = User.objects.get(username='test01')
+        self.assertEqual(Profile.objects.filter(user=user).count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
