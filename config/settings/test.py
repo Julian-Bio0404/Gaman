@@ -3,7 +3,7 @@
 from .local import * 
 
 # Base
-DEBUG = False
+DEBUG = True
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
 # Cache
