@@ -18,20 +18,24 @@ practicing some sport, find those available in their local area.
 - Docker
 
 to run the project, run:
-
 ```bash
 docker-compose build
 docker-compose up
 ```
 
+to run the tests, on other console, run:
+```bash
+docker-compose run --rm django coverage run manage.py test -v 2
+```
+
 ## Features
 ### Users 
   + **User** 
-    Gaman API has redis and celery services for response asynch for:
-        + User sign-Up with sending a token for email confirmation
-        + Refresh token for email confirmation
-        + Restore password with sending a token to user email
-        + Updating email with sending a token to user new email
+    + Gaman API has redis and celery services for response asynch for:
+      + User sign-Up with sending a token for email confirmation
+      + Refresh token for email confirmation
+      + Restore password with sending a token to user email
+      + Updating email with sending a token to user new email
     + Sign-Up filling in the fields such as last name, first name, username, telephone number, and choosing a role as an athlete, sponsor or coach
     + Login with email and password
     + User detail
@@ -67,7 +71,7 @@ docker-compose up
   + **Sponsorship**
     + Create a sponsorship for an athlete or club. Only user with sponsor role and profile data comleted has access to this action
     + Sponsorship detail
-    + Rating a sponsorship. Only the individual athletes sponsored or athletes coach that belong to a club sponsored has access to this action.
+    + Rating a sponsorship. Only the individual athletes sponsored or athletes and coach that belong to a club sponsored has access to this action.
     + Update or delete a rating
     + List ratings of a sponsorship
   + **Brand**
