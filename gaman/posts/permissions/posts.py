@@ -35,6 +35,4 @@ class IsFollowerOrPostOwner(BasePermission):
         elif obj.privacy == 'Private':
             folloup = FollowUp.objects.filter(
                 follower=request.user, user=post_owner)
-            if folloup.exists():
-                return True
-            return False
+            return folloup.exists()
