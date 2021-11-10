@@ -1,0 +1,80 @@
+"""Invitation serializers."""
+
+# Django REST Framework
+from rest_framework import serializers
+
+# Models
+from gaman.sports.models import Invitation
+from gaman.users.models import User
+
+
+class InvitationModelSerializer(serializers.ModelSerializer):
+    """Invitation model serializer."""
+
+    issued_by = serializers.StringRelatedField(read_only=True)
+    invited = serializers.StringRelatedField(read_only=True)
+    club = serializers.StringRelatedField(read_only=True)
+    used = serializers.BooleanField()
+
+    class Meta:
+        """Meta options."""
+        model = Invitation
+        fields = [
+            'issued_by', 'invited',
+            'club', 'used',
+            'created'
+        ]
+
+        read_only_fields = [
+            'issued_by', 'invited',
+            'club', 'used', 'created'
+        ]
+
+
+class CreateInvitationSerializer(serializers.Serializer):
+    """
+    Create Invitation serializer.
+    Handle the invitation creation.
+    """
+    
+    invited = serializers.CharField()
+
+    def validate(self, data):
+        """Verify that invited exists."""
+        username = data['invited']
+        try:
+            invited = User.objects.get(username=username)
+            self.context['invited'] = invited
+        except User.DoesNotExist:
+            raise serializers.ValidationError(f'The user with username {username}')
+        return data
+    
+    def create(self, data):
+        """Create a invitation."""
+        issued_by = self.context['issued_by']
+        invited = self.context['invited']
+        club = self.context['club']
+        invitation = Invitation.objects.create(
+            issued_by=issued_by, invited=invited, club=club)
+        return invitation
+
+
+class ConfirmInvitationSerializer(serializers.Serializer):
+    """
+    Confirm Invitation serializer.
+    Handle the invitation confirmation.
+    """
+
+    confirm = serializers.BooleanField()
+
+    def validate(self, data):
+        """Verify that the confirmation is true."""
+        if data['confirm'] != True:
+            raise serializers.ValidationError('The invitation has not been confirmated.')
+        return data
+
+    def save(self, data):
+        invitation = self.context['invitation']
+        invitation.used == data['confirm']
+        invitation.save()
+        return invitation
