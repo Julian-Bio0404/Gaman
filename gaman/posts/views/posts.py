@@ -76,14 +76,6 @@ class PostViewSet(viewsets.ModelViewSet):
             data = {'message': 'The reaction has been delete.'}
             return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=True)
-    def reactions(self, request, *args, **kwargs):
-        """List all post's reactions."""
-        post = self.get_object()
-        reactions = PostReaction.objects.filter(post=post)
-        data = PostReactionModelSerializer(reactions, many=True).data
-        return Response(data, status=status.HTTP_200_OK)
-
     @action(detail=True, methods=['post'])
     def share(self, request, *args, **kwargs):
         """Handles share post."""
@@ -95,3 +87,73 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True)
+    def reactions(self, request, *args, **kwargs):
+        """List all post's reactions."""
+        post = self.get_object()
+        reactions = PostReaction.objects.filter(post=post)
+        data = {
+            'count': reactions.count(),
+            'reactions': PostReactionModelSerializer(reactions, many=True).data}
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True)
+    def likes(self, request, *args, **kwargs):
+        """List of reactions filtered by like."""
+        post = self.get_object()
+        likes = post.postreaction_set.filter(reaction='Like')
+        data = {
+            'count': likes.count(),
+            'likes': PostReactionModelSerializer(likes, many=True).data}
+        return Response(data, status=status.HTTP_200_OK)
+    
+    @action(detail=True)
+    def loves(self, request, *args, **kwargs):
+        """List of reactions filtered by love."""
+        post = self.get_object()
+        loves = post.postreaction_set.filter(reaction='Love')
+        data = {
+            'count': loves.count(),
+            'loves': PostReactionModelSerializer(loves, many=True).data}
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True)
+    def hahas(self, request, *args, **kwargs):
+        """List of reactions filtered by haha."""
+        post = self.get_object()
+        hahas = post.postreaction_set.filter(reaction='Haha')
+        data = {
+            'count': hahas.count(),
+            'hahas': PostReactionModelSerializer(hahas, many=True).data}
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True)
+    def curious(self, request, *args, **kwargs):
+        """List of reactions filtered by curious."""
+        post = self.get_object()
+        curious = post.postreaction_set.filter(reaction='Curious')
+        data = {
+            'count': curious.count(),
+            'curious': PostReactionModelSerializer(curious, many=True).data}
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True)
+    def sads(self, request, *args, **kwargs):
+        """List of reactions filtered by sad."""
+        post = self.get_object()
+        sads = post.postreaction_set.filter(reaction='Sad')
+        data = {
+            'count': sads.count(),
+            'sads': PostReactionModelSerializer(sads, many=True).data}
+        return Response(data, status=status.HTTP_200_OK)
+    
+    @action(detail=True)
+    def angrys(self, request, *args, **kwargs):
+        """List of reactions filtered by angry."""
+        post = self.get_object()
+        angrys = post.postreaction_set.filter(reaction='Angry')
+        data = {
+            'count': angrys.count(),
+            'angrys': PostReactionModelSerializer(angrys, many=True).data}
+        return Response(data, status=status.HTTP_200_OK)
