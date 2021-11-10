@@ -5,6 +5,10 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+# Filters
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
 # Permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from gaman.users.permissions import IsAccountOwner
@@ -38,6 +42,11 @@ class UserViewSet(mixins.ListModelMixin,
     queryset = User.objects.filter(verified=True)
     serializer_class = UserModelSerializer
     lookup_field = 'username'
+    filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
+    search_fields = ('username',)
+    ordering_fields = ('username',)
+    ordering = ('username', 'created')
+    filter_fields = ('profile__sport', 'profile__country', 'role')
 
     def get_permissions(self):
         """Assign permissions based on action."""
@@ -46,7 +55,8 @@ class UserViewSet(mixins.ListModelMixin,
                 'refresh_token', 'token_restore_psswd', 'restore_psswd']:
             permissions = [AllowAny]
         elif self.action in [
-                'retrieve', 'update', 'partial_update', 'token_update_email', 'update_psswd']:
+                'retrieve', 'update', 'partial_update',
+                'token_update_email', 'update_psswd']:
             permissions = [IsAuthenticated, IsAccountOwner]
         else:
             permissions = [IsAuthenticated]

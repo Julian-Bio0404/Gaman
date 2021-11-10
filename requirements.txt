@@ -8,6 +8,7 @@ Django==3.2.8
 
 # Django REST Framework
 djangorestframework==3.12.4
+django-filter==21.1
 
 # Auth
 PyJWT==2.2.0

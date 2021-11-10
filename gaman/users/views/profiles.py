@@ -29,7 +29,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet):
     """
     Profile viewset.
-    Handle profile update, partial update, retrieve and list profile,
+    Handle profile update, partial update, retrieve,
     as well as follow, the list of followers and followed.
     """
 

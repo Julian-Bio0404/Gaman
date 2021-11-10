@@ -1,9 +1,12 @@
 """Clubs views."""
 
 # Django REST Framawork
-from rest_framework import mixins, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.response import Response
-from gaman.sports import serializers
+
+# Filters
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Models
 from gaman.sports.models import Club
@@ -21,6 +24,12 @@ class ClubViewSet(viewsets.ModelViewSet):
     queryset = Club.objects.all()
     serializer_class = ClubModelSerializer
     lookup_field = 'slugname'
+    filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
+    search_fields = ('slugname',)
+    ordering_fields = ('slugname',)
+    ordering = ('slugname', 'members__count')
+    filter_fields = (
+        'league__slugname', 'league__state', 'league__sport', 'city')
 
     def create(self, request):
         """Handles the club creation."""

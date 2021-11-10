@@ -46,7 +46,8 @@ class PostViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         """Assign permissions based on action."""
         if self.action in [
-            'retrieve', 'react', 'reactions', 'share']:
+            'retrieve', 'react', 'reactions', 'share', 'likes',
+            'loves', 'hahas', 'curious', 'sads', 'angry']:
             permissions = [IsAuthenticated, IsFollowerOrPostOwner]
         elif self.action in ['update', 'partial_update', 'destroy']:
            permissions = [IsAuthenticated, IsPostOwner]
@@ -149,7 +150,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response(data, status=status.HTTP_200_OK)
     
     @action(detail=True)
-    def angrys(self, request, *args, **kwargs):
+    def angry(self, request, *args, **kwargs):
         """List of reactions filtered by angry."""
         post = self.get_object()
         angrys = post.postreaction_set.filter(reaction='Angry')

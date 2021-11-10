@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
     'social_django', 
     'oauth2_provider',
     'rest_framework_social_oauth2',
+    'django_filters',
 ]
 
 LOCAL_APPS = [

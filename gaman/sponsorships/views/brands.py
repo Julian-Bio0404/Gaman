@@ -5,6 +5,11 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+# Filters
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
+
 # Permissions
 from rest_framework.permissions import IsAuthenticated
 from gaman.sponsorships.permissions import (IsBrandOwner,
@@ -16,7 +21,8 @@ from gaman.sponsorships.models import Brand
 from gaman.users.models import FollowUp
 
 # Serializers
-from gaman.sponsorships.serializers import BrandModelSerializer, CreateBrandSerializer
+from gaman.sponsorships.serializers import (BrandModelSerializer,
+                                            CreateBrandSerializer)
 
 
 class BrandViewSet(viewsets.ModelViewSet):
@@ -28,6 +34,11 @@ class BrandViewSet(viewsets.ModelViewSet):
 
     queryset = Brand.objects.all()
     lookup_field = 'slugname'
+    filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
+    search_fields = ('slugname',)
+    ordering_fields = ('slugname',)
+    ordering = ('slugname', 'created')
+    filter_fields = ('verified',)
 
     def get_permissions(self):
         """Asign permissions based on action."""

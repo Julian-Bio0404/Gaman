@@ -11,7 +11,7 @@ from gaman.sports.models import Club, League
 class ClubAdmin(admin.ModelAdmin):
     """Club model admin."""
 
-    lis_display = [
+    list_display = [
         'pk', 'league',
         'slugname', 'about', 'city',
         'trainer', 'official_web'
