@@ -4,7 +4,7 @@
 from django.contrib import admin
 
 # Models
-from gaman.sports.models import Club, League
+from gaman.sports.models import Club, League, Invitation, Member
 
 
 @admin.register(Club)
@@ -46,4 +46,41 @@ class LeagueAdmin(admin.ModelAdmin):
     list_filter = [
         'country', 'state',
         'sport'
+    ]
+
+
+@admin.register(Invitation)
+class InvitationAdmin(admin.ModelAdmin):
+    """Invitation model admin."""
+
+    list_display = [
+        'issued_by', 'invited',
+        'club', 'used'
+    ]
+
+    search_fields = [
+        'issued_by__username',
+        'invited__username',
+        'club__slugname'
+    ]
+
+    list_filter = [
+        'club__slugname'
+    ]
+
+
+@admin.register(Member)
+class MemberAdmin(admin.ModelAdmin):
+    """"""
+
+    list_display = [
+        'user', 'club', 'active'
+    ]
+
+    search_fields = [
+        'user__username', 'club__slugname'
+    ]
+
+    list_filter = [
+        'club__slugname', 'active'
     ]

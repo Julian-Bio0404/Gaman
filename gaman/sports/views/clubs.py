@@ -41,7 +41,7 @@ class ClubViewSet(viewsets.ModelViewSet):
         if self.action in ['create']:
             permissions = [IsAuthenticated, IsTrainer]
         elif self.action in ['update', 'partial_update', 'destroy']:
-            permissions = [IsAuthenticated, IsTrainer]
+            permissions = [IsAuthenticated, IsClubOwner]
         else:
             permissions = [IsAuthenticated]
         return[p() for p in permissions]

@@ -26,7 +26,4 @@ class MemberModelSerializer(serializers.ModelSerializer):
             'joined_at'
         ]
 
-        read_only_fields = [
-            'user', 'active',
-            'joined_at'
-        ]
+        read_only_fields = ['user', 'joined_at']

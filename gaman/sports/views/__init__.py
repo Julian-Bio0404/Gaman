@@ -1,2 +1,3 @@
-from .leagues import *
 from .clubs import *
+from .leagues import *
+from .members import *
