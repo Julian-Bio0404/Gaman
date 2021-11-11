@@ -6,6 +6,10 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
+# Permissions
+from rest_framework.permissions import IsAuthenticated
+from gaman.sports.permissions import IsClubAdmin, IsSelfMemberOrClubOwner
+
 # Models
 from gaman.sports.models import Club
 from gaman.sports.models import Invitation, Member
@@ -26,6 +30,16 @@ class MemberViewSet(viewsets.ModelViewSet):
 
     serializer_class = MemberModelSerializer
     lookup_field = 'user__username'
+
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in ['invitations', 'update', 'partial_update']:
+            permissions = [IsAuthenticated, IsClubAdmin]
+        elif self.action in ['destroy']:
+            permissions = [IsAuthenticated, IsSelfMemberOrClubOwner]
+        else:
+            permissions = [IsAuthenticated]
+        return[p() for p in permissions]
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the club exists."""
@@ -57,7 +71,7 @@ class MemberViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def confirm_invitation(self, request, *args, **kwargs):
         """Handles the invitations confirmation."""
-        serializer = ConfirmInvitationSerializer(data=request.data)
+        serializer = ConfirmInvitationSerializer(data=request.data, context={'user': request.user})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {'message': f'Now You are a member of {self.club.slugname}'}

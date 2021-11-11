@@ -16,7 +16,7 @@ class Member(GamanModel):
     
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     club = models.ForeignKey('sports.Club', on_delete=models.CASCADE)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         """Return username and club."""

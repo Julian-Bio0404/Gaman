@@ -83,6 +83,9 @@ class ConfirmInvitationSerializer(serializers.Serializer):
         except Invitation.DoesNotExist:
             raise serializers.ValidationError('The invitation does not exists.')
 
+        if self.context['user'] != invitation.invited:
+            raise serializers.ValidationError('You do not has permissions for this action.')
+        
         if data['confirm'] != True:
             raise serializers.ValidationError('The invitation has not been confirmated.')
         return data

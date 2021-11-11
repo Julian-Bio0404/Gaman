@@ -54,7 +54,7 @@ class InvitationAdmin(admin.ModelAdmin):
     """Invitation model admin."""
 
     list_display = [
-        'issued_by', 'invited',
+        'id', 'issued_by', 'invited',
         'club', 'used'
     ]
 
@@ -71,7 +71,7 @@ class InvitationAdmin(admin.ModelAdmin):
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
-    """"""
+    """Member model admin."""
 
     list_display = [
         'user', 'club', 'active'
