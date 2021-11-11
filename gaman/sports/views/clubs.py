@@ -14,10 +14,12 @@ from rest_framework.permissions import IsAuthenticated
 from gaman.sports.permissions import IsClubOwner, IsTrainer
 
 # Models
+from gaman.sponsorships.models import Sponsorship
 from gaman.sports.models import Club
 from gaman.users.models import FollowUp
 
 # Serializers
+from gaman.sponsorships.serializers import SponsorshipModelSerializer
 from gaman.sports.serializers import ClubModelSerializer, CreateClubSerializer
 from gaman.users.serializers import FollowerSerializer
 
@@ -78,4 +80,12 @@ class ClubViewSet(viewsets.ModelViewSet):
         else:
             FollowUp.objects.create(club=club, follower=request.user)
             data = {'message': f'You started following to {club.slugname}'}
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'])
+    def sponsorships(self, request, *args, **kwargs):
+        """List club's sponsorships."""
+        club = self.get_object()
+        sponsorships = Sponsorship.objects.filter(club=club)
+        data = SponsorshipModelSerializer(sponsorships, many=True).data
         return Response(data, status=status.HTTP_200_OK)

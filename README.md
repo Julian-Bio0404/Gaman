@@ -1,6 +1,6 @@
 # Gaman
 
-Gaman Rest Api. A web app that conect to ahtletes with sponsors
+Gaman Rest Api. A web app that conect to athletes with sponsors
 for their sponsorship, as well as helps to the people interested in 
 practicing some sport, find those available in their local area.
 
