@@ -7,6 +7,11 @@ from rest_framework.response import Response
 # Filters
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from gaman.posts import permissions
+
+# Permissions
+from rest_framework.permissions import IsAuthenticated
+from gaman.sports.permissions import IsClubOwner, IsTrainer
 
 # Models
 from gaman.sports.models import Club
@@ -30,6 +35,16 @@ class ClubViewSet(viewsets.ModelViewSet):
     ordering = ('slugname', 'members__count')
     filter_fields = (
         'league__slugname', 'league__state', 'league__sport', 'city')
+
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in ['create']:
+            permissions = [IsAuthenticated, IsTrainer]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            permissions = [IsAuthenticated, IsTrainer]
+        else:
+            permissions = [IsAuthenticated]
+        return[p() for p in permissions]
 
     def create(self, request):
         """Handles the club creation."""
