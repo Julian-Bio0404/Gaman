@@ -23,6 +23,8 @@ from gaman.users.models import FollowUp
 # Serializers
 from gaman.sponsorships.serializers import (BrandModelSerializer,
                                             CreateBrandSerializer)
+                                           
+from gaman.users.serializers import FollowerSerializer
 
 
 class BrandViewSet(viewsets.ModelViewSet):
@@ -61,6 +63,13 @@ class BrandViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return CreateBrandSerializer
         return BrandModelSerializer
+    
+    @action(detail=True, methods=['get'])
+    def followers(self, request, *args, **kwargs):
+        brand = self.get_object()
+        followers = FollowUp.objects.filter(brand=brand)
+        data = FollowerSerializer(followers, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
     def follow(self, request, *args, **kwarg):
