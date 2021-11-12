@@ -1,5 +1,8 @@
 """Brands views."""
 
+# Django
+from django.db.models import Avg
+
 # Django REST Framework
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -17,7 +20,7 @@ from gaman.sponsorships.permissions import (IsBrandOwner,
                                             IsSponsor)
 
 # Models
-from gaman.sponsorships.models import Brand
+from gaman.sponsorships.models import Brand, Rating
 from gaman.users.models import FollowUp
 
 # Serializers
@@ -63,6 +66,15 @@ class BrandViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return CreateBrandSerializer
         return BrandModelSerializer
+    
+    def retrieve(self, request, *args, **kwargs):
+        """Retrieve a brand and add rating average."""
+        brand = self.get_object()
+        rating = Rating.objects.filter(
+            sponsorship__brand=brand).aggregate(Avg('rating'))
+        data = BrandModelSerializer(brand).data
+        data['rating'] = rating['rating__avg']
+        return Response(data, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=['get'])
     def followers(self, request, *args, **kwargs):

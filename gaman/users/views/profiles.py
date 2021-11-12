@@ -1,7 +1,7 @@
 """Profiles views."""
 
 # Django
-from django.db.models import Q
+from django.db.models import Avg, Q
 
 # Django REST framework
 from rest_framework import mixins, status, viewsets
@@ -15,7 +15,7 @@ from gaman.users.permissions import IsProfileOwner
 # Models
 from gaman.posts.models import Post
 from gaman.users.models import Profile, FollowRequest, FollowUp, User
-from gaman.sponsorships.models import Sponsorship
+from gaman.sponsorships.models import Rating, Sponsorship
 
 # Serializers
 from gaman.posts.serializers import PostModelSerializer
@@ -24,7 +24,8 @@ from gaman.sponsorships.serializers import SponsorshipModelSerializer
 from gaman.users.serializers import (FollowRequestModelSerializer,
                                      FollowingSerializer,
                                      FollowerSerializer,
-                                     ProfileModelSerializer)
+                                     ProfileModelSerializer,
+                                     UserModelSerializer)
 
 
 class ProfileViewSet(mixins.RetrieveModelMixin,
@@ -49,6 +50,19 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
         else:
             permissions = [IsAuthenticated]
         return[p() for p in permissions]
+    
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Retrieve a profile.
+        Add rating average if the profile is sponsor.
+        """
+        profile = self.get_object()
+        data = UserModelSerializer(profile.user).data
+        if profile.user.role == 'Sponsor':
+            rating = Rating.objects.filter(
+                sponsorship__sponsor=profile.user).aggregate(Avg('rating'))
+            data['rating'] = rating['rating__avg']
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
     def posts(self, request, *args, **kwargs):

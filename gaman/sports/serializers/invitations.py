@@ -93,11 +93,11 @@ class ConfirmInvitationSerializer(serializers.Serializer):
     def save(self):
         """Update the invitation and member."""
         invitation = self.context['invitation']
-        invitation.used == True
+        invitation.used = True
         invitation.save()
 
         # Active the member
         member = Member.objects.get(user=invitation.invited, club=invitation.club)
-        member.active == True
+        member.active = True
         member.save()
         return invitation
