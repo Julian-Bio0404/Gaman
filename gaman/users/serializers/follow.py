@@ -87,15 +87,13 @@ class FollowingSerializer(serializers.ModelSerializer):
     Serialize the followed of a user.
     """
 
-    user = serializers.StringRelatedField(read_only=True, required=False)
-    brand = serializers.StringRelatedField(read_only=True, required=False)
-    club = serializers.StringRelatedField(read_only=True, required=False)
+    following = serializers.StringRelatedField(read_only=True, source='specify_followed')
 
     class Meta:
         """Meta options."""
         model = FollowUp
-        fields = ['user', 'brand', 'club']
-        read_only_fields = ['user', 'brand', 'club']
+        fields = ['following']
+        read_only_fields = ['following']
 
 
 class FollowerSerializer(serializers.ModelSerializer):
