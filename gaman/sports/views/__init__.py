@@ -1,3 +1,4 @@
 from .clubs import *
 from .leagues import *
 from .members import *
+from .posts import *
