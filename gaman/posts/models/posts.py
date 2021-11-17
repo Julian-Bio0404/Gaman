@@ -8,7 +8,10 @@ from gaman.utils.models import GamanModel
 
 
 class Post(GamanModel):
-    """Post model."""
+    """
+    Post model.
+    The author can be a user, brand or a club.
+    """
 
     # Post privacy choices
     PRIVACY = [
@@ -31,7 +34,10 @@ class Post(GamanModel):
         ('Curious', 'Curious'), ('Surprised', 'Surprised')
     ]
 
-    author = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True)
+    brand = models.ForeignKey('sponsorships.Brand', on_delete=models.SET_NULL, null=True)
+    club = models.ForeignKey('sports.Club', on_delete=models.SET_NULL, null=True)
+
     about = models.TextField(help_text='Write something', blank=True)
 
     privacy = models.CharField(
@@ -56,6 +62,15 @@ class Post(GamanModel):
     comments = models.PositiveBigIntegerField(default=0)
     shares = models.PositiveBigIntegerField(default=0)
 
+    def specify_author(self) -> str:
+        """Specify if author is a user, brand or club."""
+        if self.user != None:
+            return self.user.username
+        if self.brand != None:
+            return self.brand.slugname
+        if self.club != None:
+            return self.club.slugname
+
     def __str__(self):
         """Return about and username."""
-        return f'{self.about} by @{self.author}'
+        return f'{self.about} by @{self.specify_author()}'

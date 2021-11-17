@@ -12,7 +12,8 @@ class PostAdmin(admin.ModelAdmin):
     """Post model admin."""
 
     list_display = [
-        'pk','author',
+        'pk','user',
+        'brand', 'club',
         'about', 'privacy',
         'feeling', 'location', 
         'reactions', 'comments',
@@ -21,12 +22,10 @@ class PostAdmin(admin.ModelAdmin):
     ]
 
     search_fields = [
-        'author__username', 
         'location', 'privacy'
     ]
 
     list_filter = [
-        'author__username',
         'location', 'privacy'
     ]
 
@@ -69,10 +68,10 @@ class ReactionPostAdmin(admin.ModelAdmin):
 
     search_fields = [
         'user__username',
-        'post__author__username'
+        'post'
     ]
 
-    list_filter = ['post__author__username']
+    list_filter = ['post']
 
 
 @admin.register(CommentReaction)
