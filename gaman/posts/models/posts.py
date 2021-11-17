@@ -64,12 +64,10 @@ class Post(GamanModel):
 
     def specify_author(self) -> str:
         """Specify if author is a user, brand or club."""
-        if self.user != None:
-            return self.user.username
-        if self.brand != None:
-            return self.brand.slugname
-        if self.club != None:
-            return self.club.slugname
+        authors = [self.user, self.brand, self.club]
+        for author in authors:
+            if author:
+                return author
 
     def __str__(self):
         """Return about and username."""

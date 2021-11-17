@@ -10,6 +10,9 @@ from gaman.users.models import User
 # Serializers
 from gaman.posts.serializers import ImageModelSerializer, VideoModelSerializer
 
+# Utils
+from gaman.utils.clss import CreatePostAuthorContext
+
 
 class PostSumaryModelSerializer(serializers.ModelSerializer):
     """
@@ -17,7 +20,7 @@ class PostSumaryModelSerializer(serializers.ModelSerializer):
     It's util for serialize post nested in other post (repost).
     """
 
-    author = serializers.StringRelatedField(read_only=True)
+    author = serializers.StringRelatedField(read_only=True, source='specify_author')
     pictures = ImageModelSerializer(read_only=True, many=True)
     videos = VideoModelSerializer(read_only=True, many=True)
 
@@ -40,7 +43,7 @@ class PostSumaryModelSerializer(serializers.ModelSerializer):
 class PostModelSerializer(PostSumaryModelSerializer):
     """
     Post model serializer.
-    Handles the creation of Post.
+    Handles the creation of user post.
     """
 
     post = PostSumaryModelSerializer(read_only=True, required=False)
@@ -88,7 +91,7 @@ class PostModelSerializer(PostSumaryModelSerializer):
     def create(self, data):
         """Create a post."""
         author = self.context['author']
-        post = Post.objects.create(**data, author=author)
+        post = CreatePostAuthorContext.create_post(data, author)
 
         try:
             pictures = self.context['request'].data.getlist('pictures')
