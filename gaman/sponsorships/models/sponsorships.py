@@ -42,6 +42,12 @@ class Sponsorship(GamanModel):
 
     active = models.BooleanField(default=False)
 
+    def specify_sponsored(self) -> str:
+        """Specify if sponsored is a athlete or club."""
+        if self.athlete:
+            return self.athlete
+        return self.club
+
     def __str__(self):
         """Return Sponsorship's sponsor."""
-        return f'{self.sponsor}'
+        return f'{self.sponsor} -> {self.specify_sponsored()}'

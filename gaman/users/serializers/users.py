@@ -77,7 +77,7 @@ class UserSignUpSerializer(serializers.Serializer):
     # Role
     def role_validator(rol):
         """Verify the role."""
-        if rol not in ['Athlete', 'Sponsor', 'Coach', 'Team', 'League president']:
+        if rol not in ['Athlete', 'Sponsor', 'Coach', 'League president']:
             raise serializers.ValidationError('Role not allowed.')
     
     role = serializers.CharField(min_length=4, max_length=16, validators=[role_validator])

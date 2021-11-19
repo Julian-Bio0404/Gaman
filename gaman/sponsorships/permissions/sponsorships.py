@@ -11,5 +11,4 @@ class IsSponsor(BasePermission):
 
     def has_permission(self, request, view):
         """Check that requesting user is a sponsor."""
-        user = request.user
-        return user.role == 'Sponsor'
+        return request.user.role == 'Sponsor'

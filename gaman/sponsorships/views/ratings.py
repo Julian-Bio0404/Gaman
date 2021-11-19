@@ -30,8 +30,7 @@ class RatingViewSet(mixins.CreateModelMixin,
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the post exists."""
-        id = kwargs['id']
-        self.sponsorship = get_object_or_404(Sponsorship, id=id)
+        self.sponsorship = get_object_or_404(Sponsorship, id=kwargs['id'])
         return super(RatingViewSet, self).dispatch(request, *args, **kwargs)
 
     def get_permissions(self):

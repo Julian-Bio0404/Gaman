@@ -27,15 +27,14 @@ class CommentViewSet(viewsets.ModelViewSet):
     """
     Comment view set.
     Handles list, create, detail, update, destroy, reply,
-    react comment or list comment's reactions.
+    react comment or list comment's reactions and replies.
     """
 
     serializer_class = CommentModelSerializer
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the post exists."""
-        id = kwargs['id']
-        self.object = get_object_or_404(Post, id=id)
+        self.object = get_object_or_404(Post, id=kwargs['id'])
         return super(CommentViewSet, self).dispatch(request, *args, **kwargs)
 
     def perform_destroy(self, instance):
@@ -48,10 +47,8 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Return post's comments."""
         if self.action in ['list', 'retrieve', 'reply', 'replies']:
-            comments = PrincipalComment.objects.filter(post=self.object)
-        else:
-            comments = Comment.objects.filter(post=self.object)
-        return comments
+            return PrincipalComment.objects.filter(post=self.object)
+        return Comment.objects.filter(post=self.object)
 
     def get_permissions(self):
         """Assign permissions based on action."""
@@ -91,7 +88,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             data = {'message': "The comment's reaction has been delete."}
             return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def reactions(self, request, *args, **kwargs):
         """List all comment's reactions."""
         comment = self.get_object()
@@ -110,7 +107,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def replies(self, request, *args, **kwargs):
         """List all replies to a comment."""
         comment = self.get_object()

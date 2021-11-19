@@ -16,24 +16,21 @@ class SponsorshipModelSerializer(serializers.ModelSerializer):
     """Sponsorship model serializer."""
 
     sponsor = serializers.StringRelatedField(read_only=True)
-    brand = serializers.StringRelatedField(read_only=True, required=False)
 
-    athlete = serializers.StringRelatedField(read_only=True, required=False)
-    club = serializers.StringRelatedField(read_only=True, required=False)
+    sponsored = serializers.StringRelatedField(
+        read_only=True, source='specify_sponsored')
 
     class Meta:
         """Meta options."""
         model = Sponsorship
         fields = [
-            'sponsor', 'brand',
-            'athlete', 'club',
+            'sponsor', 'sponsored',
             'start', 'finish',
             'active'
         ]
 
         read_only_fields = [
-            'sponsor', 'brand',
-            'athlete', 'club',
+            'sponsor', 'sponsored',
             'start', 'finish',
             'active'
         ]
@@ -55,28 +52,30 @@ class CreateSponsorshipSerializer(serializers.Serializer):
 
     def validate(self, data):
         """Verify brand, athlete, club and dates."""
-        if 'athlete' in data.keys() and 'club' in data.keys():
+        brand = data.get('brand', None)
+        athlete = data.get('athlete', None)
+        club = data.get('club', None)
+
+        if athlete and club:
             raise serializers.ValidationError('You must choose an athlete or a club, not both')
-        elif 'athlete' in data.keys():
+        elif athlete:
             try:
-                athlete = User.objects.get(username=data['athlete'])
-                self.context['athlete'] = athlete
+                self.context['athlete'] = User.objects.get(username=athlete)
                 data.pop('athlete')
             except User.DoesNotExist:
                 raise serializers.ValidationError('The user does not exists.')
-        elif 'club' in data.keys():
+        elif club:
             try:
-                club = Club.objects.get(slugname=data['club'])
-                self.context['club'] = club
+                self.context['club'] = Club.objects.get(slugname=club)
                 data.pop('club')
             except Club.DoesNotExist:
                 raise serializers.ValidationError('The club does not exists.')
         else:
             raise serializers.ValidationError('You must choose an athlete or a club.')
 
-        if 'brand' in data.keys():
+        if brand:
             try:
-                brand = Brand.objects.get(slugname=data['brand'])
+                brand = Brand.objects.get(slugname=brand)
                 if brand.sponsor != self.context['sponsor']:
                     raise serializers.ValidationError('You are not the owner this brand.')
                 self.context['brand'] = brand
@@ -104,7 +103,6 @@ class CreateSponsorshipSerializer(serializers.Serializer):
             sponsorship = Sponsorship.objects.create(sponsor=sponsor, club=club, **data)
         
         if 'brand' in self.context.keys():
-            brand = self.context['brand']
-            sponsorship.brand = brand
+            sponsorship.brand = self.context['brand']
             sponsorship.save()
         return sponsorship

@@ -11,7 +11,7 @@ from gaman.users.models import User
 from gaman.posts.serializers import ImageModelSerializer, VideoModelSerializer
 
 # Utils
-from gaman.utils.clss import CreatePostAuthorContext
+from gaman.utils.clss import PostAuthorContext
 
 
 class PostSumaryModelSerializer(serializers.ModelSerializer):
@@ -91,7 +91,7 @@ class PostModelSerializer(PostSumaryModelSerializer):
     def create(self, data):
         """Create a post."""
         author = self.context['author']
-        post = CreatePostAuthorContext.create_post(data, author)
+        post = PostAuthorContext.create_post(data, author)
 
         try:
             pictures = self.context['request'].data.getlist('pictures')
@@ -144,7 +144,6 @@ class SharePostSerializer(serializers.ModelSerializer):
 
     def create(self, data):
         """Create a post."""
-        author = self.context['author']
-        repost = self.context['post']
-        post = Post.objects.create(**data, author=author, post=repost)
+        post = Post.objects.create(
+            **data, author=self.context['author'], post=self.context['post'])
         return post

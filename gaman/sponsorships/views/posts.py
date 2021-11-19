@@ -30,8 +30,7 @@ class BrandPostViewSet(viewsets.ModelViewSet):
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the brand exists."""
-        slugname = kwargs['slugname']
-        self.brand = get_object_or_404(Brand, slugname=slugname)
+        self.brand = get_object_or_404(Brand, slugname=kwargs['slugname'])
         return super(BrandPostViewSet, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):

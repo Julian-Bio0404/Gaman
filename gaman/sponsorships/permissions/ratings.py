@@ -25,11 +25,9 @@ class IsSponsored(BasePermission):
         of the club sponsored.
         """
         
-        if view.sponsorship.athlete != None:
+        if view.sponsorship.athlete:
             return request.user == view.sponsorship.athlete
         else:
             member = Member.objects.filter(
                 user=request.user, club=view.sponsorship.club)
-            if member.exists() or request.user == view.sponsorship.club.trainer:
-                return True
-            return False
+            return member.exists() or request.user == view.sponsorship.club.trainer

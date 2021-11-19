@@ -64,7 +64,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
             data['rating'] = rating['rating__avg']
         return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def posts(self, request, *args, **kwargs):
         """
         List profile's posts. 
@@ -81,7 +81,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
         data = PostModelSerializer(posts, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def followers(self, request, *args, **kwargs):
         """List all followers."""
         profile = self.get_object()
@@ -89,7 +89,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
         data = FollowerSerializer(followers, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def following(self, request, *args, **kwargs):
         """List all following."""
         profile = self.get_object()
@@ -131,7 +131,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def sponsorships(self, request, *args, **kwargs):
         """List user's sponsorships."""
         profile = self.get_object()

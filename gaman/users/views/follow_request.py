@@ -41,15 +41,12 @@ class FollowRequestViewSet(mixins.ListModelMixin,
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the user exists."""
-        username = kwargs['username']
-        self.user = get_object_or_404(User, username=username)
+        self.user = get_object_or_404(User, username=kwargs['username'])
         return super(FollowRequestViewSet, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        """Return the follow request of user."""
-        follow_request = FollowRequest.objects.filter(
-            followed=self.user, accepted=False)
-        return follow_request
+        """Return the follow requests of user."""
+        return FollowRequest.objects.filter(followed=self.user, accepted=False)
 
     def update(self, request, *args, **kwargs):
         follow_request = self.get_object()

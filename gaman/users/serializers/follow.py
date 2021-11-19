@@ -34,12 +34,9 @@ class FollowRequestModelSerializer(serializers.ModelSerializer):
     
     def validate(self, data):
         """Verify that follow request does not exists yet."""
-        follower = self.context['follower']
-        followed = self.context['followed']
-
         follow_request = FollowRequest.objects.filter(
-            Q (follower=follower, followed=followed) |
-            Q (followed=follower, follower=followed))
+            Q (follower=self.context['follower'], followed=self.context['followed']) |
+            Q (followed=self.context['followed'], follower=self.context['followed']))
 
         if follow_request.exists():
             raise serializers.ValidationError(
@@ -48,10 +45,8 @@ class FollowRequestModelSerializer(serializers.ModelSerializer):
 
     def create(self, data):
         """Create a follow request."""
-        follower = self.context['follower']
-        followed = self.context['followed']
         follow_request = FollowRequest.objects.create(
-            follower=follower, followed=followed)
+            follower=self.context['follower'], followed=self.context['followed'])
         return follow_request
 
 

@@ -43,14 +43,12 @@ class MemberViewSet(viewsets.ModelViewSet):
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the club exists."""
-        slugname = kwargs['slugname']
-        self.club = get_object_or_404(Club, slugname=slugname)
+        self.club = get_object_or_404(Club, slugname=kwargs['slugname'])
         return super(MemberViewSet, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         """Return club members."""
-        members = Member.objects.filter(club=self.club)
-        return members
+        return Member.objects.filter(club=self.club)
     
     def perform_destroy(self, instance):
         """Delete the member and its invitations."""

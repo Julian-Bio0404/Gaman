@@ -27,5 +27,5 @@ class IsProfileCompleted(BasePermission):
     def has_permission(self, request, view):
         """Check that requesting user has profile and user data completed."""
         user = request.user
-        profile = request.user.profile
+        profile = user.profile
         return user.is_data_completed() and profile.is_data_completed()

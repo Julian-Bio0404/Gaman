@@ -1,6 +1,5 @@
 """Class utilities."""
 
-
 # Models
 from gaman.posts.models import Post
 from gaman.users.models import User
@@ -8,7 +7,7 @@ from gaman.sponsorships.models import Brand
 from gaman.sports.models import Club
 
 
-class CreatePostAuthorContext:
+class PostAuthorContext:
     """
     Create a Post according to the author context.
     """

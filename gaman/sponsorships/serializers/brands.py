@@ -46,6 +46,4 @@ class CreateBrandSerializer(serializers.Serializer):
 
     def create(self, data):
         """Create a brand."""
-        sponsor = self.context['sponsor']
-        brand = Brand.objects.create(**data, sponsor=sponsor)
-        return brand
+        return Brand.objects.create(**data, sponsor=self.context['sponsor'])

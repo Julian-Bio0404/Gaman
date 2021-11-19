@@ -35,12 +35,12 @@ class PostViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Restrict posts to only followed users."""
         queryset = Post.objects.all()
-        user = self.request.user
         following = User.objects.filter(
-            pk__in=[FollowUp.objects.filter(follower=user).values('user__pk')])
+            pk__in=[FollowUp.objects.filter(
+                follower=self.request.user).values('user__pk')])
         if self.action == 'list':
             queryset = Post.objects.filter(
-                Q(author=user) | Q(author__in=following))
+                Q(author=self.request.user) | Q(author__in=following))
         return queryset
 
     def get_permissions(self):
@@ -81,7 +81,7 @@ class PostViewSet(viewsets.ModelViewSet):
     def share(self, request, *args, **kwargs):
         """Handles share post."""
         post = self.get_object()
-        if post.post != None:
+        if post.post:
             post = post.post
         serializer = SharePostSerializer(
             data=request.data, context={'author': request.user, 'post': post})
