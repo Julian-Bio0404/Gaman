@@ -4,6 +4,10 @@
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 
+# Permissions
+from rest_framework.permissions import IsAuthenticated
+from gaman.sports.permissions import IsClubOwner
+
 # Models
 from gaman.sports.models import Club
 
@@ -15,6 +19,14 @@ class ClubPostViewSet(viewsets.ModelViewSet):
     """Club Post viewset."""
 
     serializer_class = PostModelSerializer
+
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            permissions = [IsAuthenticated, IsClubOwner]
+        else:
+            permissions = [IsAuthenticated]
+        return[p() for p in permissions]
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the brand exists."""

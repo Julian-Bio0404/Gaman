@@ -15,6 +15,13 @@ class IsTrainer(BasePermission):
 class IsClubOwner(BasePermission):
     """Allow access only to owner the club."""
 
+    def has_permission(self, request, view):
+        try:
+            obj = view.club
+        except AttributeError:
+            obj = view.get_object()
+        return self.has_object_permission(request, view, obj)
+
     def has_object_permission(self, request, view, obj):
         """Check requesting user is owner of the club."""
         return obj.trainer == request.user

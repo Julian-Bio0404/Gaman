@@ -7,6 +7,13 @@ from rest_framework.permissions import BasePermission
 class IsBrandOwner(BasePermission):
     """Allow access only to owner of the brand."""
 
+    def has_permission(self, request, view):
+        try:
+            obj = view.brand
+        except AttributeError:
+            obj = view.get_object()
+        return self.has_object_permission(request, view, obj)
+
     def has_object_permission(self, request, view, obj):
         """Check that requesting user is owner of the brand."""
         return request.user == obj.sponsor
