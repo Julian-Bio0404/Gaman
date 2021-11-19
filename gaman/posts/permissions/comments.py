@@ -1,5 +1,8 @@
 """Comment permissions."""
 
+# Django
+from django.db.models import Q
+
 # Django REST Framework
 from rest_framework.permissions import BasePermission
 
@@ -20,7 +23,7 @@ class IsCommentOrPostOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         """Check requesting user is comment owner or post owner."""
-        return request.user in [obj.author, obj.post.author]
+        return request.user == obj.post.normalize_author()
 
 
 class IsFollower(BasePermission):
@@ -32,13 +35,13 @@ class IsFollower(BasePermission):
         post owner or if requesting user is the post owner.
         """
         post = view.object
-        post_owner = post.author
+        post_owner = post.normalize_author()
         
         if post.privacy == 'Public' or request.user == post_owner:
             return True
         elif post.privacy == 'Private':
             folloup = FollowUp.objects.filter(
-                follower=request.user, user=post_owner)
-            if folloup.exists():
-                return True
-            return False
+                Q(follower=request.user, user=post_owner ) |
+                Q(follower=request.user, brand=post.brand) |
+                Q(follower= request.user, club=post.club))
+            return folloup.exists()

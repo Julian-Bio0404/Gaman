@@ -1,5 +1,8 @@
 """Post permissions."""
 
+# Django
+from django.db.models import Q
+
 # Django REST Framework
 from rest_framework.permissions import BasePermission
 
@@ -12,7 +15,7 @@ class IsPostOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         """Check requesting user and post owner are the same."""
-        return request.user == obj.author
+        return request.user == obj.normalize_author()
 
 
 class IsFollowerOrPostOwner(BasePermission):
@@ -28,11 +31,12 @@ class IsFollowerOrPostOwner(BasePermission):
         Check privacy post and if user is follower of the
         post owner or if requesting user is the post owner.
         """
-        post_owner = obj.author
 
-        if obj.privacy == 'Public' or request.user == post_owner:
+        if obj.privacy == 'Public' or request.user == obj.normalize_author():
             return True
         elif obj.privacy == 'Private':
             folloup = FollowUp.objects.filter(
-                follower=request.user, user=post_owner)
+                Q(follower=request.user, user=obj.user ) |
+                Q(follower=request.user, brand=obj.brand) |
+                Q(follower= request.user, club=obj.club))
             return folloup.exists()

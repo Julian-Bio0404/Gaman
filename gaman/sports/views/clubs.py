@@ -69,18 +69,17 @@ class ClubViewSet(viewsets.ModelViewSet):
     def follow(self, request, *args, **kwargs):
         """Follow or unfollow a club."""
         club = self.get_object()
-
         # Unfollow
         followup = FollowUp.objects.filter(club=club, follower=request.user)
         if followup.exists():
             followup.delete()
-            data = {
-                'message': f'you stopped following to {club.slugname}'}
+            data = {'message': f'you stopped following to {club.slugname}'}
+            return Response(data, status=status.HTTP_200_OK)
         # Follow
         else:
             FollowUp.objects.create(club=club, follower=request.user)
             data = {'message': f'You started following to {club.slugname}'}
-        return Response(data, status=status.HTTP_200_OK)
+            return Response(data=data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['get'])
     def sponsorships(self, request, *args, **kwargs):

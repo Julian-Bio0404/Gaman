@@ -1,7 +1,7 @@
 """Brand posts views."""
 
 # Django REST framework
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.generics import get_object_or_404
 
 # Permissions
@@ -15,7 +15,9 @@ from gaman.sponsorships.models import Brand
 from gaman.posts.serializers import PostModelSerializer
 
 
-class BrandPostViewSet(viewsets.ModelViewSet):
+class BrandPostViewSet(mixins.CreateModelMixin,
+                       mixins.ListModelMixin,
+                       viewsets.GenericViewSet):
     """Brand Post viewset."""
 
     serializer_class = PostModelSerializer
@@ -23,8 +25,7 @@ class BrandPostViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         """Asign permissions based on action."""
         permissions = [IsAuthenticated]
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            print(self.action)
+        if self.action in ['create']:
             permissions.append(IsBrandOwner)
         return [p() for p in permissions]
 

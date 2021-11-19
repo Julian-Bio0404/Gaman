@@ -1,7 +1,7 @@
 """Club posts views."""
 
 # Django REST framework
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.generics import get_object_or_404
 
 # Permissions
@@ -15,7 +15,9 @@ from gaman.sports.models import Club
 from gaman.posts.serializers import PostModelSerializer
 
 
-class ClubPostViewSet(viewsets.ModelViewSet):
+class ClubPostViewSet(mixins.CreateModelMixin,
+                      mixins.ListModelMixin,
+                      viewsets.GenericViewSet):
     """Club Post viewset."""
 
     serializer_class = PostModelSerializer

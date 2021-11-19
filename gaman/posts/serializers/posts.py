@@ -122,7 +122,7 @@ class SharePostSerializer(serializers.ModelSerializer):
     It's util when requesting user wants share a post.
     """
 
-    author = serializers.StringRelatedField(read_only=True)
+    author = serializers.StringRelatedField(read_only=True, source='specify_author')
     post = PostSumaryModelSerializer(read_only=True)
 
     class Meta:
@@ -145,5 +145,5 @@ class SharePostSerializer(serializers.ModelSerializer):
     def create(self, data):
         """Create a post."""
         post = Post.objects.create(
-            **data, author=self.context['author'], post=self.context['post'])
+            **data, user=self.context['author'], post=self.context['post'])
         return post

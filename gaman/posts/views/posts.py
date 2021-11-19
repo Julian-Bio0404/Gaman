@@ -14,6 +14,8 @@ from gaman.posts.permissions import IsFollowerOrPostOwner, IsPostOwner
 
 # Models
 from gaman.posts.models import Post, PostReaction
+from gaman.sponsorships.models import Brand
+from gaman.sports.models import Club
 from gaman.users.models import FollowUp
 from gaman.users.models import User
 
@@ -35,12 +37,23 @@ class PostViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Restrict posts to only followed users."""
         queryset = Post.objects.all()
-        following = User.objects.filter(
+
+        followed_users = User.objects.filter(
             pk__in=[FollowUp.objects.filter(
                 follower=self.request.user).values('user__pk')])
+
+        followed_brands = Brand.objects.filter(
+            pk__in=[FollowUp.objects.filter(
+                follower=self.request.user).values('brand__pk')])
+        
+        followed_clubs = Club.objects.filter(
+            pk__in=[FollowUp.objects.filter(
+                follower=self.request.user).values('club__pk')])
+
         if self.action == 'list':
             queryset = Post.objects.filter(
-                Q(author=self.request.user) | Q(author__in=following))
+                Q(user=self.request.user) | Q(user__in=followed_users)|
+                Q(brand__in=followed_brands) | Q(club__in=followed_clubs))
         return queryset
 
     def get_permissions(self):

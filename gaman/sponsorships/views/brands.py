@@ -92,7 +92,8 @@ class BrandViewSet(viewsets.ModelViewSet):
         if followup.exists():
             followup.delete()
             data = {'message': 'You stopped follow to this brand.'}
+            return Response(data, status=status.HTTP_200_OK)
         else:
             FollowUp.objects.create(follower=follower, brand=brand)
             data = {'message': 'You started follow to this brand.'}
-        return Response(data=data, status=status.HTTP_200_OK)
+            return Response(data=data, status=status.HTTP_201_CREATED)

@@ -45,6 +45,7 @@ docker-compose run --rm django coverage run manage.py test -v 2
     + Update or partial update of profile data as about, birth date, sport, country, public (true or false), web site and social link
     + Follow or unfollow to a club, brand or other user. If the profile is private, a follow request is sent
     + List followers and following
+    + List user's sponsorships
   + **Follow request**
     + Send, confirm or delete follow-up request
     + follow-up request detail
@@ -52,12 +53,12 @@ docker-compose run --rm django coverage run manage.py test -v 2
     
 ### Posts
   + **Post**
-    + Create a Post with a description, pictures, videos, location, feeling, tag users and choosing privacy between public or private.
+    + Create a Post with a description, pictures, videos, location, feeling, tag users and choosing privacy between public or private as a user, club or brand.
     + Post detail
     + Update or delete a post, 
     + React or share a post of a user
-    + List posts of users followed
-    + List post's reactions
+    + List posts of followed
+    + List post's reactions (all, likes, loves, angries, sad and curious, haha)
  + **Comment**
     + Create, update or delete a comment on post
     + Comment detail
@@ -69,7 +70,7 @@ docker-compose run --rm django coverage run manage.py test -v 2
  
 ### Sponsorships
   + **Sponsorship**
-    + Create a sponsorship for an athlete or club. Only user with sponsor role and profile data comleted has access to this action
+    + Create a sponsorship to an athlete or club. Only user with sponsor role and profile data comleted has access to this action
     + Sponsorship detail
     + Rating a sponsorship. Only the individual athletes sponsored or athletes and coach that belong to a club sponsored has access to this action.
     + Update or delete a rating
@@ -79,6 +80,18 @@ docker-compose run --rm django coverage run manage.py test -v 2
     + Brand detail
     + List brands
     + Update or Delete a brand
+    + List brand's posts
+    + List brand's followers
+
+### Sports
+  + **Leagues**
+    + List registered leagues
+    + League detail
+  + **Clubs**
+    + Create a club. Only user with trainer or League president role has access to this action
+    + Club detail
+    + Update club's data
+    + List club's followers
 
 ## Documentation
 To see the documentation for the Gaman REST API and see how to play with it, you can:
