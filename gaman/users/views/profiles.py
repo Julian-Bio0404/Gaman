@@ -16,10 +16,12 @@ from gaman.users.permissions import IsProfileOwner
 from gaman.posts.models import Post
 from gaman.users.models import Profile, FollowRequest, FollowUp, User
 from gaman.sponsorships.models import Rating, Sponsorship
+from gaman.sports.models import Invitation
 
 # Serializers
 from gaman.posts.serializers import PostModelSerializer
 from gaman.sponsorships.serializers import SponsorshipModelSerializer
+from gaman.sports.serializers import InvitationModelSerializer
 
 from gaman.users.serializers import (FollowRequestModelSerializer,
                                      FollowingSerializer,
@@ -137,4 +139,12 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
         profile = self.get_object()
         sponsorships = Sponsorship.objects.filter(athlete=profile.user)
         data = SponsorshipModelSerializer(sponsorships, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True)
+    def invitations(self, request, *args, **kwargs):
+        """List club's invitations."""
+        profile = self.get_object()
+        invitations = Invitation.objects.filter(invited=profile.user)
+        data = InvitationModelSerializer(invitations, many=True).data
         return Response(data, status=status.HTTP_200_OK)

@@ -46,14 +46,16 @@ docker-compose run --rm django coverage run manage.py test -v 2
     + Follow or unfollow to a club, brand or other user. If the profile is private, a follow request is sent
     + List followers and following
     + List user's sponsorships
+    + List club's invitations
   + **Follow request**
     + Send, confirm or delete follow-up request
     + follow-up request detail
     + List unconfirmed follow-up requests
+    + Follow-up to brands, clubs or others users
     
 ### Posts
   + **Post**
-    + Create a Post with a description, pictures, videos, location, feeling, tag users and choosing privacy between public or private as a user, club or brand.
+    + Create a Post with a description, pictures, videos, location, feeling, tag users and choosing privacy between public or private, as a user, club or brand.
     + Post detail
     + Update or delete a post, 
     + React or share a post of a user
@@ -91,11 +93,18 @@ docker-compose run --rm django coverage run manage.py test -v 2
     + Create a club. Only user with trainer or League president role has access to this action
     + Club detail
     + Update club's data
+    + List club's posts
+    + List club's sponsorships
     + List club's followers
+  + **Members**
+    + List club's members
+    + Create and confirm invitation
+    + Detail, deactive, reactive or expel a member
+
 
 ## Documentation
 To see the documentation for the Gaman REST API and see how to play with it, you can:
-  - Import the Api_doc.postman_collection.json file to your Postman account.
+  - Import the Gaman.postman_collection.json file to your Postman account.
   - Or visit the documentation on: https://documenter.getpostman.com/view/15752557/UVC2FTq9
 
 ## Founders

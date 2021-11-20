@@ -21,7 +21,7 @@ class InvitationModelSerializer(serializers.ModelSerializer):
         """Meta options."""
         model = Invitation
         fields = [
-            'issued_by', 'invited',
+            'id', 'issued_by', 'invited',
             'club', 'used',
             'created'
         ]
