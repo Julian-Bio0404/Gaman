@@ -5,8 +5,10 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 # Model
-from gaman.users.models import FollowUp, User
 from gaman.posts.models import Post, PostReaction
+from gaman.sponsorships.models import Brand
+from gaman.sports.models import Club
+from gaman.users.models import FollowUp, User
 from rest_framework.authtoken.models import Token
 
 
@@ -37,48 +39,89 @@ class PostAPITestCase(APITestCase):
             verified=True
         )
 
-        # Follower of the user 1
+        # User 1 (coach role)
         self.user3 = User.objects.create(
             email='test3@gmail.com',
             username='test02',
             first_name='test02',
             last_name='test02',
-            role='Athlete',
+            role='Coach',
             password='nKSAJBBCJW_',
             verified=True
         )
 
+        # A sponsor
+        self.user4 = User.objects.create(
+            email='test4@gmail.com',
+            username='test03',
+            first_name='test03',
+            last_name='test03',
+            role='Sponsor',
+            password='nKSAJBBCJW_',
+            verified=True
+        )
+
+        # Token for authentication
         self.token1 = Token.objects.create(user=self.user1).key
         self.token2 = Token.objects.create(user=self.user2).key
         self.token3 = Token.objects.create(user=self.user3).key
+        self.token4 = Token.objects.create(user=self.user4).key
 
+        # User3 follow user1
         self.folloup = FollowUp.objects.create(
             follower=self.user3, user=self.user1)
 
         self.post = Post.objects.create(
-            author=self.user1,
+            user=self.user1,
             about='I love Django!!',
             privacy='private',
             feeling='Curious'
         )
 
-    def test_post_creation(self):
+        self.brand = Brand.objects.create(sponsor=self.user4, slugname='SpaceX')
+        self.club = Club.objects.create(trainer=self.user3, slugname='Bushido')
+
+    def test_creation_user_post(self):
         """Verifies that a user can create a post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
         request_body = {
             'about': 'I love Python <3' 
         }
         response = self.client.post(self.url, request_body)
-        post = Post.objects.filter(author=self.user1, pk=2)
+        post = Post.objects.filter(about='I love Python <3')
         self.assertEqual(post.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    
+
+    def test_creation_brand_post(self):
+        """Verifies that a brand can create a post."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token4}')
+        url = 'http://localhost:8000/brands/SpaceX/posts/'
+        request_body = {
+            'about': 'This is a post of SpaceX!'
+        }
+        response = self.client.post(url, request_body)
+        post = Post.objects.filter(brand=self.brand)
+        self.assertEqual(post.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_creation_club_post(self):
+        """Verifies that a club can create a post."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        url = 'http://localhost:8000/clubs/Bushido/posts/'
+        request_body = {
+            'about': 'This is a post of SpaceX!'
+        }
+        response = self.client.post(url, request_body)
+        post = Post.objects.filter(club=self.club)
+        self.assertEqual(post.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_post_deletion(self):
         """Verifies that the author can delete a post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
         url = self.url + f'{self.post.pk}/'
         response = self.client.delete(url)
-        post = Post.objects.filter(author=self.user1)
+        post = Post.objects.filter(user=self.user1)
         self.assertEqual(post.count(), 0)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
     
@@ -86,10 +129,10 @@ class PostAPITestCase(APITestCase):
         """Verifies that the author can update a post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
         url = self.url + f'{self.post.pk}/'
-        reques_body = {
+        request_body = {
             'about': 'I love Django and FastAPI!!'
         }
-        response = self.client.patch(url, reques_body)
+        response = self.client.patch(url, request_body)
         post = Post.objects.get(pk=self.post.pk)
         self.assertNotEqual(self.post.about, post.about)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -133,7 +176,7 @@ class PostAPITestCase(APITestCase):
         response = self.client.post(url)
         reaction = PostReaction.objects.filter(
             user=self.user3, post=self.post)
-        self.assertEqual(reaction.exists, True)
+        self.assertEqual(reaction.exists(), True)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_share_post_by_other_user(self):

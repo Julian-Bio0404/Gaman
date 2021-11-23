@@ -1,6 +1,7 @@
 """Users tests."""
 
 # Django REST Framework
+from django.http import response
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -25,6 +26,17 @@ class UserSignUpAPITestCase(APITestCase):
             role='Athlete',
             password='nKSAJBBCJW_'
         )
+
+        self.verified_user = User.objects.create(
+            email='test2@gmail.com',
+            username='test02',
+            first_name='test02',
+            last_name='test02',
+            role='Athlete',
+            password='nKSAJBu98yBCJW_',
+            verified=True
+        )
+
         self.url = 'http://localhost:8000/users/signup/'
 
     def test_password_dont_match(self):
@@ -99,6 +111,16 @@ class UserSignUpAPITestCase(APITestCase):
         response = self.client.post(self.url, request_body)
         user = User.objects.get(username='test01')
         self.assertEqual(Profile.objects.filter(user=user).count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_login(self):
+        """Verifies that user login is success."""
+        url = 'http://localhost:8000/users/login/'
+        request_body = {
+            'email': self.verified_user.email,
+            'password': 'nKSAJBu98yBCJW_'
+        }
+        response = self.client.post(url, request_body)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
