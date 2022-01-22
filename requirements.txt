@@ -1,10 +1,10 @@
 # Base
-Pillow==8.3.2
+Pillow==9.0.0
 pytz==2021.3
 python-decouple==3.5
 
 # Django
-Django==3.2.9
+Django==4.0.1
 
 # Django REST Framework
 djangorestframework==3.12.4
@@ -18,11 +18,11 @@ django-rest-framework-social-oauth2==1.1.0
 django_environ==0.7.0
 
 # Postgres
-psycopg2==2.9.1
+psycopg2==2.9.3
 
 # Celery
-celery==5.1.2
-redis==3.5.3
+celery==5.2.3
+redis==4.1.1
 
 # Tests
 coverage==6.1.1
