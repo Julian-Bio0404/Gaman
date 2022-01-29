@@ -26,3 +26,6 @@ redis==4.1.1
 
 # Tests
 coverage==6.1.1
+
+# Requests
+requests==2.27.1

@@ -15,9 +15,9 @@ class SportEvent(GamanModel):
     a federation or a brand.
     """
 
-    user = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True)
-    brand = models.ForeignKey('sponsorships.Brand', on_delete=models.SET_NULL, null=True)
-    club = models.ForeignKey('sports.Club', on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True)
+    brand = models.ForeignKey('sponsorships.Brand', on_delete=models.SET_NULL, null=True, blank=True)
+    club = models.ForeignKey('sports.Club', on_delete=models.SET_NULL, null=True, blank=True)
 
     title = models.CharField(max_length=150)
     description = models.CharField(max_length=250, blank=True)
@@ -34,6 +34,13 @@ class SportEvent(GamanModel):
     geolocation = models.CharField(max_length=33)
     assistants = models.ManyToManyField('users.User', blank=True, related_name='assistants')
 
+    def specify_author(self) -> str:
+        """Specify if author is a user, brand or club."""
+        authors = [self.user, self.brand, self.club]
+        for author in authors:
+            if author:
+                return author
+    
     def __str__(self):
         """Return Event title."""
         return self.title
