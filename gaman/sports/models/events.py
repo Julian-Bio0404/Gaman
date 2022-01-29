@@ -1,6 +1,7 @@
 """Event models."""
 
 # Django
+from pyexpat import model
 from django.db import models
 
 # Utils
@@ -31,7 +32,13 @@ class SportEvent(GamanModel):
     finish = models.DateField(
         help_text='sport event finish date', auto_now=False, auto_now_add=False)
     
+    # ubitacion
     geolocation = models.CharField(max_length=33)
+    country = models.CharField(max_length=70)
+    state = models.CharField(max_length=90)
+    city = models.CharField(max_length=90)
+    place = models.CharField(max_length=180)
+
     assistants = models.ManyToManyField('users.User', blank=True, related_name='assistants')
 
     def specify_author(self) -> str:

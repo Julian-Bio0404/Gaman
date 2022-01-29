@@ -191,3 +191,8 @@ REST_FRAMEWORK = {
 # Celery
 CELERY_BROKER_URL = 'redis://redis:6379'
 CELERY_RESULT_BACKEND = 'redis://redis:6379'
+
+# Geocodification Api
+API_MAPS_URL = 'https://geocode.search.hereapi.com/v1/geocode'
+API_MAPS_ID = config('API_MAPS_ID')
+API_MAPS_KEY = config('API_MAPS_KEY')

@@ -7,6 +7,9 @@ from rest_framework import serializers
 from gaman.sports.models import SportEvent, Club
 from gaman.users.models.users import User
 
+# Utils
+from utils.services import get_ubication
+
 
 class SportEventModelSerializer(serializers.ModelSerializer):
     """SportEvent model serializer."""
@@ -22,13 +25,15 @@ class SportEventModelSerializer(serializers.ModelSerializer):
             'author', 'title',
             'description', 'photo',
             'start', 'finish',
-            'geolocation', 'created',
-            'updated'
+            'geolocation', 'country',
+            'state', 'city', 'place',
+            'created', 'updated'
         ]
 
         read_only_fields = [
-            'author', 'created',
-            'updated'
+            'author', 'country',
+            'state', 'city', 'place',
+            'created', 'updated'
         ]
     
     def validate(self, data):
@@ -48,5 +53,15 @@ class SportEventModelSerializer(serializers.ModelSerializer):
             event = SportEvent.objects.create(club=author, **data)
         else:
             event = SportEvent.objects.create(brand=author, **data)
+        
+        # Set ubication of the event
+        ubication = get_ubication(data['place'])
+
+        event.country = ubication['country']
+        event.state = ubication['state']
+        event.city = ubication['city']
+        event.place = ubication['place']
+        event.geolocation = ubication['geolocation']
+        event.save()
         return event
     
