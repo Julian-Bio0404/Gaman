@@ -4,7 +4,7 @@
 from django.contrib import admin
 
 # Models
-from gaman.sports.models import Club, League, Invitation, Member
+from gaman.sports.models import Club, Invitation, League, Member, SportEvent
 
 
 @admin.register(Club)
@@ -83,4 +83,21 @@ class MemberAdmin(admin.ModelAdmin):
 
     list_filter = [
         'club__slugname', 'active'
+    ]
+
+
+@admin.register(SportEvent)
+class SportEventAdmin(admin.ModelAdmin):
+    """SportEvent model admin."""
+
+    list_display = [
+        'user', 'brand', 'club',
+        'title', 'description',
+        'photo', 'start', 'finish',
+        'geolocation'
+    ]
+
+    search_fields = [
+        'user__username', 'club__slugname',
+        'brand__slugname'
     ]
