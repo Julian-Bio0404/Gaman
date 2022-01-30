@@ -91,13 +91,19 @@ class SportEventAdmin(admin.ModelAdmin):
     """SportEvent model admin."""
 
     list_display = [
-        'user', 'brand', 'club',
+        'pk','user', 'brand', 'club',
         'title', 'description',
         'photo', 'start', 'finish',
-        'geolocation'
+        'geolocation', 'country',
+        'state', 'city', 'place',
+        'created', 'updated'
     ]
 
     search_fields = [
         'user__username', 'club__slugname',
         'brand__slugname'
+    ]
+
+    list_filter = [
+        'country', 'state', 'city'
     ]

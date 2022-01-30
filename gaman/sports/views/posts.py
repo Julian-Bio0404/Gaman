@@ -31,7 +31,7 @@ class ClubPostViewSet(mixins.CreateModelMixin,
         return[p() for p in permissions]
 
     def dispatch(self, request, *args, **kwargs):
-        """Verify that the brand exists."""
+        """Verify that the club exists."""
         slugname = kwargs['slugname']
         self.club = get_object_or_404(Club, slugname=slugname)
         return super(ClubPostViewSet, self).dispatch(request, *args, **kwargs)

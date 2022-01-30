@@ -7,7 +7,9 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 # Views
-from .views import ClubViewSet, LeagueViewSet, MemberViewSet, ClubPostViewSet
+from .views import (ClubPostViewSet, ClubViewSet,
+                    LeagueViewSet, MemberViewSet,
+                    SportEventViewSet)
 
 
 router = DefaultRouter()
@@ -18,5 +20,8 @@ router.register(
 
 router.register(
     r'clubs/(?P<slugname>[a-zA-Z0-9_-]+)/posts', ClubPostViewSet, basename='club_posts')
+
+router.register(r'events', SportEventViewSet, basename='events')
+
 
 urlpatterns = [path('', include(router.urls))]
