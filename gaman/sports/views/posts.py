@@ -39,9 +39,9 @@ class ClubPostViewSet(mixins.CreateModelMixin,
     def get_queryset(self):
         """Filter brand's posts."""
         return self.club.post_set.all()
-    
+
     def get_serializer_context(self):
-        """Add brand to serializer context."""
+        """Add club to serializer context."""
         context = super(ClubPostViewSet, self).get_serializer_context()
         context['author'] = self.club
         return context

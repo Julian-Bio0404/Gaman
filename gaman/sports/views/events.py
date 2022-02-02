@@ -51,8 +51,8 @@ class SportEventClubViewSet(viewsets.ModelViewSet):
         self.club = get_object_or_404(Club, slugname=kwargs['slugname'])
         return super(SportEventClubViewSet, self).dispatch(request, *args, **kwargs)
 
-    def create(self, request):
-        """Handle sport event creation."""
+    def create(self, request, *args, **kwargs):
+        """Handle sport event creation of a club."""
         serializer = CreateSportEventSerializer(
             data=request.data, context={'author': self.club})
         serializer.is_valid(raise_exception=True)
