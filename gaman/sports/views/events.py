@@ -1,9 +1,15 @@
 """Sport Event views."""
 
 # Django REST Framework
+from itertools import permutations
+from math import perm
 from rest_framework import status, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+
+# Permissions
+from rest_framework.permissions import IsAuthenticated
+from gaman.sports.permissions import IsClubOwner, IsEventCreator
 
 # Models
 from gaman.sports.models import Club, SportEvent
@@ -23,6 +29,14 @@ class SportEventViewSet(viewsets.ModelViewSet):
     queryset = SportEvent.objects.all()
     serializer_class = SportEventModelSerializer
 
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in ['update', 'partial_update', 'destroy']:
+            permissions = [IsAuthenticated, IsEventCreator]
+        else:
+            permissions = [IsAuthenticated]
+        return [p() for p in permissions]
+
     def create(self, request):
         """Handle sport event creation."""
         serializer = CreateSportEventSerializer(
@@ -41,6 +55,15 @@ class SportEventClubViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = SportEventModelSerializer
+
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in [
+            'create', 'update', 'partial_update', 'destroy']:
+            permissions = [IsAuthenticated, IsClubOwner]
+        else:
+            permissions = [IsAuthenticated]
+        return [p() for p in permissions]
 
     def get_queryset(self):
         """Return club events."""

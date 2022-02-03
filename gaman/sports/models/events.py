@@ -6,6 +6,11 @@ from django.db import models
 # Utils
 from gaman.utils.models import GamanModel
 
+# Models
+from gaman.sponsorships.models import Brand
+from gaman.sports.models import Club
+from gaman.users.models import User
+
 
 class SportEvent(GamanModel):
     """
@@ -46,6 +51,14 @@ class SportEvent(GamanModel):
         for author in authors:
             if author:
                 return author
+
+    def normalize_author(self) -> User:
+        """Transform the author in user."""
+        if type(self.specify_author()) == Brand:
+            return self.specify_author().sponsor
+        elif type(self.specify_author()) == Club:
+            return self.specify_author().trainer
+        return self.specify_author()  # user type
     
     def __str__(self):
         """Return Event title."""

@@ -5,6 +5,10 @@ from rest_framework import status, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
+# Permissions
+from rest_framework.permissions import IsAuthenticated
+from gaman.sponsorships.permissions import IsBrandOwner
+
 # Models
 from gaman.sports.models import Club, SportEvent
 
@@ -21,6 +25,15 @@ class SportEventBrandViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = SportEventModelSerializer
+
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in [
+            'create', 'update', 'partial_update', 'destroy']:
+            permissions = [IsAuthenticated, IsBrandOwner]
+        else:
+            permissions = [IsAuthenticated]
+        return [p() for p in permissions]
 
     def get_queryset(self):
         """Return brand events."""
