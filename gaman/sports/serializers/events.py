@@ -10,6 +10,9 @@ from rest_framework import serializers
 from gaman.sports.models import SportEvent, Club
 from gaman.users.models.users import User
 
+# Serializers
+from gaman.users.serializers import ProfileSumaryModelSerilizer
+
 # Utils
 from gaman.utils.services import get_ubication
 
@@ -51,20 +54,25 @@ class SportEventModelSerializer(serializers.ModelSerializer):
         if start:
             today = date.today()
             if start < today:
-                raise serializers.ValidationError('The start date be must after that current date.')
+                raise serializers.ValidationError(
+                    'The start date be must after that current date.')
             if start > instance.finish and not finish:
-                raise serializers.ValidationError('The start date be must after that finish date.')
+                raise serializers.ValidationError(
+                    'The start date be must after that finish date.')
 
         if finish:
             today = date.today()
             if finish < today:
-                raise serializers.ValidationError('The finish date be must after that current date.')
+                raise serializers.ValidationError(
+                    'The finish date be must after that current date.')
             if finish < instance.start and not start:
-                raise serializers.ValidationError('The finish date be must after that start date.')
+                raise serializers.ValidationError(
+                    'The finish date be must after that start date.')
 
         if start and finish:
             if start > finish:
-                raise serializers.ValidationError('The start date be must before that finish date.')
+                raise serializers.ValidationError(
+                    'The start date be must before that finish date.')
 
         ubication = data.get('place', None)
         if ubication:
@@ -126,4 +134,23 @@ class CreateSportEventSerializer(serializers.ModelSerializer):
         event.geolocation = ubication['geolocation']
         event.save()
         return event
-    
+
+
+class AssistantModelSerializer(serializers.ModelSerializer):
+    """Assitant model serializer."""
+
+    name = serializers.CharField(source='get_full_name')
+    profile = ProfileSumaryModelSerilizer(read_only=True)
+
+    class Meta:
+        """Meta options."""
+        model = User
+        fields = [
+            'username', 'name',
+            'profile', 'role'
+        ]
+
+        read_only_fields = [
+            'username', 'name',
+            'profile', 'role'
+        ]

@@ -1,9 +1,8 @@
 """Sport Event views."""
 
 # Django REST Framework
-from itertools import permutations
-from math import perm
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -15,8 +14,9 @@ from gaman.sports.permissions import IsClubOwner, IsEventCreator
 from gaman.sports.models import Club, SportEvent
 
 # Serializers
-from gaman.sports.serializers import (SportEventModelSerializer,
-                                      CreateSportEventSerializer)
+from gaman.sports.serializers import (AssistantModelSerializer,
+                                      CreateSportEventSerializer,
+                                      SportEventModelSerializer)
 
 
 class SportEventViewSet(viewsets.ModelViewSet):
@@ -45,6 +45,27 @@ class SportEventViewSet(viewsets.ModelViewSet):
         event = serializer.save()
         data = SportEventModelSerializer(event).data
         return Response(data, status=status.HTTP_201_CREATED)
+    
+    @action(detail=True, methods=['post'])
+    def go(self, request, *args, **kwargs):
+        """Go to an event."""
+        event = self.get_object()
+        user = request.user
+        if user not in event.assistants.all():
+            event.assistants.add(user)
+            data = {'message': 'You will go to this event.'}
+        else:
+            event.assistants.remove(user)
+            data = {'message': 'You will not go to this event.'}
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True)
+    def assistants(self, request, *args, **kwargs):
+        """List of assistants of the event."""
+        event = self.get_object()
+        assistants = event.assistants.all()
+        data = AssistantModelSerializer(assistants, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class SportEventClubViewSet(viewsets.ModelViewSet):

@@ -19,3 +19,12 @@ class ProfileModelSerializer(serializers.ModelSerializer):
             'sport', 'country', 'public',
             'web_site', 'social_link'
         ]
+
+
+class ProfileSumaryModelSerilizer(serializers.ModelSerializer):
+    """Profile sumary model serializer."""
+
+    class Meta:
+        """Meta options."""
+        model = Profile
+        fields = ['photo', 'sport', 'country']

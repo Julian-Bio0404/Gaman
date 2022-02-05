@@ -100,6 +100,7 @@ class UserSignUpSerializer(serializers.Serializer):
         send_confirmation_email.delay(user_pk=user.pk)
         return user
 
+
 class UserLoginSerializer(serializers.Serializer):
     """
     User login serializer.
