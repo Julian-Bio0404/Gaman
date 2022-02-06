@@ -1,7 +1,6 @@
 """Third services."""
 
 # Utilities
-from math import acos, cos, sin, radians
 import requests
 
 # Django

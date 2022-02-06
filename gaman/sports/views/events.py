@@ -1,11 +1,14 @@
 """Sport Event views."""
 
 # Django REST Framework
-from multiprocessing import Event
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+
+# Filters
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
@@ -30,6 +33,11 @@ class SportEventViewSet(viewsets.ModelViewSet):
 
     queryset = SportEvent.objects.all()
     serializer_class = SportEventModelSerializer
+    filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
+    search_fields = ('country', 'state', 'city')
+    ordering_fields = ('start',)
+    ordering = ('start',)
+    filter_fields = ('country', 'state', 'city')
 
     def get_permissions(self):
         """Assign permissions based on action."""
@@ -70,7 +78,7 @@ class SportEventViewSet(viewsets.ModelViewSet):
         return Response(data, status=status.HTTP_200_OK)
 
     # @action(detail=False, methods=['post'])
-    # def events_nearby(self, request, *args, **kwargs):
+    # def events_nearby(self, request):
     #     """List nearby events according to the user's location."""
     #     data = DistanceSerializer(request.data).validated_data
     #     events = SportEvent.objects.filter()
