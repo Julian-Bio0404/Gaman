@@ -154,3 +154,22 @@ class AssistantModelSerializer(serializers.ModelSerializer):
             'username', 'name',
             'profile', 'role'
         ]
+
+
+class DistanceSerializer(serializers.Serializer):
+    """Distance serializer."""
+
+    lat = serializers.CharField(min_length=4, max_length=16)
+    lng = serializers.CharField(min_length=4, max_length=16)
+
+    def validate(self, data):
+        """Validate lat and lng."""
+        lat = data.get('lat')
+        lng = data.get('lng')
+
+        try:
+            lat = float(lat)
+            lng = float(lng)
+        except:
+            raise serializers.ValidationError('lat or lng are not corrects.')
+        return data

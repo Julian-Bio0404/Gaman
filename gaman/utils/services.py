@@ -1,6 +1,7 @@
 """Third services."""
 
 # Utilities
+from math import acos, cos, sin, radians
 import requests
 
 # Django
@@ -10,18 +11,19 @@ from django.conf import settings
 def get_ubication(place: str)-> dict:
     """
     Connection to HERE geocodification api.
-    Determine country, state, city and geocodification (lat-lng) from a place name.
+    Determine country, state, city and 
+    geocodification (lat-lng) from a place name.
     """
     params = {'q': place, 'apiKey': settings.API_MAPS_KEY}
     response = requests.get(settings.API_MAPS_URL, params=params)
-    response = response.json()
+    response = response.json()['items'][0]
 
-    place = response['items'][0]['title']
-    country = response['items'][0]['address']['countryName']
-    state = response['items'][0]['address']['county']
-    city = response['items'][0]['address']['city']
-    lat = response['items'][0]['position']['lat']
-    lng = response['items'][0]['position']['lng']
+    place = response['title']
+    country = response['address']['countryName']
+    state = response['address']['county']
+    city = response['address']['city']
+    lat = response['position']['lat']
+    lng = response['position']['lng']
 
     ubication = {
         'country': country, 'state': state,

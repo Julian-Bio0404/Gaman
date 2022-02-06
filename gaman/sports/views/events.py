@@ -1,6 +1,7 @@
 """Sport Event views."""
 
 # Django REST Framework
+from multiprocessing import Event
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -16,6 +17,7 @@ from gaman.sports.models import Club, SportEvent
 # Serializers
 from gaman.sports.serializers import (AssistantModelSerializer,
                                       CreateSportEventSerializer,
+                                      DistanceSerializer,
                                       SportEventModelSerializer)
 
 
@@ -66,6 +68,12 @@ class SportEventViewSet(viewsets.ModelViewSet):
         assistants = event.assistants.all()
         data = AssistantModelSerializer(assistants, many=True).data
         return Response(data, status=status.HTTP_200_OK)
+
+    # @action(detail=False, methods=['post'])
+    # def events_nearby(self, request, *args, **kwargs):
+    #     """List nearby events according to the user's location."""
+    #     data = DistanceSerializer(request.data).validated_data
+    #     events = SportEvent.objects.filter()
 
 
 class SportEventClubViewSet(viewsets.ModelViewSet):
