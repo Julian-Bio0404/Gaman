@@ -1,5 +1,8 @@
 """Users tests."""
 
+# Utilities
+import json
+
 # Django
 from django.urls import reverse
 
@@ -45,6 +48,8 @@ class UserSignUpAPITestCase(APITestCase):
             'password_confirmation': 'nKSAJBBCJW'
         }
         response = self.client.post(reverse('users:users-signup'), request_body)
+        error_message = {'non_field_errors': ['Password don´t match']}
+        self.assertEqual(json.loads(response.content), error_message)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_unique_username_error(self):
@@ -63,6 +68,8 @@ class UserSignUpAPITestCase(APITestCase):
             'password_confirmation': 'nKSAJBBCJW'
         }
         response = self.client.post(reverse('users:users-signup'), request_body)
+        error_message = {'username': ['This field must be unique.']}
+        self.assertEqual(json.loads(response.content), error_message)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_unique_email_error(self):
@@ -81,6 +88,8 @@ class UserSignUpAPITestCase(APITestCase):
             'password_confirmation': 'nKSAJBBCJW'
         }
         response = self.client.post(reverse('users:users-signup'), request_body)
+        error_message = {'email': ['This field must be unique.']}
+        self.assertEqual(json.loads(response.content), error_message)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_signup_success(self):
@@ -107,45 +116,64 @@ class UserSignUpAPITestCase(APITestCase):
 class UserLoginAPITestCase(APITestCase):
     """User login view test."""
 
-    def setUp(self):
-        """Test case setup."""
-        self.verified_user = User.objects.create(
-            email='test2@gmail.com',
-            username='test02',
-            first_name='test02',
-            last_name='test02',
-            role='Athlete',
-            password='nKSAJBu98yBCJW_',
-            verified=True
-        )
-
     def test_login_invalid_credentials(self):
         """Verifies that user login is fail with password incorrect."""
         request_body = {
-            'email': self.verified_user.email,
+            'email': 'test2@gmail.com',
             'password': 'nKSAJBu98yBCgfsdg'
         }
         response = self.client.post(reverse('users:users-login'), request_body)
+        error_message = {'non_field_errors': ['Invalid credentials.']}
+        self.assertEqual(json.loads(response.content), error_message)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    
+
     def test_login_success(self):
         """Verifies that user login is success."""
         request_body = {
-            'email': self.verified_user.email,
-            'password': 'nKSAJBu98yBCJW_'
+            'email': 'test04@gmail.com',
+            'username': 'test04',
+            'first_name': 'test00',
+            'last_name': 'test00',
+            'phone_number': '+99 9999999999',
+            'role': 'Athlete',
+            'password': 'nKSAJBBCJW_',
+            'password_confirmation': 'nKSAJBBCJW_'
+        }
+        self.client.post(reverse('users:users-signup'), request_body)
+
+        user = User.objects.get(username='test04')
+        user.verified = True
+        user.save()
+
+        request_body = {
+            'email': user.email,
+            'password': 'nKSAJBBCJW_'
         }
         response = self.client.post(reverse('users:users-login'), request_body)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_login_with_user_un_verified(self):
         """Verifies that an user un verified can not starts session."""
-        self.verified_user.verified = False
-        self.verified_user.save()
         request_body = {
-            'email': self.verified_user.email,
-            'password': 'nKSAJBu98yBCJW_'
+            'email': 'test05@gmail.com',
+            'username': 'test05',
+            'first_name': 'test00',
+            'last_name': 'test00',
+            'phone_number': '+99 9999999999',
+            'role': 'Athlete',
+            'password': 'nKSAJBBCJW_',
+            'password_confirmation': 'nKSAJBBCJW_'
         }
+        self.client.post(reverse('users:users-signup'), request_body)
+        user = User.objects.get(username='test05')
+        request_body = {
+            'email': user.email,
+            'password': 'nKSAJBBCJW_'
+        }
+
+        error_message = {'non_field_errors': ['Account is not active yet.']}
         response = self.client.post(reverse('users:users-login'), request_body)
+        self.assertEqual(json.loads(response.content), error_message)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
