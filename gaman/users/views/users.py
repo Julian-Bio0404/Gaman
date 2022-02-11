@@ -52,7 +52,7 @@ class UserViewSet(mixins.ListModelMixin,
         """Assign permissions based on action."""
         if self.action in [
                 'signup', 'login', 'verify', 'update_email',
-                'refresh_token', 'token_restore_psswd', 'restore_psswd']:
+                'refresh_token', 'token_restore_psswd', 'restore_psswd', 'update_psswd']:
             permissions = [AllowAny]
         elif self.action in [
                 'retrieve', 'update', 'partial_update',

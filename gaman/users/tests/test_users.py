@@ -207,18 +207,6 @@ class UserAccountVerifyAPITestCase(APITestCase):
         user = User.objects.get(username=self.user.username)
         self.assertEqual(user.verified, True)
 
-    def test_restore_password(self):
-        """Verifies that the password is set."""
-        token = token_generation(user=self.user, type='restore_password')
-        request_body = {
-            'password': 'knjxlksjbda',
-            'password_confirmation':'knjxlksjbda',
-            'token': token
-        }
-        self.client.post(reverse('users:users-restore-psswd'), request_body)
-        user = User.objects.get(username=self.user.username)
-        self.assertNotEqual(self.user.password, user.password)
-
 
 class UserUpdateAPITestCase(APITestCase):
     """User update test."""
@@ -245,9 +233,10 @@ class UserUpdateAPITestCase(APITestCase):
         """Verifies that the phone number is updated."""
         url = self.host +  f'users/{self.user.username}/'
         request_body = {'phone_number': '+99 8888888888'}
-        self.client.patch(url, request_body)
+        response = self.client.patch(url, request_body)
         user = User.objects.get(username=self.user.username)
         self.assertNotEqual(self.user.phone_number, user.phone_number)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_user_email(self):
         """Verifies that update email is success."""
@@ -259,9 +248,36 @@ class UserUpdateAPITestCase(APITestCase):
             'new_email':'update@email.com',
             'token': token
         }
-        self.client.post(url, request_body)
+        response = self.client.post(url, request_body)
         user = User.objects.get(username=self.user.username)
         self.assertNotEqual(self.user.email, user.email)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_update_psswd(self):
+        """Verifies that update password is success."""
+        request_body = {
+            'old_password': 'nKSAJBBCJW_',
+            'password': "prueba123",
+            'password_confirmation': "prueba123"
+        }
+        response = self.client.put(
+            reverse('users:users-update-psswd', args=[self.user.username]), request_body)
+        user = User.objects.get(username=self.user.username)
+        self.assertNotEqual(self.user.password, user.password)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_restore_password(self):
+        """Verifies that the password is set."""
+        token = token_generation(user=self.user, type='restore_password')
+        request_body = {
+            'password': 'knjxlksjbda',
+            'password_confirmation':'knjxlksjbda',
+            'token': token
+        }
+        response = self.client.post(reverse('users:users-restore-psswd'), request_body)
+        user = User.objects.get(username=self.user.username)
+        self.assertNotEqual(self.user.password, user.password)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class UserDetailAPITestCase(APITestCase):
