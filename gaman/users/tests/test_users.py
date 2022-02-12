@@ -220,10 +220,9 @@ class UserUpdateAPITestCase(APITestCase):
             last_name='test00',
             phone_number= '+99 9999999999',
             role='Athlete',
-            password='nKSAJBBCJW_',
+            password='admin123',
             verified=True
         )
-        self.host = 'http://localhost:8000/'
 
         # Auth
         self.token = Token.objects.create(user=self.user).key
@@ -231,9 +230,9 @@ class UserUpdateAPITestCase(APITestCase):
 
     def test_update_user_phone_number(self):
         """Verifies that the phone number is updated."""
-        url = self.host +  f'users/{self.user.username}/'
         request_body = {'phone_number': '+99 8888888888'}
-        response = self.client.patch(url, request_body)
+        response = self.client.patch(reverse(
+            'users:users-detail', args=[self.user.username]), request_body)
         user = User.objects.get(username=self.user.username)
         self.assertNotEqual(self.user.phone_number, user.phone_number)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -242,13 +241,12 @@ class UserUpdateAPITestCase(APITestCase):
         """Verifies that update email is success."""
         token = token_generation(
             user=self.user, type='update_email', email='update@email.com')
-        url = self.host + 'users/update_email/'
         request_body = {
             'old_email': self.user.email,
             'new_email':'update@email.com',
             'token': token
         }
-        response = self.client.post(url, request_body)
+        response = self.client.post(reverse('users:users-update-email'), request_body)
         user = User.objects.get(username=self.user.username)
         self.assertNotEqual(self.user.email, user.email)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -256,7 +254,7 @@ class UserUpdateAPITestCase(APITestCase):
     def test_update_psswd(self):
         """Verifies that update password is success."""
         request_body = {
-            'old_password': 'nKSAJBBCJW_',
+            'old_password': 'admin123',
             'password': "prueba123",
             'password_confirmation': "prueba123"
         }
@@ -280,8 +278,8 @@ class UserUpdateAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class UserDetailAPITestCase(APITestCase):
-    """User detail test."""
+class UserGetAPITestCase(APITestCase):
+    """User detail and list test."""
 
     def setUp(self):
         """Test case setup."""
@@ -294,8 +292,6 @@ class UserDetailAPITestCase(APITestCase):
             password='nKSAJBBCJW_',
             verified=True
         )
-        self.host = 'http://localhost:8000/'
-        self.url = self.host +  f'users/{self.user.username}/'
 
         # Auth
         self.token = Token.objects.create(user=self.user).key
@@ -303,5 +299,10 @@ class UserDetailAPITestCase(APITestCase):
 
     def test_user_detail(self):
         """Verifies that user detail exists."""
-        response = self.client.get(self.url)
+        response = self.client.get(reverse('users:users-detail', args=[self.user.username]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_users(self):
+        """Verifies that users list is success."""
+        response = self.client.get(reverse('users:users-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
