@@ -1,11 +1,14 @@
 """Follow requests tests."""
 
+# Django
+from django.urls import reverse
+
 # Django REST Framework
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
-# Model
+# Models
 from gaman.users.models import FollowRequest, Profile, User
 
 
@@ -21,8 +24,8 @@ class FollowRequestAPITestCase(APITestCase):
             first_name='test00',
             last_name='test00',
             role='Athlete',
-            password='nKSAJBBCJW_', 
-            verified = True
+            password='nKSAJBBCJW_',
+            verified=True
         )
         self.profile1 = Profile.objects.create(user=self.user1)
 
@@ -33,8 +36,8 @@ class FollowRequestAPITestCase(APITestCase):
             first_name='test01',
             last_name='test01',
             role='Athlete',
-            password='nKSAJBBCJW_', 
-            verified = True
+            password='nKSAJBBCJW_',
+            verified=True
         )
         self.profile2 = Profile.objects.create(user=self.user2)
 
@@ -45,8 +48,8 @@ class FollowRequestAPITestCase(APITestCase):
             first_name='test02',
             last_name='test02',
             role='Athlete',
-            password='nKSAJBBCJW_', 
-            verified = True
+            password='nKSAJBBCJW_',
+            verified=True
         )
         self.profile3 = Profile.objects.create(user=self.user3)
 
@@ -54,7 +57,8 @@ class FollowRequestAPITestCase(APITestCase):
         self.follow_request = FollowRequest.objects.create(
             follower=self.user2, followed=self.user1)
 
-        self.url = f'http://localhost:8000/profiles/{self.user1.username}/requests/{self.follow_request.pk}/'
+        self.url = reverse(
+            'users:follow_requests-detail', arg=[self.follow_request.pk])
 
         # Auth
         self.token1 = Token.objects.create(user=self.user1).key
