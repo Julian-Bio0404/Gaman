@@ -1,5 +1,8 @@
 """Posts tests."""
 
+# Django
+from django.urls import reverse
+
 # Django REST Framework
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -17,7 +20,6 @@ class PostAPITestCase(APITestCase):
 
     def setUp(self) -> None:
         """Test case setup."""
-        self.url = 'http://localhost:8000/posts/'
 
         self.user1 = User.objects.create(
             email='test@gmail.com',
@@ -67,27 +69,37 @@ class PostAPITestCase(APITestCase):
         self.token3 = Token.objects.create(user=self.user3).key
         self.token4 = Token.objects.create(user=self.user4).key
 
-        # User3 follow user1
+        # User3 follow to user1
         self.folloup = FollowUp.objects.create(
             follower=self.user3, user=self.user1)
 
         self.post = Post.objects.create(
             user=self.user1,
             about='I love Django!!',
-            privacy='private',
+            privacy='Private',
             feeling='Curious'
         )
 
         self.brand = Brand.objects.create(sponsor=self.user4, slugname='SpaceX')
         self.club = Club.objects.create(trainer=self.user3, slugname='Bushido')
 
+    def test_list_posts(self):
+        """Check that list posts is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        response = self.client.get(reverse('posts:posts-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_post_detail(self):
+        """Check that post detail is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        response = self.client.get(reverse('posts:posts-detail', args=[self.post.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_creation_user_post(self):
         """Verifies that a user can create a post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
-        request_body = {
-            'about': 'I love Python <3' 
-        }
-        response = self.client.post(self.url, request_body)
+        request_body = {'about': 'I love Python <3'}
+        response = self.client.post(reverse('posts:posts-list'), request_body)
         post = Post.objects.filter(about='I love Python <3')
         self.assertEqual(post.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -95,11 +107,9 @@ class PostAPITestCase(APITestCase):
     def test_creation_brand_post(self):
         """Verifies that a brand can create a post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token4}')
-        url = 'http://localhost:8000/brands/SpaceX/posts/'
-        request_body = {
-            'about': 'This is a post of SpaceX!'
-        }
-        response = self.client.post(url, request_body)
+        request_body = {'about': 'This is a post of SpaceX!'}
+        response = self.client.post(reverse(
+            'sponsorships:brand-posts-list', args=[self.brand.slugname]), request_body)
         post = Post.objects.filter(brand=self.brand)
         self.assertEqual(post.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -107,51 +117,45 @@ class PostAPITestCase(APITestCase):
     def test_creation_club_post(self):
         """Verifies that a club can create a post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
-        url = 'http://localhost:8000/clubs/Bushido/posts/'
-        request_body = {
-            'about': 'This is a post of SpaceX!'
-        }
-        response = self.client.post(url, request_body)
+        request_body = {'about': 'This is a post of SpaceX!'}
+        response = self.client.post(reverse(
+            'sports:club-posts-list', args=[self.club.slugname]), request_body)
         post = Post.objects.filter(club=self.club)
         self.assertEqual(post.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_post_deletion(self):
-        """Verifies that the author can delete a post."""
-        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
-        url = self.url + f'{self.post.pk}/'
-        response = self.client.delete(url)
-        post = Post.objects.filter(user=self.user1)
-        self.assertEqual(post.count(), 0)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-    
     def test_update_post(self):
         """Verifies that the author can update a post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
-        url = self.url + f'{self.post.pk}/'
-        request_body = {
-            'about': 'I love Django and FastAPI!!'
-        }
-        response = self.client.patch(url, request_body)
+        request_body = {'about': 'I love Django and FastAPI!!'}
+        response = self.client.patch(reverse(
+            'posts:posts-detail', args=[self.post.pk]), request_body)
         post = Post.objects.get(pk=self.post.pk)
         self.assertNotEqual(self.post.about, post.about)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_post_deletion(self):
+        """Verifies that the author can delete a post."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        response = self.client.delete(
+            reverse('posts:posts-detail', args=[self.post.pk]))
+        post = Post.objects.filter(user=self.user1)
+        self.assertEqual(post.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
     def test_post_deletion_by_other_user_fail(self):
         """Verifies that other user cannot delete the post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
-        url = self.url + f'{self.post.pk}/'
-        response = self.client.delete(url)
+        response = self.client.delete(
+            reverse('posts:posts-detail', args=[self.post.pk]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_post_updating_by_other_user_fail(self):
         """Verifies that other user cannot update the post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
-        url = self.url + f'{self.post.pk}/'
-        request_body = {
-            'about': 'I am a expert in Bioinformatic'
-        }
-        response = self.client.patch(url, request_body)
+        request_body = {'about': 'I am a expert in Bioinformatic'}
+        response = self.client.patch(reverse(
+            'posts:posts-detail', args=[self.post.pk]), request_body)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_share_post(self):
@@ -160,20 +164,21 @@ class PostAPITestCase(APITestCase):
         can share the post.
         """
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
-        url = self.url + f'{self.post.pk}/share/'
-        response = self.client.post(url)
+        response = self.client.post(
+            reverse('posts:posts-share', args=[self.post.pk]))
         post = Post.objects.filter(post=self.post)
         self.assertEqual(post.exists(), True)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    
+
     def test_react_to_post(self):
         """
         Verifies that a follower of the author
         can react to the post.
         """
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
-        url = self.url + f'{self.post.pk}/react/'
-        response = self.client.post(url)
+        request_body = {'reaction': 'Like'}
+        response = self.client.post(
+            reverse('posts:posts-react', args=[self.post.pk]), request_body)
         reaction = PostReaction.objects.filter(
             user=self.user3, post=self.post)
         self.assertEqual(reaction.exists(), True)
@@ -185,8 +190,8 @@ class PostAPITestCase(APITestCase):
         author, cannot share the post.
         """
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
-        url = self.url + f'{self.post.pk}/share/'
-        response = self.client.post(url)
+        response = self.client.post(
+            reverse('posts:posts-react', args=[self.post.pk]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_react_post_by_other_user(self):
@@ -195,6 +200,56 @@ class PostAPITestCase(APITestCase):
         author, cannot react to post.
         """
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
-        url = self.url + f'{self.post.pk}/react/'
-        response = self.client.post(url)
+        request_body = {'reaction': 'Like'}
+        response = self.client.post(
+            reverse('posts:posts-react', args=[self.post.pk]), request_body)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_list_post_reactions(self):
+        """Check that list reactions of a post is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        response = self.client.get(
+            reverse('posts:posts-reactions', args=[self.post.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_post_likes(self):
+        """Check that list likes of a post is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        response = self.client.get(
+            reverse('posts:posts-likes', args=[self.post.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_post_loves(self):
+        """Check that list loves reactions of a post is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        response = self.client.get(
+            reverse('posts:posts-loves', args=[self.post.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_post_hahas(self):
+        """Check that list hahas reactions of a post is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        response = self.client.get(
+            reverse('posts:posts-hahas', args=[self.post.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_post_curious(self):
+        """Check that list curious reactions of a post is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        response = self.client.get(
+            reverse('posts:posts-curious', args=[self.post.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_post_angry(self):
+        """Check that list angry reactions of a post is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        response = self.client.get(
+            reverse('posts:posts-angry', args=[self.post.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_post_sads(self):
+        """Check that list sad reactions of a post is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        response = self.client.get(
+            reverse('posts:posts-sads', args=[self.post.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
