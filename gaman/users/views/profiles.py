@@ -77,9 +77,9 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
             pk__in=[FollowUp.objects.filter(user=request.user).values('user__pk')])
 
         if request.user.profile == profile or request.user in followers:
-            posts = Post.objects.filter(author=profile.user)
+            posts = Post.objects.filter(user=profile.user)
         else:
-            posts = Post.objects.filter(author=profile.user, privacy='Public')
+            posts = Post.objects.filter(user=profile.user, privacy='Public')
         data = PostModelSerializer(posts, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 

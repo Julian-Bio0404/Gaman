@@ -21,7 +21,7 @@ class ProfileModelSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProfileSumaryModelSerilizer(serializers.ModelSerializer):
+class ProfileSumaryModelSerializer(serializers.ModelSerializer):
     """Profile sumary model serializer."""
 
     class Meta:

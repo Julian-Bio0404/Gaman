@@ -11,7 +11,7 @@ from gaman.sports.models import SportEvent, Club
 from gaman.users.models.users import User
 
 # Serializers
-from gaman.users.serializers import ProfileSumaryModelSerilizer
+from gaman.users.serializers import ProfileSumaryModelSerializer
 
 # Utils
 from gaman.utils.services import get_ubication
@@ -140,7 +140,7 @@ class AssistantModelSerializer(serializers.ModelSerializer):
     """Assitant model serializer."""
 
     name = serializers.CharField(source='get_full_name')
-    profile = ProfileSumaryModelSerilizer(read_only=True)
+    profile = ProfileSumaryModelSerializer(read_only=True)
 
     class Meta:
         """Meta options."""

@@ -45,7 +45,7 @@ class PostModelSerializer(PostSumaryModelSerializer):
     Post model serializer.
     Handles the creation of user post.
     """
-
+    author = serializers.StringRelatedField(read_only=True, source='specify_author')
     post = PostSumaryModelSerializer(read_only=True, required=False)
     
     tag_users = serializers.ListSerializer(
