@@ -6,8 +6,8 @@ practicing some sport, find those available in their local area.
 
 
 ![](https://img.shields.io/badge/python-v3.9-blue)
-![](https://img.shields.io/badge/django-v3.2.9-blue)
-![](https://img.shields.io/badge/djangorestframework-v3.12.4-blue)
+![](https://img.shields.io/badge/django-v4.0.2-blue)
+![](https://img.shields.io/badge/djangorestframework-v3.13.1-blue)
 ![](https://img.shields.io/badge/psycopg2-v2.9.1-blue)
 ![](https://img.shields.io/badge/celery-v5.1.2-blue)
 
@@ -24,9 +24,26 @@ docker-compose up
 ```
 
 to run the tests, on other console, run:
-```bash
-docker-compose run --rm django coverage run manage.py test -v 2
-```
+- All tests
+  ```bash
+  docker-compose run --rm django coverage run manage.py test -v 2
+  ```
+- Test of a app
+  ```bash
+  docker-compose run --rm django coverage run manage.py test <app-dir>.tests -v 2
+  ```
+- Tests of a app sub-module
+  ```bash
+    docker-compose run --rm django coverage run manage.py test <app-dir>.tests.<file-name> -v 2
+  ```
+- Tests of a sub-module class
+  ```bash
+    docker-compose run --rm django coverage run manage.py test <app-dir>.tests.<file-name>.<Test-class> -v 2
+  ```
+- Specific test
+  ```bash
+    docker-compose run --rm django coverage run manage.py test <app-dir>.tests.<file-name>.<Test-class>.<test_method> -v 2
+  ```
 
 ## Features
 ### Users 
@@ -100,6 +117,12 @@ docker-compose run --rm django coverage run manage.py test -v 2
     + List club's members
     + Create and confirm invitation
     + Detail, deactive, reactive or expel a member
+  + **Events**
+    + Create a Sport event with title, description, photo, start date, finish date, and a geolocation. The event author can be an user, a brand or a club. This feature determine the country, state, city and place name from the geolocation provided, using a third api of geolocation, available on: [Api HERE](https://developer.here.com/)
+    + Detail, update or delete a SportEvent
+    + List events filtering by country, state or city
+    + Mark go to an event
+    + List assistants of a event
 
 
 ## Documentation
