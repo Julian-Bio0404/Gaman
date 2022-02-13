@@ -58,7 +58,8 @@ class FollowRequestAPITestCase(APITestCase):
             follower=self.user2, followed=self.user1)
 
         self.url = reverse(
-            'users:follow_requests-detail', arg=[self.follow_request.pk])
+            'users:follow_requests-detail',
+            args=[self.user1.username, self.follow_request.pk])
 
         # Auth
         self.token1 = Token.objects.create(user=self.user1).key
@@ -78,6 +79,12 @@ class FollowRequestAPITestCase(APITestCase):
         follow_request = FollowRequest.objects.get(
             follower=self.user2, followed=self.user1)
         self.assertEqual(follow_request.accepted, True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_follow_request_detail(self):
+        """Check that follow request detail is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_confirm_request_for_follower_user(self):
