@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 # Model
-from gaman.users.models import FollowUp, Profile, User
+from gaman.users.models import FollowRequest, FollowUp, Profile, User
 from rest_framework.authtoken.models import Token
 
 
@@ -91,7 +91,7 @@ class FollowProfileAPITestCase(APITestCase):
         """Test case setup."""
         # Followed
         self.user1 = User.objects.create(
-            email='test@gmail.com',
+            email='user1@gmail.com',
             username='test00',
             first_name='test00',
             last_name='test00',
@@ -103,7 +103,7 @@ class FollowProfileAPITestCase(APITestCase):
 
         # Follower
         self.user2 = User.objects.create(
-            email='test1@gmail.com',
+            email='user2@gmail.com',
             username='test01',
             first_name='test01',
             last_name='test01',
@@ -112,15 +112,38 @@ class FollowProfileAPITestCase(APITestCase):
             verified = True
         )
         self.profile2 = Profile.objects.create(user=self.user2)
-        self.url = f'http://localhost:8000/profiles/{self.user1.username}/follow/'
-        
+
+        self.user3 = User.objects.create(
+            email='user3@gmail.com',
+            username='test02',
+            first_name='test00',
+            last_name='test00',
+            role='Athlete',
+            password='nKSAJBBCJW_', 
+            verified = True
+        )
+        # Private Profile
+        self.profile3 = Profile.objects.create(user=self.user3, public=False)
+
         # Auth
         self.token = Token.objects.create(user=self.user2).key
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
 
-    def test_follow_success(self):
-        """verifies that user1 follows user2 successfully."""
-        response = self.client.post(self.url)
+    def test_follow_public_profile(self):
+        """verifies that user2 follows to user1 successfully."""
+        response = self.client.post(reverse(
+            'users:profiles-follow', args=[self.user1.username]))
         folloup = FollowUp.objects.filter(follower=self.user2, user=self.user1)
         self.assertEqual(folloup.count(), 1)
-        self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_201_CREATED])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_follow_private_profile(self):
+        """Verifies that user2 follows to user3 with private profile."""
+        response = self.client.post(reverse(
+            'users:profiles-follow', args=[self.user3.username]))
+        folloup = FollowUp.objects.filter(follower=self.user2, user=self.user1)
+        follow_request = FollowRequest.objects.filter(
+            follower=self.user2, followed=self.user3)
+        self.assertEqual(folloup.count(), 0)
+        self.assertEqual(follow_request.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
