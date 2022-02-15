@@ -5,12 +5,12 @@ from django.urls import reverse
 
 # Django REST Framework
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 # Models
-from gaman.posts.models import Comment, Post, CommentReaction
+from gaman.posts.models import Comment, CommentReaction, Post
 from gaman.users.models import FollowUp, User
-from rest_framework.authtoken.models import Token
 
 
 class CommentAPITestCase(APITestCase):
@@ -58,7 +58,7 @@ class CommentAPITestCase(APITestCase):
         # User3 follow to user1
         self.folloup = FollowUp.objects.create(
             follower=self.user3, user=self.user1)
-        
+
         self.post = Post.objects.create(
             user=self.user1,
             about='I love Django!!',
@@ -85,6 +85,28 @@ class CommentAPITestCase(APITestCase):
         response = self.client.get(
             reverse('posts:comments-detail', args=[self.post.pk, self.comment.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_comment_by_author(self):
+        """Check that the comment is update success by author."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        request_body = {'text': 'Hi this comment is a test update'}
+        response = self.client.put(
+            reverse('posts:comments-detail',
+            args=[self.post.pk, self.comment.pk]), request_body)
+        comment = Comment.objects.get(author=self.user3)
+        self.assertNotEqual(comment.text, self.comment.text)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_comment_by_other_user(self):
+        """Check that the comment is not update by other author."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        request_body = {'text': 'Hi this comment is a test update2'}
+        response = self.client.put(
+            reverse('posts:comments-detail',
+            args=[self.post.pk, self.comment.pk]), request_body)
+        comment = Comment.objects.get(author=self.user3)
+        self.assertEqual(comment.text, self.comment.text)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_comment_by_follower(self):
         """
@@ -196,3 +218,42 @@ class CommentAPITestCase(APITestCase):
             author=self.user3, post=self.post, type='Reply')
         self.assertEqual(reply.exists(), True)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_delete_comment_by_comment_author(self):
+        """Check that comment author can delete the comment."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        request_body = {'text': 'This is other test.'}
+        self.client.post(
+            reverse('posts:comments-list', args=[self.post.pk]), request_body)
+        comment = Comment.objects.get(text='This is other test.', author=self.user3)
+
+        response = self.client.delete(
+            reverse('posts:comments-detail', args=[self.post.pk, comment.pk]))
+        comment = Comment.objects.filter(author=self.user3, text='This is other test.')
+        self.assertEqual(comment.exists(), False)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_comment_by_post_auhtor(self):
+        """Check that post author can delete a comment of his post."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        request_body = {'text': 'This is other test2.'}
+        self.client.post(
+            reverse('posts:comments-list', args=[self.post.pk]), request_body)
+        comment = Comment.objects.get(text='This is other test2.', author=self.user3)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        response = self.client.delete(
+            reverse('posts:comments-detail', args=[self.post.pk, comment.pk]))
+        comment = Comment.objects.filter(author=self.user3, text='This is other test2.')
+        self.assertEqual(comment.exists(), False)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_comment_by_other_user(self):
+        """Check that other user cannot delete a comment of other user."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        response = self.client.delete(
+            reverse('posts:comments-detail', args=[self.post.pk, self.comment.pk]))
+        comment = Comment.objects.filter(author=self.user3, text='Hi this comment is a test.')
+        print(response.status_code, 'HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', self.client)
+        self.assertEqual(comment.exists(), True)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
