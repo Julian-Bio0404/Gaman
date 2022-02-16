@@ -23,7 +23,7 @@ class IsCommentOrPostOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         """Check requesting user is comment owner or post owner."""
-        return request.user == obj.post.normalize_author() or obj.author
+        return request.user in (obj.post.normalize_author(), obj.author)
 
 
 class IsFollower(BasePermission):

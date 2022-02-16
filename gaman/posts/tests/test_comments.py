@@ -117,6 +117,8 @@ class CommentAPITestCase(APITestCase):
         request_body = {'text': 'Hi this comment is other test'}
         response = self.client.post(
             reverse('posts:comments-list', args=[self.post.pk]), request_body)
+        post = Post.objects.get(user=self.user1, about='I love Django!!')
+        self.assertEqual(post.comments, 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_list_post_comments_by_follower(self):
@@ -216,6 +218,8 @@ class CommentAPITestCase(APITestCase):
         )
         reply = Comment.objects.filter(
             author=self.user3, post=self.post, type='Reply')
+        self.assertEqual(self.post.comment_set.all().count(), 2)
+        self.assertEqual(self.comment.replies.all().count(), 1)
         self.assertEqual(reply.exists(), True)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -250,10 +254,15 @@ class CommentAPITestCase(APITestCase):
 
     def test_delete_comment_by_other_user(self):
         """Check that other user cannot delete a comment of other user."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        request_body = {'text': 'This is other test3.'}
+        self.client.post(
+            reverse('posts:comments-list', args=[self.post.pk]), request_body)
+        comment = Comment.objects.get(text='This is other test3.', author=self.user3)
+
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
         response = self.client.delete(
-            reverse('posts:comments-detail', args=[self.post.pk, self.comment.pk]))
-        comment = Comment.objects.filter(author=self.user3, text='Hi this comment is a test.')
-        print(response.status_code, 'HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', self.client)
+            reverse('posts:comments-detail', args=[self.post.pk, comment.pk]))
+        comment = Comment.objects.filter(author=self.user3, text='This is other test3.')
         self.assertEqual(comment.exists(), True)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
