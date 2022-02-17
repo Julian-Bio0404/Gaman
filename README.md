@@ -118,7 +118,7 @@ to run the tests, on other console, run:
     + Create and confirm invitation
     + Detail, deactive, reactive or expel a member
   + **Events**
-    + Create a Sport event with title, description, photo, start date, finish date, and a geolocation. The event author can be an user, a brand or a club. This feature determine the country, state, city and place name from the geolocation provided, using a third api of geolocation, available on: [Api HERE](https://developer.here.com/)
+    + Create a Sport event with title, description, photo, start date, finish date, and a geolocation. The event author can be an user, a brand or a club. This feature determine the country, state, city and place name from the geolocation provided, using a third party api of geolocation, available on: [Api HERE](https://developer.here.com/)
     + Detail, update or delete a SportEvent
     + List events filtering by country, state or city
     + Mark go to an event
