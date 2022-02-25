@@ -151,3 +151,16 @@ class MembersAPITestCase(APITestCase):
         invitation.refresh_from_db()
         self.assertTrue(invitation.used)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_confirm_invitation_by_other_user(self):
+        """Check that other user cannot confirm the invitation."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        invitation = Invitation.objects.create(
+            issued_by=self.user1, invited=self.user2, club=self.club)
+        request_body = {'id': invitation.id, 'confirm': True}
+        response = self.client.post(
+            reverse('sports:members-confirm-invitation',
+            args=[self.club.slugname]), request_body)
+        invitation.refresh_from_db()
+        self.assertFalse(invitation.used)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

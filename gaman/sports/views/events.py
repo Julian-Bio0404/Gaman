@@ -95,9 +95,10 @@ class SportEventClubViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         """Assign permissions based on action."""
-        if self.action in [
-            'create', 'update', 'partial_update', 'destroy']:
-            permissions = [IsAuthenticated, IsClubOwner]
+        if self.action in ['update', 'partial_update', 'destroy']:
+            permissions = [IsAuthenticated, IsEventCreator]
+        elif self.action in ['create']:
+            permissions = [IsClubOwner]
         else:
             permissions = [IsAuthenticated]
         return [p() for p in permissions]
