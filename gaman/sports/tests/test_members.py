@@ -1,6 +1,7 @@
 """Members tests."""
 
 # Django
+from urllib import response
 from django.urls import reverse
 
 # Django REST Framework
@@ -9,7 +10,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 # Models
-from gaman.sports.models import Club, Member
+from gaman.sports.models import Club, Invitation, Member
 from gaman.users.models import User
 
 
@@ -116,7 +117,7 @@ class MembersAPITestCase(APITestCase):
         self.assertNotEqual(self.member.active, member.active)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_inactive_member(self):
+    def test_inactive_member_fail(self):
         """Check that the member cannot inactive his membership."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
         request_body = {'active': False}
@@ -126,3 +127,27 @@ class MembersAPITestCase(APITestCase):
         member = Member.objects.get(user=self.user2, club=self.club)
         self.assertEqual(self.member.active, member.active)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    
+    def test_create_invitation(self):
+        """Check that the club creator can send an invitation."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        request_body = {'invited': self.user2.username}
+        response = self.client.post(
+            reverse('sports:members-invitations',
+            args=[self.club.slugname]), request_body)
+        invitation = Invitation.objects.filter(invited=self.user2)
+        self.assertTrue(invitation.exists())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    
+    def test_confirm_invitation(self):
+        """Check that invited user can confirm an invitation."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        invitation = Invitation.objects.create(
+            issued_by=self.user1, invited=self.user2, club=self.club)
+        request_body = {'id': invitation.id, 'confirm': True}
+        response = self.client.post(
+            reverse('sports:members-confirm-invitation',
+            args=[self.club.slugname]), request_body)
+        invitation.refresh_from_db()
+        self.assertTrue(invitation.used)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

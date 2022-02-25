@@ -69,7 +69,8 @@ class MemberViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def confirm_invitation(self, request, *args, **kwargs):
         """Handles the invitations confirmation."""
-        serializer = ConfirmInvitationSerializer(data=request.data, context={'user': request.user})
+        serializer = ConfirmInvitationSerializer(
+            data=request.data, context={'user': request.user})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {'message': f'Now You are a member of {self.club.slugname}'}
