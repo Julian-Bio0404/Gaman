@@ -22,7 +22,7 @@ router.register(
     r'brands/(?P<slugname>[a-zA-Z0-9_-]+)/posts', BrandPostViewSet, basename='brand-posts')
 
 router.register(
-    r'brands/(?P<slugname>[a-zA-Z0-9_-]+)/events', SportEventBrandViewSet, basename='club-events')
+    r'brands/(?P<slugname>[a-zA-Z0-9_-]+)/events', SportEventBrandViewSet, basename='brand-events')
 
 
 urlpatterns = [path('', include(router.urls))]

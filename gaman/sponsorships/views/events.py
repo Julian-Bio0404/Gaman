@@ -10,7 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from gaman.sponsorships.permissions import IsBrandOwner
 
 # Models
-from gaman.sports.models import Club, SportEvent
+from gaman.sponsorships.models import Brand
+from gaman.sports.models import SportEvent
 
 # Serializers
 from gaman.sports.serializers import (SportEventModelSerializer,
@@ -41,7 +42,7 @@ class SportEventBrandViewSet(viewsets.ModelViewSet):
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the club exists."""
-        self.brand = get_object_or_404(Club, slugname=kwargs['slugname'])
+        self.brand = get_object_or_404(Brand, slugname=kwargs['slugname'])
         return super(SportEventBrandViewSet, self).dispatch(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
