@@ -201,3 +201,17 @@ class EventsAPITestCase(APITestCase):
         response = self.client.patch(
             reverse('sports:events-detail', args=[self.sport_event.id]), request_body)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_list_assistants(self):
+        """Check that list assistants is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        response = self.client.get(
+            reverse('sports:events-assistants', args=[self.sport_event.id]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_go_to_event(self):
+        """Check that go to event is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        response = self.client.post(
+            reverse('sports:events-go', args=[self.sport_event.id]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

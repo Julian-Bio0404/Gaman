@@ -77,12 +77,6 @@ class SportEventViewSet(viewsets.ModelViewSet):
         data = AssistantModelSerializer(assistants, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
-    # @action(detail=False, methods=['post'])
-    # def events_nearby(self, request):
-    #     """List nearby events according to the user's location."""
-    #     data = DistanceSerializer(request.data).validated_data
-    #     events = SportEvent.objects.filter()
-
 
 class SportEventClubViewSet(viewsets.ModelViewSet):
     """
