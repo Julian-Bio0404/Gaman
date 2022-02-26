@@ -46,7 +46,9 @@ class User(GamanModel, AbstractUser):
 
     def is_data_completed(self) -> bool:
         """Return the status of the user data."""
-        return self.phone_number != None
+        if not self.phone_number:
+            return False
+        return True
 
     def __str__(self):
         """Return username."""

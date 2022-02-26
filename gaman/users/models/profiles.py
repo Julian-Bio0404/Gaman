@@ -54,7 +54,7 @@ class Profile(GamanModel):
         ]
 
         for i in data:
-            if i == None:
+            if not i:
                 return False
         return True
 
