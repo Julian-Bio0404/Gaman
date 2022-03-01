@@ -214,4 +214,5 @@ class EventsAPITestCase(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
         response = self.client.post(
             reverse('sports:events-go', args=[self.sport_event.id]))
+        self.assertEqual(bool(self.user2 in self.sport_event.assistants.all()), True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

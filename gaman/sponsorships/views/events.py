@@ -8,6 +8,7 @@ from rest_framework.response import Response
 # Permissions
 from rest_framework.permissions import IsAuthenticated
 from gaman.sponsorships.permissions import IsBrandOwner
+from gaman.sports.permissions import IsEventCreator
 
 # Models
 from gaman.sponsorships.models import Brand
@@ -31,7 +32,7 @@ class SportEventBrandViewSet(viewsets.ModelViewSet):
         """Assign permissions based on action."""
         if self.action in [
             'create', 'update', 'partial_update', 'destroy']:
-            permissions = [IsAuthenticated, IsBrandOwner]
+            permissions = [IsAuthenticated, IsEventCreator]
         else:
             permissions = [IsAuthenticated]
         return [p() for p in permissions]
