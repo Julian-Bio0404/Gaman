@@ -37,8 +37,8 @@ def token_generation(user: User, type: str, email=None) -> str:
 
 
 # Asynch task
-@app.task
-def send_confirmation_email(user_pk: int):
+@app.task(bind=True)
+def send_confirmation_email(self, user_pk: int):
     """Send account verification link to given user."""
     user = User.objects.get(pk=user_pk)
     type = 'email_confirmation'
@@ -53,8 +53,8 @@ def send_confirmation_email(user_pk: int):
 
 
 # Asynch task
-@app.task
-def send_restore_password_email(user_pk: int):
+@app.task(bind=True)
+def send_restore_password_email(self, user_pk: int):
     """Send restore password link to given user."""
     user = User.objects.get(pk=user_pk)
     type = 'restore_password'
@@ -69,8 +69,8 @@ def send_restore_password_email(user_pk: int):
 
 
 # Asynch task
-@app.task
-def send_update_email(user_pk: int, email: str):
+@app.task(bind=True)
+def send_update_email(self, user_pk: int, email: str):
     """Send update email link to given user."""
     user = User.objects.get(pk=user_pk)
     type = 'update_email'
