@@ -1,0 +1,9 @@
+-r ./base.txt
+
+gunicorn==20.1.0
+
+# Static files
+django-storages[boto3]==1.12.3
+
+# Email
+django-anymail[mailgun]==8.5

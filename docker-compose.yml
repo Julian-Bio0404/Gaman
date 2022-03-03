@@ -1,18 +1,23 @@
-version: "3.9"
-   
+version: "3"
+
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
 services:
   postgres:
-    image: postgres:14.2-alpine
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: gaman_production_postgres
     deploy:
       resources:
           limits:
             memory: 350M
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=Gaman
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - local_postgres_data:/var/lib/postgresql/data
+      - local_postgres_data_backups:/backups
+    env_file: ./.env
     ports:
       - "5432:5432"
     restart: always
@@ -26,12 +31,15 @@ services:
             memory: 350M
     container_name: redis
 
-  django:
+  django: &django
     build:
       context: .
-      dockerfile: ./compose/Dockerfile
+      dockerfile: ./compose/local/django/Dockerfile
+    image: gaman_local_django
     volumes:
-      - .:/code
+      - .:/app
+    env_file:
+      - ./.env
     deploy:
       resources:
           limits:
@@ -40,16 +48,15 @@ services:
       - "8000:8000"
     depends_on:
       - postgres
-    command: /code/compose/django/start.sh
+    command: /start
     restart: always
     container_name: django
 
   celeryworker:
-    build:
-      context: .
-      dockerfile: ./compose/Dockerfile
+    <<: *django
+    image: gaman_local_celeryworker
     volumes:
-        - .:/code
+        - .:/app
     deploy:
       resources:
           limits:
@@ -58,9 +65,6 @@ services:
     depends_on:
         - redis
         - django
-    command: /code/compose/celery/worker/start.sh
+    command: /start-celeryworker
     restart: always
     container_name: celery-worker
-
-volumes:
-  postgres:

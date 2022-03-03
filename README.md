@@ -6,10 +6,10 @@ practicing some sport, find those available in their local area.
 
 
 ![](https://img.shields.io/badge/python-v3.9-blue)
-![](https://img.shields.io/badge/django-v4.0.2-blue)
+![](https://img.shields.io/badge/django-v4.0.3-blue)
 ![](https://img.shields.io/badge/djangorestframework-v3.13.1-blue)
-![](https://img.shields.io/badge/psycopg2-v2.9.1-blue)
-![](https://img.shields.io/badge/celery-v5.1.2-blue)
+![](https://img.shields.io/badge/psycopg2-v2.9.3-blue)
+![](https://img.shields.io/badge/celery-v5.2.3-blue)
 
 
 ## Run

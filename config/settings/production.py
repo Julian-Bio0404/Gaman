@@ -1,6 +1,6 @@
 """Production settings."""
 
-from .local import *
+from .base import *
 
 DEBUG = False
 
