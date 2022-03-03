@@ -1,16 +1,10 @@
 """Users tasks tests"""
 
-# Django
-from django.urls import reverse
-
 # Django REST Framework
-from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 # Models
-from gaman.sponsorships.models import Brand
-from gaman.users.models import FollowUp, Profile, User
+from gaman.users.models import User
 
 # Tasks
 from taskapp.tasks.users import (send_confirmation_email,

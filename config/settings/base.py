@@ -2,7 +2,6 @@
 
 import os
 import environ
-from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = environ.Path(__file__) - 3
@@ -10,9 +9,6 @@ APPS_DIR = BASE_DIR.path('gaman')
 
 # Enviroments
 env = environ.Env()
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9_bqs58ror+16_4p-05j5#t77s(c#wmh7(&z$xk3oua#l_#1h%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -182,10 +178,13 @@ REST_FRAMEWORK = {
 # ]
 
 # Celery
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_BROKER_URL = env('REDIS_URL')
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # Geocodification Api
 API_MAPS_URL = 'https://geocode.search.hereapi.com/v1/geocode'
-API_MAPS_ID = config('API_MAPS_ID')
-API_MAPS_KEY = config('API_MAPS_KEY')
+API_MAPS_ID = env('API_MAPS_ID')
+API_MAPS_KEY = env('API_MAPS_KEY')
