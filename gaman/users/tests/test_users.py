@@ -14,6 +14,9 @@ from rest_framework.test import APITestCase
 from gaman.users.models import Profile, User
 from rest_framework.authtoken.models import Token
 
+# Serializers
+from gaman.users.serializers import UserModelSerializer
+
 # Taskapp
 from taskapp.tasks.users import token_generation
 
@@ -201,7 +204,8 @@ class UserAccountVerifyAPITestCase(APITestCase):
     
     def test_verify_account(self):
         """Verifies that the account is verified."""
-        token = token_generation(user=self.user, type='email_confirmation')
+        user_data = UserModelSerializer(self.user).data
+        token = token_generation(user_data=user_data, type='email_confirmation')
         request_body = {'token': token}
         self.client.post(reverse('users:users-verify'), request_body)
         user = User.objects.get(username=self.user.username)
@@ -239,8 +243,9 @@ class UserUpdateAPITestCase(APITestCase):
 
     def test_update_user_email(self):
         """Verifies that update email is success."""
+        user_data = UserModelSerializer(self.user).data
         token = token_generation(
-            user=self.user, type='update_email', email='update@email.com')
+            user_data=user_data, type='update_email', email='update@email.com')
         request_body = {
             'old_email': self.user.email,
             'new_email':'update@email.com',
@@ -266,7 +271,8 @@ class UserUpdateAPITestCase(APITestCase):
 
     def test_restore_password(self):
         """Verifies that the password is set."""
-        token = token_generation(user=self.user, type='restore_password')
+        user_data = UserModelSerializer(self.user).data
+        token = token_generation(user_data=user_data, type='restore_password')
         request_body = {
             'password': 'knjxlksjbda',
             'password_confirmation':'knjxlksjbda',

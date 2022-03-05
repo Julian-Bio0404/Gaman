@@ -180,9 +180,6 @@ REST_FRAMEWORK = {
 # Celery
 CELERY_BROKER_URL = env('REDIS_URL')
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
 
 # Geocodification Api
 API_MAPS_URL = 'https://geocode.search.hereapi.com/v1/geocode'

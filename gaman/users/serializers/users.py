@@ -97,7 +97,8 @@ class UserSignUpSerializer(serializers.Serializer):
         data.pop('password_confirmation')
         user = User.objects.create_user(**data)
         Profile.objects.create(user=user)
-        send_confirmation_email.delay(user_pk=user.pk)
+        user_data = UserModelSerializer(user).data
+        send_confirmation_email.delay(user_data=user_data)
         return user
 
 
@@ -169,7 +170,8 @@ class RefreshTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError('Invalid credentials.')
         if user.verified == True:
             raise serializers.ValidationError('You are already verified.')
-        send_confirmation_email.delay(user_pk=user.pk)
+        user_data = UserModelSerializer(user).data
+        send_confirmation_email.delay(user_data=user_data)
         return user
 
 
@@ -184,7 +186,8 @@ class TokenRestorePasswordSerializer(serializers.Serializer):
             user = User.objects.get(email=data)
         except User.DoesNotExist:
             raise serializers.ValidationError('User does not exist.')
-        send_restore_password_email.delay(user_pk=user.pk)
+        user_data = UserModelSerializer(user).data
+        send_restore_password_email.delay(user_data=user_data)
         return user
 
 
@@ -272,7 +275,8 @@ class TokenUpdateEmailSerializers(serializers.Serializer):
         user = self.context['user']
         if not user.check_password(data['password']):
             raise serializers.ValidationError('Wrong password.')
-        send_update_email.delay(user_pk=user.pk, email=data['new_email'])
+        user_data = UserModelSerializer(user).data
+        send_update_email.delay(user_data=user_data, email=data['new_email'])
         return data
 
     def save(self):
