@@ -253,3 +253,76 @@ class PostAPITestCase(APITestCase):
         response = self.client.get(
             reverse('posts:posts-sads', args=[self.post.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class PostModelTestCase(APITestCase):
+    """Post model test case."""
+
+    def setUp(self) -> None:
+        """Test case setup."""
+        self.user1 = User.objects.create(
+            email='test@gmail.com',
+            username='test00',
+            first_name='test00',
+            last_name='test00',
+            role='Athlete',
+            password='nKSAJBBCJW_',
+            verified=True
+        )
+
+        self.coach = User.objects.create(
+            email='test2@gmail.com',
+            username='test02',
+            first_name='test00',
+            last_name='test00',
+            role='Coach',
+            password='nKSAJBBCJW_',
+            verified=True
+        )
+
+        self.sponsor = User.objects.create(
+            email='test3@gmail.com',
+            username='test03',
+            first_name='test00',
+            last_name='test00',
+            role='Sponsor',
+            password='nKSAJBBCJW_',
+            verified=True
+        )
+
+        self.club = Club.objects.create(trainer=self.coach, slugname='Bushido')
+        self.brand = Brand.objects.create(sponsor=self.sponsor, slugname='SpaceX')
+
+        self.user_post = Post.objects.create(
+            user=self.user1,
+            about='I love Django!!',
+            feeling='Curious'
+        )
+
+        self.club_post = Post.objects.create(
+            club=self.club,
+            about='I love Django!!',
+            feeling='Curious'
+        )
+
+        self.brand_post = Post.objects.create(
+            brand=self.brand,
+            about='I love Django!!',
+            feeling='Curious'
+        )
+
+    def test_user_post_model(self):
+        """Check that default attributes and author is a user."""
+        self.assertEqual(self.user_post.privacy, 'Public')
+        self.assertEqual(self.user_post.specify_author(), self.user1)
+        self.assertEqual(self.user_post.normalize_author(), self.user1)
+
+    def test_club_post_model(self):
+        """Check that the post author is a club."""
+        self.assertEqual(self.club_post.specify_author(), self.club)
+        self.assertEqual(self.club_post.normalize_author(), self.coach)
+
+    def test_brand_post_model(self):
+        """Check that the post author is a brand."""
+        self.assertEqual(self.brand_post.specify_author(), self.brand)
+        self.assertEqual(self.brand_post.normalize_author(), self.sponsor)
