@@ -24,4 +24,4 @@ class Invitation(GamanModel):
 
     def __str__(self):
         """Return club and athlete."""
-        return f'{self.club}: {self.athlete}'
+        return f'{self.issued_by} from {self.club}: {self.invited}'

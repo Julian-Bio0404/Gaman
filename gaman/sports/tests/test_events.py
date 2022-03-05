@@ -10,6 +10,7 @@ from rest_framework.test import APITestCase
 
 # Models
 from gaman.sports.models import Club, Member, SportEvent
+from gaman.sponsorships.models import Brand
 from gaman.users.models import User
 
 
@@ -216,3 +217,94 @@ class EventsAPITestCase(APITestCase):
             reverse('sports:events-go', args=[self.sport_event.id]))
         self.assertEqual(bool(self.user2 in self.sport_event.assistants.all()), True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class EventModelTest(APITestCase):
+    """Sport Event model test case."""
+
+    def setUp(self) -> None:
+        """Test case setup."""
+
+        self.user1 = User.objects.create(
+            email='test@gmail.com',
+            username='test00',
+            first_name='test00',
+            last_name='test00',
+            role='Coach',
+            password='nKSAJBBCJW_',
+            verified=True
+        )
+
+        self.coach = User.objects.create(
+            email='test2@gmail.com',
+            username='test02',
+            first_name='test00',
+            last_name='test00',
+            role='Coach',
+            password='nKSAJBBCJW_',
+            verified=True
+        )
+
+        self.sponsor = User.objects.create(
+            email='test3@gmail.com',
+            username='test03',
+            first_name='test00',
+            last_name='test00',
+            role='Sponsor',
+            password='nKSAJBBCJW_',
+            verified=True
+        )
+
+        self.club = Club.objects.create(trainer=self.coach, slugname='Bushido')
+        self.brand = Brand.objects.create(sponsor=self.sponsor, slugname='SpaceX')
+
+        self.user_event = SportEvent.objects.create(
+            user=self.user1,
+            title='This is a sport event test',
+            start='2022-08-03',
+            finish='2022-08-07',
+            geolocation='6.26864 -75.55615',
+            country='Colombia',
+            state='Antioquia',
+            city='Medellin',
+            place='Atanasio Girardot'
+        )
+
+        self.club_event = SportEvent.objects.create(
+            club=self.club,
+            title='This is a sport event test',
+            start='2022-08-03',
+            finish='2022-08-07',
+            geolocation='6.26864 -75.55615',
+            country='Colombia',
+            state='Antioquia',
+            city='Medellin',
+            place='Atanasio Girardot'
+        )
+
+        self.brand_event = SportEvent.objects.create(
+            brand=self.brand,
+            title='This is a sport event test',
+            start='2022-08-03',
+            finish='2022-08-07',
+            geolocation='6.26864 -75.55615',
+            country='Colombia',
+            state='Antioquia',
+            city='Medellin',
+            place='Atanasio Girardot'
+        )
+
+    def test_user_event_model(self):
+        """Check that the event author is a user."""
+        self.assertEqual(self.user_event.specify_author(), self.user1)
+        self.assertEqual(self.user_event.normalize_author(), self.user1)
+
+    def test_club_event_model(self):
+        """Check that the event author is a club."""
+        self.assertEqual(self.club_event.specify_author(), self.club)
+        self.assertEqual(self.club_event.normalize_author(), self.coach)
+
+    def test_brand_event_model(self):
+        """Check that the event author is a brand."""
+        self.assertEqual(self.brand_event.specify_author(), self.brand)
+        self.assertEqual(self.brand_event.normalize_author(), self.sponsor)
