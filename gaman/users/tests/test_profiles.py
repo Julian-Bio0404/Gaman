@@ -1,5 +1,8 @@
 """Profile tests."""
 
+# Utilities
+from unittest import TestCase
+
 # Django
 from django.urls import reverse
 
@@ -147,3 +150,37 @@ class FollowProfileAPITestCase(APITestCase):
         self.assertEqual(folloup.count(), 0)
         self.assertEqual(follow_request.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+class ProfileModelTestCase(APITestCase):
+    """Profile model test case."""
+
+    def setUp(self) -> None:
+        """Test case setup."""
+        self.user1 = User.objects.create(
+            email='user1@gmail.com',
+            username='test00',
+            first_name='test00',
+            last_name='test00',
+            role='Athlete',
+            password='nKSAJBBCJW_', 
+            verified = True
+        )
+
+        self.profile1 = Profile.objects.create(user=self.user1)
+    
+    def test_profile_model(self):
+        """Check that attributes and model methods are corrects."""
+        self.assertTrue(self.profile1.public)
+        self.assertFalse(self.profile1.is_data_completed())
+
+        self.profile1.photo = 'gaman/utils/media_test/profile_photo.jpg'
+        self.profile1.cover_photo = 'gaman/utils/media_test/profile_photo.jpg'
+        self.profile1.about = 'I am a profile test'
+        self.profile1.birth_date = '1997-04-04'
+        self.profile1.country = 'Colombia'
+        self.profile1.web_site = 'www.xxxxxx.com'
+        self.profile1.social_link = 'www.xxxxxx.com'
+        self.profile1.save()
+
+        self.assertTrue(self.profile1.is_data_completed())

@@ -2,6 +2,7 @@
 
 # Utilities
 import json
+from unittest import TestCase
 
 # Django
 from django.urls import reverse
@@ -312,3 +313,27 @@ class UserGetAPITestCase(APITestCase):
         """Verifies that users list is success."""
         response = self.client.get(reverse('users:users-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class UserModelTestCase(TestCase):
+    """User model test case."""
+
+    def setUp(self) -> None:
+        """Test case setup."""
+        self.user = User.objects.create(
+            email='test@gmail.com',
+            username='test00',
+            first_name='test00',
+            last_name='test00',
+            role='Athlete',
+            password='nKSAJBBCJW_'
+        )
+    
+    def test_user_model(self):
+        """Check that attributes and model methods are corrects."""
+        self.assertFalse(self.user.verified)
+        self.assertFalse(self.user.is_data_completed())
+
+        self.user.phone_number = '+99 9999999999'
+        self.user.save()
+        self.assertTrue(self.user.is_data_completed())

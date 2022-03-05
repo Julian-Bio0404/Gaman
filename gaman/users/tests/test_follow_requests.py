@@ -65,6 +65,10 @@ class FollowRequestAPITestCase(APITestCase):
         self.token1 = Token.objects.create(user=self.user1).key
         self.token2 = Token.objects.create(user=self.user2).key
         self.token3 = Token.objects.create(user=self.user3).key
+    
+    def test_request_model(self):
+        """Check that  attributes of request follow model are corrects. """
+        self.assertFalse(self.follow_request.accepted)
 
     def test_confirm_request_for_followed_user(self):
         """
