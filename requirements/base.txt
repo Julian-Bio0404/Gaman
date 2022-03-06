@@ -29,3 +29,6 @@ coverage==6.3.2
 
 # Requests
 requests==2.27.1
+
+# Data
+pandas==1.4.1
