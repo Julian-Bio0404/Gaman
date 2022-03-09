@@ -13,7 +13,7 @@ from gaman.users.models import FollowRequest, FollowUp, Profile, User
 
 SPORTS = [
     'Athletics', 'Badminton', 'Basketball', 'Handball',
-    'Baseball', 'Boxing', 'Cycling', 'Climbing', 'Fencing'
+    'Baseball', 'Boxing', 'Cycling', 'Climbing', 'Fencing',
     'Soccer', 'Gymnastia', 'Golf', 'Halterophilia', 'Horse riding',
     'Hockey', 'Judo', 'Karate', 'Wrestling', 'Swimming',
     'Synchronized swimming', 'Pentathlon', 'Rowing', 'Rugby',
@@ -34,16 +34,15 @@ class Command(BaseCommand):
             columns=[
                 'first_name', 'last_name', 'username',
                 'email', 'password', 'phone_number',
-                'role', 'verified', 'created', 'updated'
-    ]
+                'role', 'verified'
+            ]
         )
 
         profiles_data = pd.DataFrame(
             pd.read_csv('./data/profiles.csv'),
             columns=[
-                'photo', 'cover_photo', 'about',
-                'birth_date', 'country', 'public',
-                'web_site', 'social_link'
+                'about', 'birth_date', 'country',
+                'public', 'web_site', 'social_link'
             ]
         )
 
@@ -57,27 +56,26 @@ class Command(BaseCommand):
                 phone_number=user_data.phone_number,
                 role=user_data.role,
                 verified=bool(user_data.verified),
-                created=user_data.created,
-                updated=user_data.updated
             ) for user_data in users_data.itertuples()
         ]
-        print(users_query)
 
         users = User.objects.bulk_create(users_query)
 
-        profiles_query = [
-            Profile(
-                user=users[i],
-                photo=profiles_data[i].photo,
-                cover_photo=profiles_data[i].cover_photo,
-                about=profiles_data[i].about,
-                birth_date=profiles_data[i].birth_date,
-                country=profiles_data[i].country,
-                public=profiles_data[i].public,
-                web_site=profiles_data[i].web_site,
-                social_link=profiles_data[i].social_link
-            ) for i in range(len(profiles_data))
-        ]
+        x, profiles_query = 0, []
+        for profile_data in profiles_data.itertuples():
+            profile_query = Profile(
+                user=users[x],
+                photo='gaman/utils/media_test/profile_photo.jpg',
+                cover_photo='gaman/utils/media_test/profile_photo.jpg',
+                about=profile_data.about,
+                birth_date=profile_data.birth_date,
+                country=profile_data.country,
+                public=profile_data.public,
+                web_site=profile_data.web_site,
+                social_link=profile_data.social_link
+            )
+            profiles_query.append(profile_query)
+            x += 1
 
         profiles = Profile.objects.bulk_create(profiles_query)
         for profile in profiles:
