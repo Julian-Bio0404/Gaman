@@ -2,6 +2,7 @@
 
 # Utilities
 import random
+from django.db import IntegrityError
 import pandas as pd
 
 # Django
@@ -108,7 +109,7 @@ class Command(BaseCommand):
         for verified_user in verified_users:
             try:
                 Token.objects.create(user=verified_user)
-            except IndentationError:
+            except IntegrityError:
                 pass
 
         self.stdout.write(
