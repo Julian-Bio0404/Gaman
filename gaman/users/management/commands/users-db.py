@@ -7,6 +7,9 @@ import pandas as pd
 # Django
 from django.core.management.base import BaseCommand
 
+# Django REST Framework
+from rest_framework.authtoken.models import Token
+
 # Models
 from gaman.users.models import FollowRequest, FollowUp, Profile, User
 
@@ -84,24 +87,29 @@ class Command(BaseCommand):
             profile.sport = random.choice(SPORTS)
         profiles = Profile.objects.bulk_update(profiles, ['sport'])
 
-        # Create Follow Requests
+
         for user in users:
+            # Create follow requests
             requests_query = [
                 FollowRequest(
                     follower=user,
                     followed=users[random.randint(0, 999)],
                     accepted=True
-                ) for i in range(10)
+                ) for _ in range(10)
             ]
             requests = FollowRequest.objects.bulk_create(requests_query)
 
-            follow_query = [
-                FollowUp(
-                    follower=user,
-                    user=i.followed
-                ) for i in requests
-            ]
+            # Create Follow-Up
+            follow_query = [FollowUp(follower=user, user=i.followed) for i in requests]
             FollowUp.objects.bulk_create(follow_query)
 
+        # Create User token
+        verified_users = User.objects.filter(verified=True)
+        for verified_user in verified_users:
+            try:
+                Token.objects.create(user=verified_user)
+            except IndentationError:
+                pass
+
         self.stdout.write(
-            self.style.SUCCESS('Users, Profiles and Follow and Follow-Requests created successfully.'))
+            self.style.SUCCESS('Users, Profiles, FollowUp and Follow-Requests created successfully.'))

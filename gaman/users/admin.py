@@ -27,7 +27,7 @@ class CustomUserAdmin(UserAdmin):
     ]
 
     list_filter = ['verified', 'role']
-    ordering = ['first_name', 'last_name']
+    ordering = ['-pk','first_name', 'last_name']
 
 
 @admin.register(Profile)
