@@ -14,7 +14,7 @@ from gaman.users.models import User
 class Command(BaseCommand):
     """Post command"""
 
-    help = 'Upload posts and comment csv to database'
+    help = 'Upload posts csv to database'
 
     def handle(self, *args, **options):
         posts_data = pd.DataFrame(
