@@ -7,7 +7,6 @@ import pandas as pd
 from django.core.management.base import BaseCommand
 
 # Models
-from gaman.posts.models import Picture
 from gaman.sports.models import League
 from gaman.users.models import User
 
