@@ -27,10 +27,11 @@ class Command(BaseCommand):
         leagues = League.objects.all()
         
         x, clubs_query = 0, []
+        limit = leagues.count() - 1
         for club_data in clubs_data.itertuples():
             club_query = Club(
                 trainer=users[x],
-                league=leagues[random.randint(0, leagues.count()-1)],
+                league=leagues[random.randint(0, limit)],
                 photo='gaman/utils/media_test/profile_photo.jpg',
                 cover_photo='gaman/utils/media_test/profile_photo.jpg',
                 about=club_data.about,

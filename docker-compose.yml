@@ -59,8 +59,8 @@ services:
         - .:/app
     deploy:
       resources:
-          limits:
-            memory: 350M
+        limits:
+          memory: 350M
     ports: []
     depends_on:
         - redis
