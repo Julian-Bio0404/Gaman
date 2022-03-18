@@ -87,7 +87,6 @@ class BrandEventsAPITestCase(APITestCase):
             reverse('sponsorships:brand-events-detail',
             args=[self.brand.slugname, self.sport_event.id]), request_body)
         event = SportEvent.objects.get(id=self.sport_event.id)
-        print(event.start, self.sport_event.start)
         self.assertNotEqual(event.start, self.sport_event.start)
         self.assertNotEqual(event.finish, self.sport_event.finish)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

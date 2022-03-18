@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -o errexit
+set -o nounset
+
+cd ../../../
+
+python manage.py users-db
+python manage.py leagues-db
+python manage.py clubs-db
+python manage.py events-db
+python manage.py posts-db
