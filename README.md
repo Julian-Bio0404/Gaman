@@ -4,7 +4,7 @@ Gaman Rest Api. A web app that conect to athletes with sponsors
 for their sponsorship, as well as helps to the people interested in 
 practicing some sport, find those available in their local area.
 
-
+![](https://img.shields.io/badge/coverage-89%25-green)
 ![](https://img.shields.io/badge/python-v3.9-blue)
 ![](https://img.shields.io/badge/django-v4.0.3-blue)
 ![](https://img.shields.io/badge/djangorestframework-v3.13.1-blue)
@@ -21,6 +21,18 @@ to run the project, run:
 ```bash
 docker-compose build
 docker-compose up
+```
+
+to fill database, run (optional):
+```bash
+docker-compose run --rm django bash
+cd compose/local/django/
+/fill-db
+```
+
+to create a superuser, run:
+```bash
+docker-compose run --rm django createsuperuser
 ```
 
 to run the tests, on other console, run:
