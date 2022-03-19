@@ -5,6 +5,7 @@ ipdb==0.13.9
 
 # Tools
 django-extensions==3.1.5
+django-debug-toolbar==3.2.4
 
 # Code quality
 flake8==4.0.1

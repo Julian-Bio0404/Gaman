@@ -13,6 +13,8 @@ urlpatterns = [
     path('', include(('gaman.posts.urls', 'posts'), namespace='posts')),
     path('', include(('gaman.sponsorships.urls', 'sponsorships'), namespace='sponsorships')),
     path('', include(('gaman.sports.urls', 'sports'), namespace='sports')),
+
+    path('__debug__/', include('debug_toolbar.urls')),
     # path(r'auth/', include('rest_framework_social_oauth2.urls')),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
