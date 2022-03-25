@@ -31,12 +31,12 @@ class FollowRequestModelSerializer(serializers.ModelSerializer):
             'follower', 'followed',
             'accepted'
         ]
-    
+
     def validate(self, data):
         """Verify that follow request does not exists yet."""
         follow_request = FollowRequest.objects.filter(
-            Q (follower=self.context['follower'], followed=self.context['followed']) |
-            Q (followed=self.context['followed'], follower=self.context['followed']))
+            Q(follower=self.context['follower'], followed=self.context['followed']) |
+            Q(followed=self.context['followed'], follower=self.context['followed']))
 
         if follow_request.exists():
             raise serializers.ValidationError(
@@ -63,7 +63,7 @@ class AcceptFollowRequestSerializer(serializers.Serializer):
         if data['accepted'] != True:
             raise serializers.ValidationError('Follow request not accepted.')
         return data
-            
+
     def save(self):
         """Accept friend request."""
         # Update follow request

@@ -49,7 +49,7 @@ class GamanModel(BaseGamanModel):
 class Reaction(BaseGamanModel):
     """
     Reaction model.
-    
+
     Reaction acts as an abstract class inherits from
     BaseGamanModel. Extend your models of this class
     to add the following field:

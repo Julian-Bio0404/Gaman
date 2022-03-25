@@ -39,7 +39,7 @@ class UserViewSet(mixins.ListModelMixin,
     token, update email, restore and update password.
     """
 
-    queryset = User.objects.filter(verified=True)
+    queryset = User.objects.filter(verified=True).select_related('profile')
     serializer_class = UserModelSerializer
     lookup_field = 'username'
     filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
@@ -51,8 +51,8 @@ class UserViewSet(mixins.ListModelMixin,
     def get_permissions(self):
         """Assign permissions based on action."""
         if self.action in [
-                'signup', 'login', 'verify', 'update_email',
-                'refresh_token', 'token_restore_psswd', 'restore_psswd', 'update_psswd']:
+                'signup', 'login', 'verify', 'update_email', 'refresh_token',
+                'token_restore_psswd', 'restore_psswd', 'update_psswd']:
             permissions = [AllowAny]
         elif self.action in [
                 'retrieve', 'update', 'partial_update',
@@ -88,7 +88,7 @@ class UserViewSet(mixins.ListModelMixin,
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {
-            'message': 'Congratulations, you can now start using Gaman and connecting with friends and sponsors.'}
+            'message': 'Congratulations, now you can connecting with friends and sponsors.'}
         return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])

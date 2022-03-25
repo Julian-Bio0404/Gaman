@@ -39,7 +39,8 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
     as well as follow, the list of followers and followed.
     """
 
-    queryset = Profile.objects.filter(user__verified=True)
+    queryset = Profile.objects.filter(
+        user__verified=True).select_related('user')
     serializer_class = ProfileModelSerializer
     lookup_field = 'user__username'
 
@@ -48,11 +49,11 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
         if self.action in ['retrieve']:
             permissions = [AllowAny]
         elif self.action in ['update', 'partial_update']:
-           permissions = [IsAuthenticated, IsProfileOwner]
+            permissions = [IsAuthenticated, IsProfileOwner]
         else:
             permissions = [IsAuthenticated]
         return[p() for p in permissions]
-    
+
     def retrieve(self, request, *args, **kwargs):
         """
         Retrieve a profile.
@@ -77,9 +78,15 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
             pk__in=[FollowUp.objects.filter(user=request.user).values('user__pk')])
 
         if request.user.profile == profile or request.user in followers:
-            posts = Post.objects.filter(user=profile.user)
+            conditions = {'user': profile.user}
         else:
-            posts = Post.objects.filter(user=profile.user, privacy='Public')
+            conditions = {'user': profile.user, 'privacy': 'Public'}
+        posts = Post.objects.filter(
+            **conditions
+        ).select_related(
+            'user', 'brand', 'club', 'post'
+        ).prefetch_related(
+            'pictures', 'videos', 'tag_users')
         data = PostModelSerializer(posts, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
@@ -87,7 +94,8 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
     def followers(self, request, *args, **kwargs):
         """List all followers."""
         profile = self.get_object()
-        followers = FollowUp.objects.filter(user=profile.user)
+        followers = FollowUp.objects.filter(
+            user=profile.user).select_related('follower')
         data = FollowerSerializer(followers, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
@@ -95,7 +103,8 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
     def following(self, request, *args, **kwargs):
         """List all following."""
         profile = self.get_object()
-        following = FollowUp.objects.filter(follower=profile.user)
+        following = FollowUp.objects.filter(
+            follower=profile.user).select_related('user', 'brand', 'club')
         data = FollowingSerializer(following, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
@@ -111,8 +120,8 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
             user=profile.user, follower=request.user)
         if followup.exists():
             follow_request = FollowRequest.objects.filter(
-                Q (follower=request.user, followed=profile.user)|
-                Q (followed=request.user, follower=profile.user))
+                Q(follower=request.user, followed=profile.user) |
+                Q(followed=request.user, follower=profile.user))
             follow_request.delete()
             followup.delete()
             data = {
@@ -120,7 +129,8 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
         # Follow
         else:
             if profile.public == True:
-                FollowUp.objects.create(user=profile.user, follower=request.user)
+                FollowUp.objects.create(
+                    user=profile.user, follower=request.user)
                 data = {
                     'message': f'You started following to {profile.user.username}'}
             # Follow Request
@@ -145,6 +155,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
     def invitations(self, request, *args, **kwargs):
         """List club's invitations."""
         profile = self.get_object()
-        invitations = Invitation.objects.filter(invited=profile.user)
+        invitations = Invitation.objects.filter(
+            invited=profile.user).select_related('issued_by', 'invited', 'club')
         data = InvitationModelSerializer(invitations, many=True).data
         return Response(data, status=status.HTTP_200_OK)

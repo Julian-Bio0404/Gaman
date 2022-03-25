@@ -65,7 +65,8 @@ class UserSignUpSerializer(serializers.Serializer):
         regex=r"^\+1?\d{1,4}[ ]\d{10}$",
         message='Phone number must be entered in the format: +99 9999999999. Up to indicative + 10 digits allowed.')
 
-    phone_number = serializers.CharField(validators=[phone_regex], required=False)
+    phone_number = serializers.CharField(
+        validators=[phone_regex], required=False)
 
     # Password
     password = serializers.CharField(min_length=8, max_length=64)
@@ -79,14 +80,15 @@ class UserSignUpSerializer(serializers.Serializer):
         """Verify the role."""
         if rol not in ['Athlete', 'Sponsor', 'Coach', 'League president']:
             raise serializers.ValidationError('Role not allowed.')
-    
-    role = serializers.CharField(min_length=4, max_length=16, validators=[role_validator])
+
+    role = serializers.CharField(
+        min_length=4, max_length=16, validators=[role_validator])
 
     def validate(self, data):
         """Verify password match and type identification."""
         passwd = data['password']
         passwd_conf = data['password_confirmation']
-        
+
         if passwd != passwd_conf:
             raise serializers.ValidationError('Password don´t match')
         password_validation.validate_password(passwd)
@@ -107,7 +109,7 @@ class UserLoginSerializer(serializers.Serializer):
     User login serializer.
     Handle the login request data.
     """
-    
+
     email = serializers.EmailField()
     password = serializers.CharField(min_length=8, max_length=64)
 
@@ -124,7 +126,7 @@ class UserLoginSerializer(serializers.Serializer):
 
     def create(self, data):
         """Generate or retrieve token."""
-        token, created = Token.objects.get_or_create(user=self.context['user'])
+        token, _ = Token.objects.get_or_create(user=self.context['user'])
         return self.context['user'], token.key
 
 
@@ -196,10 +198,10 @@ class RestorePasswordSerializer(serializers.Serializer):
 
     password = serializers.CharField(
         required=True, min_length=8, max_length=64)
-        
+
     password_confirmation = serializers.CharField(
         required=True, min_length=8, max_length=64)
-    
+
     token = serializers.CharField()
 
     def validate_token(self, data):
@@ -233,7 +235,7 @@ class UpdatePasswordSerializer(serializers.Serializer):
 
     password = serializers.CharField(
         required=True, min_length=8, max_length=64)
-        
+
     password_confirmation = serializers.CharField(
         required=True, min_length=8, max_length=64)
 
@@ -279,12 +281,6 @@ class TokenUpdateEmailSerializers(serializers.Serializer):
         send_update_email.delay(user_data=user_data, email=data['new_email'])
         return data
 
-    def save(self):
-        """Update user's password."""
-        user = self.context['user']
-        user.set_password(self.validated_data['password'])
-        user.save()
-
 
 class UpdateEmailSerializers(serializers.Serializer):
     """Update Email serializer."""
@@ -313,7 +309,8 @@ class UpdateEmailSerializers(serializers.Serializer):
         try:
             user = User.objects.get(email=data)
         except User.DoesNotExist:
-            raise serializers.ValidationError('There is not user with this email address.')
+            raise serializers.ValidationError(
+                'There is not user with this email address.')
         self.context['user'] = user
         return data
 

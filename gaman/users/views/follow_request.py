@@ -46,7 +46,8 @@ class FollowRequestViewSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         """Return the follow requests of user."""
-        return FollowRequest.objects.filter(followed=self.user, accepted=False)
+        return FollowRequest.objects.filter(
+            followed=self.user, accepted=False).select_related('follower', 'followed')
 
     def update(self, request, *args, **kwargs):
         follow_request = self.get_object()

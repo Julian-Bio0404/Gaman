@@ -16,8 +16,8 @@ class Profile(GamanModel):
     user = models.OneToOneField('users.User', on_delete=models.CASCADE)
 
     photo = models.ImageField(
-        help_text='profile photo', 
-        upload_to='users/photos/%Y/%m/%d/', blank=True, null=True) 
+        help_text='profile photo',
+        upload_to='users/photos/%Y/%m/%d/', blank=True, null=True)
 
     cover_photo = models.ImageField(
         help_text='profile cover photo',
@@ -28,7 +28,7 @@ class Profile(GamanModel):
 
     birth_date = models.DateField(
         auto_now=False, auto_now_add=False, blank=True, null=True)
-    
+
     sport = models.CharField(
         help_text='What sport do you play?', max_length=25, blank=True)
 
@@ -42,7 +42,6 @@ class Profile(GamanModel):
 
     social_link = models.URLField(
         help_text='social media', max_length=200, blank=True)
-
 
     def is_data_completed(self) -> bool:
         """Return the status of the profile data."""
