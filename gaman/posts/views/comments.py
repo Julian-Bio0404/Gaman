@@ -13,7 +13,7 @@ from gaman.posts.permissions import (IsCommentOwner,
                                      IsFollower)
 
 # Models
-from gaman.posts.models import (Comment, 
+from gaman.posts.models import (Comment,
                                 CommentReaction, Post,
                                 PrincipalComment)
 
@@ -47,17 +47,19 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Return post's comments."""
         if self.action in ['list', 'retrieve', 'reply', 'replies']:
-            return PrincipalComment.objects.filter(post=self.object)
-        return Comment.objects.filter(post=self.object)
+            return PrincipalComment.objects.filter(
+                post=self.object).select_related(
+                    'author').prefetch_related('replies')
+        return Comment.objects.filter(post=self.object).select_related('author')
 
     def get_permissions(self):
         """Assign permissions based on action."""
         if self.action in [
             'create', 'retrieve', 'list',
-            'react', 'reactions', 'reply', 'replies']:
+                'react', 'reactions', 'reply', 'replies']:
             permissions = [IsAuthenticated, IsFollower]
         elif self.action in ['update', 'partial_update']:
-           permissions = [IsAuthenticated, IsCommentOwner]
+            permissions = [IsAuthenticated, IsCommentOwner]
         elif self.action in ['destroy']:
             permissions = [IsAuthenticated, IsCommentOrPostOwner]
         else:
@@ -92,7 +94,8 @@ class CommentViewSet(viewsets.ModelViewSet):
     def reactions(self, request, *args, **kwargs):
         """List all comment's reactions."""
         comment = self.get_object()
-        reactions = CommentReaction.objects.filter(comment=comment)
+        reactions = CommentReaction.objects.filter(
+            comment=comment).select_related('user')
         serializer = CommentReactionModelSerializer(reactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -111,6 +114,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     def replies(self, request, *args, **kwargs):
         """List all replies to a comment."""
         comment = self.get_object()
-        replies = comment.replies.all()
+        replies = comment.replies.all().select_related('author')
         data = ReplyModelSerializer(replies, many=True).data
         return Response(data, status=status.HTTP_200_OK)

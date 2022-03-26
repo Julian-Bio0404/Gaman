@@ -1,6 +1,6 @@
 """Comment model."""
 
-# Django 
+# Django
 from django.db import models
 
 # Managers
@@ -26,7 +26,7 @@ class Comment(GamanModel):
     reactions = models.PositiveBigIntegerField(default=0)
 
     replies = models.ManyToManyField(
-        'posts.Comment', 
+        'posts.Comment',
         help_text='Replies of the comment.', related_name='responses', blank=True)
 
     type = models.CharField(max_length=17, choices=TYPE)
@@ -34,7 +34,7 @@ class Comment(GamanModel):
     def __str__(self):
         """Return username, post about and comment."""
         return f'@{self.author} has commented: {self.text} on {self.post}'
-    
+
     class Meta:
         """Meta options."""
         ordering = ['created']
@@ -44,7 +44,7 @@ class PrincipalComment(Comment):
     """Principal Comment proxy model."""
 
     objects = PrincipalCommentManager()
-        
+
     class Meta:
         """Meta options."""
         ordering = ['-reactions', 'created']

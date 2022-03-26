@@ -20,7 +20,9 @@ class PostSumaryModelSerializer(serializers.ModelSerializer):
     It's util for serialize post nested in other post (repost).
     """
 
-    author = serializers.StringRelatedField(read_only=True, source='specify_author')
+    author = serializers.StringRelatedField(
+        read_only=True, source='specify_author')
+
     pictures = ImageModelSerializer(read_only=True, many=True)
     videos = VideoModelSerializer(read_only=True, many=True)
 
@@ -28,14 +30,14 @@ class PostSumaryModelSerializer(serializers.ModelSerializer):
         """Meta options."""
         model = Post
         fields = [
-            'author','about',
+            'author', 'about',
             'location', 'feeling',
             'pictures', 'videos',
             'created'
         ]
 
         read_only_fields = [
-            'author', 'pictures', 
+            'author', 'pictures',
             'videos', 'created'
         ]
 
@@ -45,9 +47,11 @@ class PostModelSerializer(PostSumaryModelSerializer):
     Post model serializer.
     Handles the creation of user post.
     """
-    author = serializers.StringRelatedField(read_only=True, source='specify_author')
+    author = serializers.StringRelatedField(
+        read_only=True, source='specify_author')
+
     post = PostSumaryModelSerializer(read_only=True, required=False)
-    
+
     tag_users = serializers.ListSerializer(
         required=False, child=serializers.CharField())
 
@@ -55,7 +59,7 @@ class PostModelSerializer(PostSumaryModelSerializer):
         """Meta options."""
         model = Post
         fields = [
-            'author','about',
+            'author', 'about',
             'privacy', 'location',
             'feeling', 'pictures',
             'videos', 'tag_users',
@@ -65,13 +69,13 @@ class PostModelSerializer(PostSumaryModelSerializer):
         ]
 
         read_only_fields = [
-            'author', 'pictures', 
+            'author', 'pictures',
             'videos', 'tag_users',
             'post', 'reactions',
             'comments', 'shares',
             'created'
         ]
-    
+
     def validate(self, data):
         """Verify tag friends."""
         tag_users = data.get('tag_users', None)
@@ -96,11 +100,11 @@ class PostModelSerializer(PostSumaryModelSerializer):
         try:
             pictures = self.context['request'].data.getlist('pictures')
             videos = self.context['request'].data.getlist('videos')
-            
+
             for img in pictures:
                 picture = Picture.objects.create(content=img)
                 post.pictures.add(picture)
-                
+
             for i in videos:
                 video = Video.objects.create(content=i)
                 post.videos.add(video)
@@ -122,14 +126,15 @@ class SharePostSerializer(serializers.ModelSerializer):
     It's util when requesting user wants share a post.
     """
 
-    author = serializers.StringRelatedField(read_only=True, source='specify_author')
+    author = serializers.StringRelatedField(
+        read_only=True, source='specify_author')
     post = PostSumaryModelSerializer(read_only=True)
 
     class Meta:
         """Meta options."""
         model = Post
         fields = [
-            'author','about',
+            'author', 'about',
             'privacy', 'location',
             'feeling', 'post',
             'reactions', 'comments',
@@ -138,7 +143,7 @@ class SharePostSerializer(serializers.ModelSerializer):
 
         read_only_fields = [
             'author', 'post',
-            'reactions', 'comments', 
+            'reactions', 'comments',
             'shares', 'created'
         ]
 

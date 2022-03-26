@@ -16,6 +16,4 @@ router.register(r'posts', PostViewSet, basename='posts')
 router.register(
     r'posts/(?P<id>[0-9]+)/comments', CommentViewSet, basename='comments')
 
-urlpatterns = [
-    path('', include(router.urls))
-]
+urlpatterns = [path('', include(router.urls))]

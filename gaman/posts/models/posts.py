@@ -35,34 +35,40 @@ class Post(GamanModel):
         ('Strong', 'Strong'), ('Stressed', 'Stressed'),
         ('Scared', 'Scared'), ('Sick', 'Sick'),
         ('Sarcastic', 'Sarcastic'), ('Anxious', 'Anxious'),
-        ('Nostalgic', 'Nostalgic'), ('Proud', 'Proud'), 
+        ('Nostalgic', 'Nostalgic'), ('Proud', 'Proud'),
         ('Curious', 'Curious'), ('Surprised', 'Surprised')
     ]
 
-    user = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True)
-    brand = models.ForeignKey('sponsorships.Brand', on_delete=models.SET_NULL, null=True)
-    club = models.ForeignKey('sports.Club', on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(
+        'users.User', on_delete=models.SET_NULL, null=True)
+
+    brand = models.ForeignKey(
+        'sponsorships.Brand', on_delete=models.SET_NULL, null=True)
+
+    club = models.ForeignKey(
+        'sports.Club', on_delete=models.SET_NULL, null=True)
 
     about = models.TextField(help_text='Write something', blank=True)
 
     privacy = models.CharField(
         help_text="Post's Privacy", max_length=7, choices=PRIVACY, default='Public')
 
-    location = models.CharField(help_text='Where are you?', max_length=60, blank=True)
+    location = models.CharField(
+        help_text='Where are you?', max_length=60, blank=True)
 
     pictures = models.ManyToManyField('Picture', blank=True)
     videos = models.ManyToManyField('Video', blank=True)
 
     feeling = models.CharField(
         help_text='How you feel?', max_length=9, choices=FEELING, blank=True)
-    
+
     tag_users = models.ManyToManyField(
         'users.User', blank=True, related_name='tag_friends')
 
     post = models.ForeignKey(
-        'self', help_text='Post to be republished.', 
+        'self', help_text='Post to be republished.',
         on_delete=models.SET_NULL, null=True, related_name='re_post')
-    
+
     reactions = models.PositiveBigIntegerField(default=0)
     comments = models.PositiveBigIntegerField(default=0)
     shares = models.PositiveBigIntegerField(default=0)
@@ -73,14 +79,16 @@ class Post(GamanModel):
         for author in authors:
             if author:
                 return author
-    
+
     def normalize_author(self) -> User:
         """Transform the author in user."""
-        if type(self.specify_author()) == Brand:
-            return self.specify_author().sponsor
-        elif type(self.specify_author()) == Club:
-            return self.specify_author().trainer
-        return self.specify_author()  # user type
+        author = self.specify_author()
+        author_type = type(author)
+        if author_type == Brand:
+            return author.sponsor
+        elif author_type == Club:
+            return author.trainer
+        return author  # user type
 
     def __str__(self):
         """Return about and username."""

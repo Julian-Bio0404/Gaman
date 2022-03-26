@@ -19,7 +19,7 @@ class ReplyModelSerializer(serializers.ModelSerializer):
         """Meta options."""
         model = Comment
         fields = [
-            'author', 'text', 
+            'author', 'text',
             'reactions', 'created'
         ]
 
@@ -55,7 +55,7 @@ class CommentModelSerializer(serializers.ModelSerializer):
     """
 
     author = serializers.StringRelatedField(read_only=True)
-    
+
     replies = ReplyModelSerializer(
         read_only=True, required=False, many=True)
 
