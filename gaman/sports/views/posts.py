@@ -38,7 +38,8 @@ class ClubPostViewSet(mixins.CreateModelMixin,
 
     def get_queryset(self):
         """Filter brand's posts."""
-        return self.club.post_set.all()
+        return self.club.post_set.all().select_related(
+            'user', 'club').prefetch_related('pictures', 'videos')
 
     def get_serializer_context(self):
         """Add club to serializer context."""

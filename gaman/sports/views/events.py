@@ -20,7 +20,6 @@ from gaman.sports.models import Club, SportEvent
 # Serializers
 from gaman.sports.serializers import (AssistantModelSerializer,
                                       CreateSportEventSerializer,
-                                      DistanceSerializer,
                                       SportEventModelSerializer)
 
 
@@ -31,7 +30,7 @@ class SportEventViewSet(viewsets.ModelViewSet):
     a sport event.
     """
 
-    queryset = SportEvent.objects.all()
+    queryset = SportEvent.objects.all().select_related('user', 'brand', 'club')
     serializer_class = SportEventModelSerializer
     filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
     search_fields = ('country', 'state', 'city')
@@ -55,7 +54,7 @@ class SportEventViewSet(viewsets.ModelViewSet):
         event = serializer.save()
         data = SportEventModelSerializer(event).data
         return Response(data, status=status.HTTP_201_CREATED)
-    
+
     @action(detail=True, methods=['post'])
     def go(self, request, *args, **kwargs):
         """Go to an event."""
@@ -73,7 +72,7 @@ class SportEventViewSet(viewsets.ModelViewSet):
     def assistants(self, request, *args, **kwargs):
         """List of assistants of the event."""
         event = self.get_object()
-        assistants = event.assistants.all()
+        assistants = event.assistants.all().select_related('profile')
         data = AssistantModelSerializer(assistants, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
@@ -99,7 +98,7 @@ class SportEventClubViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Return club events."""
-        return SportEvent.objects.filter(club=self.club)
+        return SportEvent.objects.filter(club=self.club).select_related('club')
 
     def dispatch(self, request, *args, **kwargs):
         """Verify that the club exists."""

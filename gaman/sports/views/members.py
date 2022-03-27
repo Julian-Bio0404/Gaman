@@ -17,7 +17,6 @@ from gaman.sports.models import Invitation, Member
 # Serializers
 from gaman.sports.serializers import (CreateInvitationSerializer,
                                       ConfirmInvitationSerializer,
-                                      InvitationModelSerializer, 
                                       MemberModelSerializer)
 
 
@@ -48,11 +47,12 @@ class MemberViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Return club members."""
-        return Member.objects.filter(club=self.club)
-    
+        return Member.objects.filter(club=self.club).select_related('user')
+
     def perform_destroy(self, instance):
         """Delete the member and its invitations."""
-        invitation = Invitation.objects.filter(invited=instance.user, club=self.club)
+        invitation = Invitation.objects.filter(
+            invited=instance.user, club=self.club)
         invitation.delete()
         instance.delete()
 
@@ -60,12 +60,13 @@ class MemberViewSet(viewsets.ModelViewSet):
     def invitations(self, request, *args, **kwargs):
         """Handles the club invitations."""
         serializer = CreateInvitationSerializer(
-            data=request.data, context={'issued_by': request.user, 'club': self.club})
+            data=request.data,
+            context={'issued_by': request.user, 'club': self.club})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {'message': 'Invitation created successfully.'}
         return Response(data, status=status.HTTP_201_CREATED)
-    
+
     @action(detail=False, methods=['post'])
     def confirm_invitation(self, request, *args, **kwargs):
         """Handles the invitations confirmation."""

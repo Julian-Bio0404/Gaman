@@ -30,7 +30,7 @@ class ClubViewSet(viewsets.ModelViewSet):
     Handles create, detail, update and destroy club.
     """
 
-    queryset = Club.objects.all()
+    queryset = Club.objects.all().select_related('trainer', 'league')
     serializer_class = ClubModelSerializer
     lookup_field = 'slugname'
     filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
@@ -61,10 +61,11 @@ class ClubViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def followers(self, request, *args, **kwargs):
         club = self.get_object()
-        followers = FollowUp.objects.filter(club=club)
+        followers = FollowUp.objects.filter(
+            club=club).select_related('follower')
         data = FollowerSerializer(followers, many=True).data
         return Response(data, status=status.HTTP_200_OK)
-    
+
     @action(detail=True, methods=['post'])
     def follow(self, request, *args, **kwargs):
         """Follow or unfollow a club."""
@@ -85,6 +86,7 @@ class ClubViewSet(viewsets.ModelViewSet):
     def sponsorships(self, request, *args, **kwargs):
         """List club's sponsorships."""
         club = self.get_object()
-        sponsorships = Sponsorship.objects.filter(club=club)
+        sponsorships = Sponsorship.objects.filter(
+            club=club).select_related('sponsor', 'athlete', 'club', 'brand')
         data = SponsorshipModelSerializer(sponsorships, many=True).data
         return Response(data, status=status.HTTP_200_OK)

@@ -20,7 +20,9 @@ from gaman.utils.services import get_ubication
 class SportEventModelSerializer(serializers.ModelSerializer):
     """SportEvent model serializer."""
 
-    author = serializers.StringRelatedField(read_only=True, source='specify_author')
+    author = serializers.StringRelatedField(
+        read_only=True, source='specify_author')
+
     start = serializers.DateField()
     finish = serializers.DateField()
 
@@ -41,7 +43,7 @@ class SportEventModelSerializer(serializers.ModelSerializer):
             'country', 'state', 'city',
             'created', 'updated'
         ]
-    
+
     def update(self, instance, data):
         """
         Update Sport Event, if the place needs to be
@@ -50,9 +52,9 @@ class SportEventModelSerializer(serializers.ModelSerializer):
         """
         start = data.get('start', None)
         finish = data.get('finish', None)
+        today = date.today()
 
         if start:
-            today = date.today()
             if start < today:
                 raise serializers.ValidationError(
                     'The start date be must after that current date.')
@@ -61,7 +63,6 @@ class SportEventModelSerializer(serializers.ModelSerializer):
                     'The start date be must after that finish date.')
 
         if finish:
-            today = date.today()
             if finish < today:
                 raise serializers.ValidationError(
                     'The finish date be must after that current date.')
@@ -74,21 +75,19 @@ class SportEventModelSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'The start date be must before that finish date.')
 
-        ubication = data.get('place', None)
-        if ubication:
-            ubication = get_ubication(data['place'])
-            instance.country = ubication['country']
-            instance.state = ubication['state']
-            instance.city = ubication['city']
-            instance.place = ubication['place']
-            instance.geolocation = ubication['geolocation']
+        place = data.get('place', None)
+        if place:
+            ubication = get_ubication(place)
+            data.update(ubication)
         return super().update(instance, data)
 
 
 class CreateSportEventSerializer(serializers.ModelSerializer):
     """Create Sport Event serializer."""
 
-    author = serializers.StringRelatedField(read_only=True, source='specify_author')
+    author = serializers.StringRelatedField(
+        read_only=True, source='specify_author')
+
     start = serializers.DateField()
     finish = serializers.DateField()
 
@@ -106,33 +105,31 @@ class CreateSportEventSerializer(serializers.ModelSerializer):
         """Check that the start date is before the end date"""
         today = date.today()
         if data['start'] < today or data['finish'] < today:
-            raise serializers.ValidationError('The dates be must after that current date.')
+            raise serializers.ValidationError(
+                'The dates be must after that current date.')
 
         if data['start'] > data['finish']:
             raise serializers.ValidationError(
                 'The start date be must before that finish date.')
         return data
-    
+
     def create(self, data):
         """Create a Sport Event."""
         # The author can be a user, club or a brand.
         author = self.context['author']
-        if type(author) == User:
-            event = SportEvent.objects.create(user=author, **data)
-        elif type(author) == Club:
-            event = SportEvent.objects.create(club=author, **data)
+        author_type = type(author)
+
+        if author_type == User:
+            data['user'] = author
+        elif author_type == Club:
+            data['club'] = author
         else:
-            event = SportEvent.objects.create(brand=author, **data)
-        
+            data['brand'] = author
+
         # Set ubication of the event
         ubication = get_ubication(data['place'])
-
-        event.country = ubication['country']
-        event.state = ubication['state']
-        event.city = ubication['city']
-        event.place = ubication['place']
-        event.geolocation = ubication['geolocation']
-        event.save()
+        data.update(ubication)
+        event = SportEvent.objects.create(**data)
         return event
 
 
@@ -154,22 +151,3 @@ class AssistantModelSerializer(serializers.ModelSerializer):
             'username', 'name',
             'profile', 'role'
         ]
-
-
-class DistanceSerializer(serializers.Serializer):
-    """Distance serializer."""
-
-    lat = serializers.CharField(min_length=4, max_length=16)
-    lng = serializers.CharField(min_length=4, max_length=16)
-
-    def validate(self, data):
-        """Validate lat and lng."""
-        lat = data.get('lat')
-        lng = data.get('lng')
-
-        try:
-            lat = float(lat)
-            lng = float(lng)
-        except:
-            raise serializers.ValidationError('lat or lng are not corrects.')
-        return data

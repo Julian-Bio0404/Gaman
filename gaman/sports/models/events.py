@@ -20,22 +20,28 @@ class SportEvent(GamanModel):
     a federation or a brand.
     """
 
-    user = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True)
-    brand = models.ForeignKey('sponsorships.Brand', on_delete=models.SET_NULL, null=True, blank=True)
-    club = models.ForeignKey('sports.Club', on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(
+        'users.User', on_delete=models.SET_NULL, null=True, blank=True)
+
+    brand = models.ForeignKey(
+        'sponsorships.Brand', on_delete=models.SET_NULL, null=True, blank=True)
+
+    club = models.ForeignKey(
+        'sports.Club', on_delete=models.SET_NULL, null=True, blank=True)
 
     title = models.CharField(max_length=150)
     description = models.CharField(max_length=250, blank=True)
 
     photo = models.ImageField(
-        help_text='Event picture', upload_to='sports/events/pictures/%Y/%m/%d/', blank=True, null=True)
-    
+        help_text='Event picture',
+        upload_to='sports/events/pictures/%Y/%m/%d/', blank=True, null=True)
+
     start = models.DateField(
         help_text='sport event start date', auto_now=False, auto_now_add=False)
 
     finish = models.DateField(
         help_text='sport event finish date', auto_now=False, auto_now_add=False)
-    
+
     # ubitacion
     geolocation = models.CharField(max_length=33)
     country = models.CharField(max_length=70)
@@ -43,7 +49,8 @@ class SportEvent(GamanModel):
     city = models.CharField(max_length=90)
     place = models.CharField(max_length=180)
 
-    assistants = models.ManyToManyField('users.User', blank=True, related_name='assistants')
+    assistants = models.ManyToManyField(
+        'users.User', blank=True, related_name='assistants')
 
     def specify_author(self) -> str:
         """Specify if author is a user, brand or club."""
@@ -54,12 +61,14 @@ class SportEvent(GamanModel):
 
     def normalize_author(self) -> User:
         """Transform the author in user."""
-        if type(self.specify_author()) == Brand:
-            return self.specify_author().sponsor
-        elif type(self.specify_author()) == Club:
-            return self.specify_author().trainer
-        return self.specify_author()  # user type
-    
+        author = self.specify_author()
+        author_type = type(author)
+        if author_type == Brand:
+            return author.sponsor
+        elif author_type == Club:
+            return author.trainer
+        return author  # user type
+
     def __str__(self):
         """Return Event title."""
         return self.title

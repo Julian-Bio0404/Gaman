@@ -10,7 +10,6 @@ from gaman.sports.models import Member
 from gaman.users.serializers import UserModelSerializer
 
 
-
 class MemberModelSerializer(serializers.ModelSerializer):
     """Member model serializer."""
 

@@ -29,6 +29,7 @@ class ClubModelSerializer(serializers.ModelSerializer):
             'slugname'
         ]
 
+
 class CreateClubSerializer(serializers.Serializer):
     """
     Create Club Serializer.
@@ -58,7 +59,8 @@ class CreateClubSerializer(serializers.Serializer):
                 self.context['league'] = league
                 data.pop('league')
             except League.DoesNotExist:
-                raise serializers.ValidationError('The League does not exists.')
+                raise serializers.ValidationError(
+                    'The League does not exists.')
         return data
 
     def create(self, data):
