@@ -8,48 +8,43 @@ from django.contrib.auth.admin import UserAdmin
 from gaman.users.models import FollowRequest, FollowUp, Profile, User
 
 
+class ProfileInline(admin.StackedInline):
+    """Profile in-line admin for users."""
+
+    model = Profile
+    can_delete = False
+    verbose_name_plural = 'profiles'
+
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     """User model admin."""
 
+    inlines = [ProfileInline]
     list_display = [
-        'pk', 'first_name', 
-        'last_name', 'email', 
-        'username', 'phone_number', 
-        'verified', 'role',
-        'created', 'updated'
+        'pk', 'profile',
+        'first_name', 'last_name',
+        'username', 'email',
+        'phone_number', 'role',
+        'verified', 'created', 'updated'
     ]
 
+    list_display_links = ['pk', 'profile']
+    list_editable = ['verified']
     search_fields = [
-        'username', 'email', 
+        'username', 'email',
         'first_name', 'last_name',
         'verified', 'role'
     ]
 
-    list_filter = ['verified', 'role']
-    ordering = ['-pk','first_name', 'last_name']
+    list_filter = ['verified', 'role', 'profile__country']
+    ordering = ['-pk', 'first_name', 'last_name']
 
+    def has_delete_permission(self, request, obj=None) -> bool:
+        return False
 
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    """Profile model admin."""
-
-    list_display = [
-        'pk', 'user', 'sport', 
-        'birth_date', 'country',
-        'public', 'web_site',
-        'social_link',
-        'created', 'updated'
-    ]
-
-    search_fields = [
-        'user__username', 'user__email', 
-        'user__first_name', 'user__last_name'
-        'sport', 'country', 'public'
-    ]
-
-    list_filter = ['sport', 'country', 'public']
-    ordering = ['user__first_name', 'user__last_name']
+    def has_change_permission(self, request, obj=None) -> bool:
+        return False
 
 
 @admin.register(FollowRequest)
@@ -68,6 +63,12 @@ class FollowRequestAdmin(admin.ModelAdmin):
 
     list_filter = ['accepted']
 
+    def has_delete_permission(self, request, obj=None) -> bool:
+        return False
+
+    def has_change_permission(self, request, obj=None) -> bool:
+        return False
+
 
 @admin.register(FollowUp)
 class FollowUpAdmin(admin.ModelAdmin):
@@ -83,3 +84,9 @@ class FollowUpAdmin(admin.ModelAdmin):
         'follower__username', 'user__username',
         'brand__slugname', 'club__slugname'
     ]
+
+    def has_delete_permission(self, request, obj=None) -> bool:
+        return False
+
+    def has_change_permission(self, request, obj=None) -> bool:
+        return False
