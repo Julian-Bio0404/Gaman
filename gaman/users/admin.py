@@ -31,6 +31,15 @@ class CustomUserAdmin(UserAdmin):
 
     list_display_links = ['pk', 'profile']
     list_editable = ['verified']
+
+    readonly_fields = [
+        'pk', 'profile',
+        'first_name', 'last_name',
+        'username', 'email',
+        'phone_number', 'role',
+        'created', 'updated'
+    ]
+
     search_fields = [
         'username', 'email',
         'first_name', 'last_name',
@@ -40,11 +49,12 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ['verified', 'role', 'profile__country']
     ordering = ['-pk', 'first_name', 'last_name']
 
+    def has_add_permission(self, request, obj=None) -> bool:
+        return False
+
     def has_delete_permission(self, request, obj=None) -> bool:
         return False
 
-    def has_change_permission(self, request, obj=None) -> bool:
-        return False
 
 
 @admin.register(FollowRequest)
@@ -62,6 +72,9 @@ class FollowRequestAdmin(admin.ModelAdmin):
     ]
 
     list_filter = ['accepted']
+
+    def has_add_permission(self, request, obj=None) -> bool:
+        return False
 
     def has_delete_permission(self, request, obj=None) -> bool:
         return False
@@ -84,6 +97,9 @@ class FollowUpAdmin(admin.ModelAdmin):
         'follower__username', 'user__username',
         'brand__slugname', 'club__slugname'
     ]
+
+    def has_add_permission(self, request, obj=None) -> bool:
+        return False
 
     def has_delete_permission(self, request, obj=None) -> bool:
         return False
