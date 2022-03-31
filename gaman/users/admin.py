@@ -12,6 +12,14 @@ class ProfileInline(admin.StackedInline):
     """Profile in-line admin for users."""
 
     model = Profile
+    readonly_fields = [
+        'photo', 'cover_photo',
+        'about', 'birth_date',
+        'sport', 'country',
+        'public', 'web_site',
+        'social_link'
+    ]
+
     can_delete = False
     verbose_name_plural = 'profiles'
 
@@ -56,7 +64,6 @@ class CustomUserAdmin(UserAdmin):
         return False
 
 
-
 @admin.register(FollowRequest)
 class FollowRequestAdmin(admin.ModelAdmin):
     """Follow Request admin."""
@@ -67,8 +74,8 @@ class FollowRequestAdmin(admin.ModelAdmin):
     ]
 
     search_fields = [
-        'follower__username', 'followed__username',
-        'accepted'
+        'follower__username',
+        'followed__username'
     ]
 
     list_filter = ['accepted']
