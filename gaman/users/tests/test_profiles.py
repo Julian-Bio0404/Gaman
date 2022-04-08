@@ -1,7 +1,8 @@
 """Profile tests."""
 
 # Utilities
-from unittest import TestCase
+import datetime
+import json
 
 # Django
 from django.urls import reverse
@@ -11,6 +12,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 # Model
+from gaman.sports.models import Invitation, Club
+from gaman.sponsorships.models import Sponsorship
 from gaman.users.models import FollowRequest, FollowUp, Profile, User
 from rest_framework.authtoken.models import Token
 
@@ -31,18 +34,59 @@ class ProfileAPITestCase(APITestCase):
         )
         Profile.objects.create(user=self.user)
 
+        self.user2 = User.objects.create(
+            email='test0@gmail.com',
+            username='test000',
+            first_name='test00',
+            last_name='test00',
+            role='Athlete',
+            password='nKSAJBBCJW_', 
+            verified = True
+        )
+        Profile.objects.create(user=self.user2)
+
+        self.sponsor = User.objects.create(
+            email='test1@gmail.com',
+            username='test01',
+            first_name='test00',
+            last_name='test00',
+            role='Sponsor',
+            password='nKSAJBBCJW_', 
+            verified = True
+        )
+        Profile.objects.create(user=self.sponsor)
+
+        # Follow up
+        FollowUp.objects.create(user=self.user, follower=self.user2)
+        FollowUp.objects.create(user=self.user2, follower=self.user)
+
+        # Club
+        self.club = Club.objects.create(slugname='Bushido', trainer=self.user2)
+
+        # Invitation
+        self.invitation = Invitation.objects.create(
+            club=self.club, issued_by=self.sponsor, invited=self.user)
+
         # Auth
         self.token = Token.objects.create(user=self.user).key
-        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
+        self.token2 = Token.objects.create(user=self.sponsor).key
 
     def test_profile_detail(self):
         """Verifies that profile detail is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
         response = self.client.get(
             reverse('users:profiles-detail', args=[self.user.username]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        response = self.client.get(
+            reverse('users:profiles-detail', args=[self.sponsor.username]))
+        self.assertTrue('rating' in json.loads(response.content))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_profile_update(self):
         """Verifies that the updating of profile is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
         request_body = {
             'about': 'I am a test profile',
             'birth_date': '1997-09-24',
@@ -56,34 +100,72 @@ class ProfileAPITestCase(APITestCase):
             'users:profiles-detail', args=[self.user.username]), request_body)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_profile_update_by_other_user(self):
+        """Check that other user cannot update profile."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        request_body = {
+            'about': 'I am a test profile',
+            'birth_date': '1997-09-24',
+            'sport': 'Karate',
+            'country': 'Colombia',
+            'public': False,
+            'web_site': 'https://github.com/',
+            'social_link': 'https://github.com/'
+        }
+        response = self.client.patch(reverse(
+            'users:profiles-detail', args=[self.user.username]), request_body)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_list_profile_posts(self):
         """Check that list posts of the profile is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
+        response = self.client.get(
+            reverse('users:profiles-posts', args=[self.user.username]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
         response = self.client.get(
             reverse('users:profiles-posts', args=[self.user.username]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_profile_followers(self):
         """Check that list followers of the profile is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
         response = self.client.get(
             reverse('users:profiles-followers', args=[self.user.username]))
+        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_profile_following(self):
         """Check that list following of the profile is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
         response = self.client.get(
             reverse('users:profiles-following', args=[self.user.username]))
+        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_sponsorships(self):
         """Check that list sponsorships of the profile is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
+
+        # Sponsorship
+        today = datetime.date.today()
+        start = today
+        finish = today + datetime.timedelta(days=2)
+        Sponsorship.objects.create(
+            sponsor=self.sponsor, athlete=self.user, start=start, finish=finish)
+
         response = self.client.get(
             reverse('users:profiles-sponsorships', args=[self.user.username]))
+        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_club_invitations(self):
         """Check that list club-invitations of the user is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
         response = self.client.get(
             reverse('users:profiles-invitations', args=[self.user.username]))
+        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 

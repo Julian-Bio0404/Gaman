@@ -75,7 +75,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
         """
         profile = self.get_object()
         followers = User.objects.filter(
-            pk__in=[FollowUp.objects.filter(user=request.user).values('user__pk')])
+            pk__in=[FollowUp.objects.filter(user=profile.user).values('follower__pk')])
 
         if request.user.profile == profile or request.user in followers:
             conditions = {'user': profile.user}
