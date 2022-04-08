@@ -260,6 +260,12 @@ class UserAccountVerifyAPITestCase(APITestCase):
             reverse('users:users-refresh-token'), request_body)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        # Check with user that does not exist
+        request_body['email'] = 'prueba@p.com'
+        response = self.client.post(
+            reverse('users:users-refresh-token'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_verify_account(self):
         """Verifies that the account is verified."""
         user_data = UserModelSerializer(self.user).data
@@ -269,6 +275,19 @@ class UserAccountVerifyAPITestCase(APITestCase):
         user = User.objects.get(username=self.user.username)
         self.assertEqual(user.verified, True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_restore_psswd_token(self):
+        """Check that the user can get token for restore his password."""
+        request_body = {'email': self.user.email}
+        response = self.client.post(reverse(
+            'users:users-token-restore-psswd'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check with user that does not exist
+        request_body['email'] = 'prueba@p.com'
+        response = self.client.post(reverse(
+            'users:users-token-restore-psswd'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class UserUpdateAPITestCase(APITestCase):
@@ -330,6 +349,30 @@ class UserUpdateAPITestCase(APITestCase):
 
     def test_restore_password(self):
         """Verifies that the password is set."""
+        # With invalid token
+        request_body = {
+            'password': 'knjxlksjbda',
+            'password_confirmation':'knjxlksjbda',
+            'token': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        }
+        response = self.client.post(reverse('users:users-restore-psswd'), request_body)
+        user = User.objects.get(username=self.user.username)
+        self.assertEqual(self.user.password, user.password)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # With invalid token type
+        user_data = UserModelSerializer(self.user).data
+        token = token_generation(user_data=user_data, type='update_email')
+        request_body = {
+            'password': 'knjxlksjbda',
+            'password_confirmation':'knjxlksjbda',
+            'token': token
+        }
+        response = self.client.post(reverse('users:users-restore-psswd'), request_body)
+        self.assertEqual(self.user.password, user.password)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Success
         user_data = UserModelSerializer(self.user).data
         token = token_generation(user_data=user_data, type='restore_password')
         request_body = {
