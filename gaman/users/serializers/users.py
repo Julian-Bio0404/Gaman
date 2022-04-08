@@ -162,11 +162,10 @@ class RefreshTokenSerializer(serializers.Serializer):
     """Refresh Token serializer for account verification."""
 
     email = serializers.EmailField()
-    password = serializers.CharField(min_length=8, max_length=64)
 
     def validate(self, data):
         """Check credentials.."""
-        user = authenticate(username=data['email'], password=data['password'])
+        user = User.objects.filter(email=data['email']).last()
 
         if not user:
             raise serializers.ValidationError('Invalid credentials.')

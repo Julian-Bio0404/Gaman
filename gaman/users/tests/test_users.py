@@ -11,7 +11,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-# Model
+# Models
 from gaman.users.models import Profile, User
 from rest_framework.authtoken.models import Token
 
@@ -94,6 +94,39 @@ class UserSignUpAPITestCase(APITestCase):
         response = self.client.post(reverse('users:users-signup'), request_body)
         error_message = {'email': ['This field must be unique.']}
         self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_role(self):
+        """Check that the user register is not success with invalid role."""
+        request_body = {
+            'email': 'test01@gmail.com',
+            'username': 'test01',
+            'first_name': 'test00',
+            'last_name': 'test00',
+            'phone_number': '+99 9999999999',
+            'role': 'xxxxxxx',
+            'password': 'nKSAJBBCJW_',
+            'password_confirmation': 'nKSAJBBCJW'
+        }
+        response = self.client.post(reverse('users:users-signup'), request_body)
+        error_message = {'role': ['Role not allowed.']}
+        self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_phone_number(self):
+        """Check that user register is not success with invalid phone number."""
+        request_body = {
+            'email': 'test01@gmail.com',
+            'username': 'test01',
+            'first_name': 'test00',
+            'last_name': 'test00',
+            'phone_number': '9999999999',
+            'role': 'Sponsor',
+            'password': 'nKSAJBBCJW_',
+            'password_confirmation': 'nKSAJBBCJW'
+        }
+        response = self.client.post(reverse('users:users-signup'), request_body)
+        self.assertTrue('phone_number' in json.loads(response.content).keys())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_signup_success(self):
@@ -195,22 +228,47 @@ class UserAccountVerifyAPITestCase(APITestCase):
             password='nKSAJBBCJW_'
         )
 
-        # Auth
-        self.token = Token.objects.create(user=self.user).key
-        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
-
     def test_verify_account_is_false(self):
         """Verifies that account is not verified."""
         self.assertEqual(self.user.verified, False)
-    
+
+    def test_invalid_token(self):
+        """Check that verify account is not success with invalid token."""
+        request_body = {'token': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
+        response = self.client.post(reverse('users:users-verify'), request_body)
+        user = User.objects.get(username=self.user.username)
+        self.assertFalse(user.verified)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_type_token(self):
+        """
+        Check that verify account is not success with
+        invalid token type.
+        """
+        user_data = UserModelSerializer(self.user).data
+        token = token_generation(user_data=user_data, type='update_email')
+        request_body = {'token': token}
+        response = self.client.post(reverse('users:users-verify'), request_body)
+        user = User.objects.get(username=self.user.username)
+        self.assertFalse(user.verified)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_refresh_token_verification(self):
+        """Check that the user can refresh token verification."""
+        request_body = {'email': self.user.email}
+        response = self.client.post(
+            reverse('users:users-refresh-token'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_verify_account(self):
         """Verifies that the account is verified."""
         user_data = UserModelSerializer(self.user).data
         token = token_generation(user_data=user_data, type='email_confirmation')
         request_body = {'token': token}
-        self.client.post(reverse('users:users-verify'), request_body)
+        response = self.client.post(reverse('users:users-verify'), request_body)
         user = User.objects.get(username=self.user.username)
         self.assertEqual(user.verified, True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class UserUpdateAPITestCase(APITestCase):
@@ -256,19 +314,19 @@ class UserUpdateAPITestCase(APITestCase):
         user = User.objects.get(username=self.user.username)
         self.assertNotEqual(self.user.email, user.email)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    def test_update_psswd(self):
-        """Verifies that update password is success."""
-        request_body = {
-            'old_password': 'admin123',
-            'password': "prueba123",
-            'password_confirmation': "prueba123"
-        }
-        response = self.client.put(
-            reverse('users:users-update-psswd', args=[self.user.username]), request_body)
-        user = User.objects.get(username=self.user.username)
-        self.assertNotEqual(self.user.password, user.password)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # def test_update_psswd(self):
+    #     """Verifies that update password is success."""
+    #     request_body = {
+    #         'old_password': 'admin123',
+    #         'password': "prueba123",
+    #         'password_confirmation': "prueba123"
+    #     }
+    #     response = self.client.put(
+    #         reverse('users:users-update-psswd', args=[self.user.username]), request_body)
+    #     user = User.objects.get(username=self.user.username)
+    #     self.assertNotEqual(self.user.password, user.password)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_restore_password(self):
         """Verifies that the password is set."""
