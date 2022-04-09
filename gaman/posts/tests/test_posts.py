@@ -1,6 +1,9 @@
 """Posts tests."""
 
 # Django
+import json
+from tkinter import Image
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
 # Django REST Framework
@@ -8,7 +11,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 # Model
-from gaman.posts.models import Post, PostReaction
+from gaman.posts.models import Post, PostReaction, Picture, Video
 from gaman.sponsorships.models import Brand
 from gaman.sports.models import Club
 from gaman.users.models import FollowUp, User
@@ -80,6 +83,9 @@ class PostAPITestCase(APITestCase):
             feeling='Curious'
         )
 
+        self.reaction = PostReaction.objects.create(
+            user=self.user1, post=self.post, reaction='Like')
+
         self.brand = Brand.objects.create(sponsor=self.user4, slugname='SpaceX')
         self.club = Club.objects.create(trainer=self.user3, slugname='Bushido')
 
@@ -98,10 +104,23 @@ class PostAPITestCase(APITestCase):
     def test_creation_user_post(self):
         """Verifies that a user can create a post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
-        request_body = {'about': 'I love Python <3'}
+        picture = SimpleUploadedFile('file.jpg', b'abc', content_type='image/jpg')
+        video = SimpleUploadedFile('file.mp4', b'abc', content_type='video/mp4')
+        request_body = {
+            'about': 'I love Python <3',
+            'privacy': 'Private',
+            'location': 'Bogotá',
+            'tag_users': [self.user2.username],
+            'feeling': 'Motived',
+            'pictures': [picture],
+            'videos': [video]
+        }
         response = self.client.post(reverse('posts:posts-list'), request_body)
         post = Post.objects.filter(about='I love Python <3')
+        images = Picture.objects.all()
+        videos = Video.objects.all()
         self.assertEqual(post.count(), 1)
+        self.assertTrue(images.count() == 1 and videos.count() == 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_creation_brand_post(self):
@@ -211,6 +230,7 @@ class PostAPITestCase(APITestCase):
         response = self.client.get(
             reverse('posts:posts-reactions', args=[self.post.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)
 
     def test_list_post_likes(self):
         """Check that list likes of a post is success."""

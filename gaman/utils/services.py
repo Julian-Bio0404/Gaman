@@ -7,7 +7,7 @@ import requests
 from django.conf import settings
 
 
-def get_ubication(place: str)-> dict:
+def get_ubication(place: str) -> dict:
     """
     Connection to HERE geocodification api.
     Determine country, state, city and 

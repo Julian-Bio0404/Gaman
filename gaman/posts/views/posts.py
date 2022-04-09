@@ -2,6 +2,7 @@
 
 # Django
 from django.db.models import Q
+import requests
 
 # Django REST framework
 from rest_framework import status, viewsets
@@ -36,11 +37,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Restrict posts to only followed users."""
-        queryset = Post.objects.all().select_related(
-            'user', 'brand', 'club', 'post'
-        ).prefetch_related(
-            'pictures', 'videos', 'tag_users')
-
         if self.action == 'list':
             followed_users = User.objects.filter(
                 pk__in=[FollowUp.objects.filter(
@@ -60,8 +56,11 @@ class PostViewSet(viewsets.ModelViewSet):
                 Q(brand__in=followed_brands) |
                 Q(club__in=followed_clubs)).select_related(
                     'user', 'brand', 'club', 'post'
-            ).prefetch_related(
-                    'pictures', 'videos', 'tag_users')
+            ).prefetch_related('pictures', 'videos', 'tag_users')
+        else:
+            queryset = Post.objects.all().select_related(
+                'user', 'brand', 'club', 'post'
+            ).prefetch_related('pictures', 'videos', 'tag_users')
         return queryset
 
     def get_permissions(self):

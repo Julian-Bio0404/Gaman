@@ -1,7 +1,6 @@
 """Follow requests tests."""
 
 # Django
-import json
 from django.urls import reverse
 
 # Django REST Framework
@@ -10,7 +9,9 @@ from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 # Models
-from gaman.users.models import FollowRequest, Profile, User
+from gaman.sponsorships.models import Brand
+from gaman.sports.models import Club
+from gaman.users.models import FollowRequest, FollowUp, Profile, User
 
 
 class FollowRequestAPITestCase(APITestCase):
@@ -139,3 +140,47 @@ class FollowRequestAPITestCase(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class FollowModelTestCase(APITestCase):
+    """Follow model test case."""
+
+    def setUp(self):
+        """Follow up test setup."""
+        # Followed
+        self.user1 = User.objects.create(
+            email='test@gmail.com',
+            username='test00',
+            first_name='test00',
+            last_name='test00',
+            role='Athlete',
+            password='nKSAJBBCJW_',
+            verified=True
+        )
+        Profile.objects.create(user=self.user1)
+
+        # Follower
+        self.user2 = User.objects.create(
+            email='test1@gmail.com',
+            username='test01',
+            first_name='test01',
+            last_name='test01',
+            role='Athlete',
+            password='nKSAJBBCJW_',
+            verified=True
+        )
+        Profile.objects.create(user=self.user2)
+
+        self.brand = Brand.objects.create(sponsor=self.user1, slugname='SpaceX')
+        self.club = Club.objects.create(trainer=self.user1, slugname='Bushido')
+
+    def test_follow_model(self):
+        """Check that follow model methods are corrects."""
+        user_follow = FollowUp.objects.create(follower=self.user2, user=self.user1)
+        self.assertEqual(user_follow.specify_followed(), self.user1.username)
+
+        brand_follow = FollowUp.objects.create(follower=self.user2, brand=self.brand)
+        self.assertEqual(brand_follow.specify_followed(), self.brand.slugname)
+
+        brand_follow = FollowUp.objects.create(follower=self.user2, club=self.club)
+        self.assertEqual(brand_follow.specify_followed(), self.club.slugname)

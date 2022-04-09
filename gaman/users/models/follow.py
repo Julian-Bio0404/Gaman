@@ -41,11 +41,11 @@ class FollowUp(BaseGamanModel):
     club = models.ForeignKey('sports.Club', on_delete=models.SET_NULL, null=True)
 
     def specify_followed(self) -> str:
-        if self.user != None:
+        if self.user:
             return self.user.username
-        if self.brand != None:
+        if self.brand:
             return self.brand.slugname
-        if self.club != None:
+        if self.club:
             return self.club.slugname
 
     def __str__(self):

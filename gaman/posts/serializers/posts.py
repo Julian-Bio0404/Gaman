@@ -80,14 +80,7 @@ class PostModelSerializer(PostSumaryModelSerializer):
         """Verify tag friends."""
         tag_users = data.get('tag_users', None)
         if tag_users:
-            users = []
-            for username in tag_users:
-                try:
-                    user = User.objects.get(username=username)
-                    users.append(user)
-                except User.DoesNotExist:
-                    raise serializers.ValidationError(
-                        f'The user with username {username} does not exists.')
+            users = User.objects.filter(username__in=tag_users)
             self.context['users'] = users
             data.pop('tag_users')
         return data
@@ -101,21 +94,20 @@ class PostModelSerializer(PostSumaryModelSerializer):
             pictures = self.context['request'].data.getlist('pictures')
             videos = self.context['request'].data.getlist('videos')
 
-            for img in pictures:
-                picture = Picture.objects.create(content=img)
-                post.pictures.add(picture)
+            pictures = Picture.objects.bulk_create(
+                [Picture(content=img) for img in pictures])
+            post.pictures.set(pictures)
 
-            for i in videos:
-                video = Video.objects.create(content=i)
-                post.videos.add(video)
+            videos = Video.objects.bulk_create(
+                [Video(content=video) for video in videos])
+            post.videos.set(videos)
         except AttributeError:
             pass
 
         # Add users tagged
         users = self.context.get('users', None)
         if users:
-            for user in users:
-                post.tag_users.add(user)
+            post.tag_users.set(users)
         post.save()
         return post
 
