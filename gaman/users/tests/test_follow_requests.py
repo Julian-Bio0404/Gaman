@@ -1,6 +1,7 @@
 """Follow requests tests."""
 
 # Django
+import json
 from django.urls import reverse
 
 # Django REST Framework
@@ -84,12 +85,28 @@ class FollowRequestAPITestCase(APITestCase):
             follower=self.user2, followed=self.user1)
         self.assertEqual(follow_request.accepted, True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
+
     def test_follow_request_detail(self):
         """Check that follow request detail is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_follow_requests_list(self):
+        """Check that the followed can list his follow requets."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        FollowRequest.objects.create(
+            follower=self.user2, followed=self.user1, accepted=True)
+        response = self.client.get(
+            reverse('users:follow_requests-list', args=[self.user1.username]))
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # By other user
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        response = self.client.get(
+            reverse('users:follow_requests-list', args=[self.user1.username]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_confirm_request_for_follower_user(self):
         """
