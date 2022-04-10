@@ -4,7 +4,7 @@ Gaman Rest Api. A web app that conect to athletes with sponsors
 for their sponsorship, as well as helps to the people interested in 
 practicing some sport, find those available in their local area.
 
-![](https://img.shields.io/badge/coverage-94%25-2FDD09)
+![](https://img.shields.io/badge/coverage-95%25-0FA505)
 ![](https://img.shields.io/badge/python-v3.9-blue)
 ![](https://img.shields.io/badge/django-v4.0.3-blue)
 ![](https://img.shields.io/badge/djangorestframework-v3.13.1-blue)

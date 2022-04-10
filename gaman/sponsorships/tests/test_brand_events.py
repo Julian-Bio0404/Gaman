@@ -1,5 +1,9 @@
 """Brand events tests."""
 
+# Utilities
+import datetime
+from unittest import mock
+
 # Django
 from django.urls import reverse
 
@@ -13,6 +17,8 @@ from gaman.sponsorships.models import Brand
 from gaman.sports.models import SportEvent
 from gaman.users.models import User
 
+# Utils
+from gaman.utils.data import load_data
 
 class BrandEventsAPITestCase(APITestCase):
     """Brand api test case."""
@@ -122,3 +128,36 @@ class BrandEventsAPITestCase(APITestCase):
         event = SportEvent.objects.filter(id=self.sport_event.id)
         self.assertEqual(event.exists(), True)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    @mock.patch('requests.get')
+    def test_create_brand_event(self, mock):
+        """Check that the user can create a sport event."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+
+        # Fixture
+        geolocation_data = load_data('gaman/sports/tests/fixtures/geolocation.json')
+        mock.return_value.json.return_value = geolocation_data
+
+        today = datetime.date.today()
+        request_body = {
+            'title': 'Event test',
+            'description': 'This is a event test',
+            'start': today,
+            'finish': today  + datetime.timedelta(days=2),
+            'place': 'Complejo Acuático Atanasio Girardot, Medellin-Colombia'
+        }
+
+        response = self.client.post(
+            reverse('sponsorships:brand-events-list',
+            args=[self.brand.slugname]), request_body)
+        event = SportEvent.objects.filter(
+            title='Event test', description='This is a event test').last()
+
+        self.assertTrue(
+            event.geolocation == '52.52896 13.41802' and
+            event.country == 'Deutschland' and
+            event.state == 'Berlin' and event.city == 'Berlin' and 
+            event.place == '10115 Berlin, Deutschland'
+        )
+        self.assertEqual(event.brand, self.brand)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
