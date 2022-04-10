@@ -44,8 +44,7 @@ class RatingViewSet(mixins.CreateModelMixin,
 
     def get_queryset(self):
         """Filter sponsorship's ratings"""
-        ratings = self.sponsorship.rating_set.all()
-        return ratings
+        return self.sponsorship.rating_set.all()
 
     def get_serializer_context(self):
         """Add qualifier and sponsorship to serializer context."""

@@ -63,17 +63,15 @@ class CreateRatingSerializer(serializers.Serializer):
 
     def validate(self, data):
         """Verify that the rater has not yet rated."""
-        qualifier = self.context['qualifier']
-        sponsorship = self.context['sponsorship']
-        rating = Rating.objects.filter(qualifier=qualifier, sponsorship=sponsorship)
+        rating = Rating.objects.filter(
+            qualifier=self.context['qualifier'],
+            sponsorship=self.context['sponsorship'])
         if rating.exists():
             raise serializers.ValidationError('You already rated this sponsorship.')
+        data['qualifier'] = self.context['qualifier']
+        data['sponsorship'] = self.context['sponsorship']
         return data
 
     def create(self, data):
         """Create a rating."""
-        sponsorship = self.context['sponsorship']
-        qualifier = self.context['qualifier']
-        rating = Rating.objects.create(
-            **data, sponsorship=sponsorship, qualifier=qualifier)
-        return rating
+        return Rating.objects.create(**data)

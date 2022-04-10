@@ -72,7 +72,16 @@ class SponsorshipTestCase(APITestCase):
 
         self.brand = Brand.objects.create(
             sponsor=self.sponsor, slugname='Nike')
-    
+
+    def test_sponsorship_model(self):
+        sponsorship = Sponsorship.objects.create(
+            sponsor=self.sponsor,
+            athlete=self.athlete,
+            start=datetime.date.today(),
+            finish=datetime.date.today() + datetime.timedelta(days=2)
+        )
+        self.assertEqual(sponsorship.specify_sponsored(), self.athlete.username)
+
     def test_create_sponsorship(self):
         """Check that sponsorship creation by sponsor is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')

@@ -45,8 +45,8 @@ class Sponsorship(GamanModel):
     def specify_sponsored(self) -> str:
         """Specify if sponsored is a athlete or club."""
         if self.athlete:
-            return self.athlete
-        return self.club
+            return self.athlete.username
+        return self.club.slugname
 
     def __str__(self):
         """Return Sponsorship's sponsor."""
