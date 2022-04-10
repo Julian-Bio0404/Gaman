@@ -1,0 +1,68 @@
+{
+    "items": [
+        {
+            "title": "10115 Berlin, Deutschland",
+            "id": "here:pds:place:276u33dc-2e01d17cb4a24c14bcad179ed8946016",
+            "ontologyId": "here:cm:ontology:petrol_gasoline_station",
+            "resultType": "place",
+            "address": {
+                "label": "TOTAL, Prenzlauer Allee 1-4, 10405 Berlin, Deutschland",
+                "countryCode": "DEU",
+                "countryName": "Deutschland",
+                "stateCode": "BE",
+                "state": "Berlin",
+                "countyCode": "B",
+                "county": "Berlin",
+                "city": "Berlin",
+                "district": "Prenzlauer Berg",
+                "street": "Prenzlauer Allee",
+                "postalCode": "10405",
+                "houseNumber": "1-4"
+            },
+            "position": { "lat": 52.52896, "lng": 13.41802 },
+            "access": [{ "lat": 52.52906, "lng": 13.41775 }],
+            "distance": 783,
+            "categories": [
+                { "id": "700-7600-0116", "name": "Tankstelle", "primary": true },
+                { "id": "100-1000-0009", "name": "Fastfood" },
+                { "id": "700-7850-0121", "name": "Autowäsche/-reinigung" }
+            ],
+            "chains": [{ "id": "35" }],
+            "references": [
+                { "supplier": { "id": "core" }, "id": "50664440" },
+                { "supplier": { "id": "yelp" }, "id": "OQn9q-QzNNu8v3eQQQIFNg" },
+                { "supplier": { "id": "yelp" }, "id": "j926GEeY9jUex9ESkzJLJg" }
+            ],
+            "contacts": [
+                {
+                "phone": [
+                    { "value": "+49304425643" },
+                    { "value": "+4949304425643", "categories": [{ "id": "700-7600-0116" }] },
+                    { "value": "304-425643" }
+                ],
+                "fax": [
+                    { "value": "030 4417600", "categories": [{ "id": "700-7600-0116" }] },
+                    { "value": "304417600", "categories": [{ "id": "700-7600-0116" }] }
+                ],
+                "www": [
+                    {
+                    "value": "http://store.total.de/de/germany/store-total-de/berlin/berlin-prenzlauer-allee-1-4/ND020511",
+                    "categories": [{ "id": "700-7600-0116" }]
+                    },
+                    { "value": "http://store.total.de/de_DE/ND020511" },
+                    { "value": "http://www.total.de", "categories": [{ "id": "700-7600-0116" }] }
+                ]
+                }
+            ],
+            "openingHours": [
+                {
+                    "text": ["Mon-Sun: 00:00 - 24:00"],
+                    "isOpen": true,
+                    "structured": [
+                        { "start": "T000000", "duration": "PT24H00M", "recurrence": "FREQ:DAILY;BYDAY:MO,TU,WE,TH,FR,SA,SU" }
+                    ]
+                }
+            ]
+        }
+    ]
+}

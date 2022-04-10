@@ -1,5 +1,10 @@
 """Sport Events tests."""
 
+# Utilities
+import datetime
+import json
+from unittest import mock
+
 # Django
 from django.urls import reverse
 
@@ -12,6 +17,9 @@ from rest_framework.test import APITestCase
 from gaman.sports.models import Club, Member, SportEvent
 from gaman.sponsorships.models import Brand
 from gaman.users.models import User
+
+# Utils
+from gaman.utils.data import load_data
 
 
 class ClubEventsAPITestCase(APITestCase):
@@ -187,12 +195,31 @@ class EventsAPITestCase(APITestCase):
             reverse('sports:events-detail', args=[self.sport_event.id]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_update_event(self):
+    @mock.patch('requests.get')
+    def test_update_event(self, mock):
         """Check that sport event update is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
-        request_body = {'title': 'This is update test'}
+
+        # Fixture
+        geolocation_data = load_data('gaman/sports/tests/fixtures/geolocation.json')
+        mock.return_value.json.return_value = geolocation_data
+
+        request_body = {
+            'title': 'This is update test',
+            'place': '10115 Berlin, Deutschland'
+        }
         response = self.client.patch(
             reverse('sports:events-detail', args=[self.sport_event.id]), request_body)
+        event = SportEvent.objects.filter(
+            user=self.user1, title='This is update test').last()
+        self.assertTrue(
+            event.title != self.sport_event.title and
+            event.geolocation != self.sport_event.geolocation and
+            event.country != self.sport_event.country and
+            event.state != self.sport_event.state and
+            event.city != self.sport_event.city and 
+            event.place != self.sport_event.place
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_update_event_by_other_user(self):
@@ -217,6 +244,76 @@ class EventsAPITestCase(APITestCase):
             reverse('sports:events-go', args=[self.sport_event.id]))
         self.assertEqual(bool(self.user2 in self.sport_event.assistants.all()), True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    @mock.patch('requests.get')
+    def test_create_event(self, mock):
+        """Check that the user can create a sport event."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+
+        # Fixture
+        geolocation_data = load_data('gaman/sports/tests/fixtures/geolocation.json')
+        mock.return_value.json.return_value = geolocation_data
+
+        today = datetime.date.today()
+        request_body = {
+            'title': 'Event test',
+            'description': 'This is a event test',
+            'start': today,
+            'finish': today  + datetime.timedelta(days=2),
+            'place': 'Complejo Acuático Atanasio Girardot, Medellin-Colombia'
+        }
+
+        response = self.client.post(reverse('sports:events-list'), request_body)
+        event = SportEvent.objects.filter(
+            title='Event test', description='This is a event test').last()
+
+        self.assertTrue(
+            event.geolocation == '52.52896 13.41802' and
+            event.country == 'Deutschland' and
+            event.state == 'Berlin' and event.city == 'Berlin' and 
+            event.place == '10115 Berlin, Deutschland'
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    
+    def test_create_event_failed(self):
+        """
+        Check that the user cannot create
+        a sport event with invalid date.
+        """
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        today = datetime.date.today()
+
+        # Check start date > finish date
+        request_body = {
+            'title': 'Event test',
+            'description': 'This is a event test',
+            'start': today  + datetime.timedelta(days=2),
+            'finish': today,
+            'place': 'Complejo Acuático Atanasio Girardot, Medellin-Colombia'
+        }
+        response = self.client.post(reverse('sports:events-list'), request_body)
+        error_message = {
+            'non_field_errors': ['The start date be must before that finish date.']
+        }
+        self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check start date < current date
+        request_body['start'] = today  - datetime.timedelta(days=1)
+        request_body['finish'] = today + datetime.timedelta(days=2)
+        response = self.client.post(reverse('sports:events-list'), request_body)
+        error_message = {
+            'non_field_errors': ['The dates be must after that current date.']
+        }
+        self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check finish date < current date
+        request_body['start'] = today
+        request_body['finish'] = today - datetime.timedelta(days=1)
+        response = self.client.post(reverse('sports:events-list'), request_body)
+        self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class EventModelTest(APITestCase):

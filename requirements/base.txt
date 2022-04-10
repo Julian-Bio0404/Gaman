@@ -26,6 +26,7 @@ redis==4.1.4
 
 # Tests
 coverage==6.3.2
+factory-boy==3.2.1
 
 # Requests
 requests==2.27.1
