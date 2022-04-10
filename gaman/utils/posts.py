@@ -1,4 +1,7 @@
-"""Class utilities."""
+"""Posts utils."""
+
+# Utilities
+import typing as t
 
 # Models
 from gaman.posts.models import Post
@@ -13,7 +16,8 @@ class PostAuthorContext:
     """
 
     @classmethod
-    def create_post(cls, data, author) -> Post:
+    def create_post(
+        cls, data: dict, author: t.Union[User, Brand, Club]) -> Post:
         author_type = type(author)
         if author_type == User:
             data['user'] = author

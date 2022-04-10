@@ -11,7 +11,7 @@ from gaman.users.models import User
 from gaman.posts.serializers import ImageModelSerializer, VideoModelSerializer
 
 # Utils
-from gaman.utils.clss import PostAuthorContext
+from gaman.utils.posts import PostAuthorContext
 
 
 class PostSumaryModelSerializer(serializers.ModelSerializer):
