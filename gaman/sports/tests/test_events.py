@@ -156,11 +156,12 @@ class EventsAPITestCase(APITestCase):
         self.token1 = Token.objects.create(user=self.user1).key
         self.token2 = Token.objects.create(user=self.user2).key
 
+        self.today = datetime.date.today()
         self.sport_event = SportEvent.objects.create(
             user=self.user1,
             title='This is a sport event test',
-            start='2022-08-03',
-            finish='2022-08-07',
+            start=self.today + datetime.timedelta(days=2),
+            finish=self.today + datetime.timedelta(days=4),
             geolocation='6.26864 -75.55615',
             country='Colombia',
             state='Antioquia',
@@ -221,7 +222,64 @@ class EventsAPITestCase(APITestCase):
             event.place != self.sport_event.place
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
+
+    def test_update_event_failed(self):
+        """Check event update with invalid date."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+
+        # Check start date > finish date
+        request_body = {
+            'start': self.today + datetime.timedelta(days=2),
+            'finish': self.today,
+        }
+        response = self.client.patch(
+            reverse('sports:events-detail', args=[self.sport_event.id]), request_body)
+        error_message = ['The start date be must before that finish date.']
+        self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check start date < current date
+        request_body = {
+            'start': self.today - datetime.timedelta(days=1),
+            'finish': self.today + datetime.timedelta(days=1),
+        }
+        response = self.client.patch(
+            reverse('sports:events-detail', args=[self.sport_event.id]), request_body)
+        error_message = ['The start date be must after that current date.']
+        self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check finish date < current date
+        request_body = {
+            'start': self.today + datetime.timedelta(days=1),
+            'finish': self.today - datetime.timedelta(days=1),
+        }
+        response = self.client.patch(
+            reverse('sports:events-detail', args=[self.sport_event.id]), request_body)
+        error_message = ['The finish date be must after that current date.']
+        self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check start date > event finish date
+        request_body = {
+            'start': self.today + datetime.timedelta(days=5)
+        }
+        response = self.client.patch(
+            reverse('sports:events-detail', args=[self.sport_event.id]), request_body)
+        error_message = ['The start date be must after that finish date.']
+        self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check finish date < event start date
+        request_body = {
+            'finish': self.today + datetime.timedelta(days=1)
+        }
+        response = self.client.patch(
+            reverse('sports:events-detail', args=[self.sport_event.id]), request_body)
+        error_message = ['The finish date be must after that start date.']
+        self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_update_event_by_other_user(self):
         """Check that sport event is fail."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
@@ -281,14 +339,13 @@ class EventsAPITestCase(APITestCase):
         a sport event with invalid date.
         """
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
-        today = datetime.date.today()
 
         # Check start date > finish date
         request_body = {
             'title': 'Event test',
             'description': 'This is a event test',
-            'start': today  + datetime.timedelta(days=2),
-            'finish': today,
+            'start': self.today  + datetime.timedelta(days=2),
+            'finish': self.today,
             'place': 'Complejo Acuático Atanasio Girardot, Medellin-Colombia'
         }
         response = self.client.post(reverse('sports:events-list'), request_body)
@@ -299,8 +356,8 @@ class EventsAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Check start date < current date
-        request_body['start'] = today  - datetime.timedelta(days=1)
-        request_body['finish'] = today + datetime.timedelta(days=2)
+        request_body['start'] = self.today  - datetime.timedelta(days=1)
+        request_body['finish'] = self.today + datetime.timedelta(days=2)
         response = self.client.post(reverse('sports:events-list'), request_body)
         error_message = {
             'non_field_errors': ['The dates be must after that current date.']
@@ -309,8 +366,8 @@ class EventsAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Check finish date < current date
-        request_body['start'] = today
-        request_body['finish'] = today - datetime.timedelta(days=1)
+        request_body['start'] = self.today
+        request_body['finish'] = self.today - datetime.timedelta(days=1)
         response = self.client.post(reverse('sports:events-list'), request_body)
         self.assertEqual(json.loads(response.content), error_message)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
