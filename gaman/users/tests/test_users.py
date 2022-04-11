@@ -295,7 +295,7 @@ class UserUpdateAPITestCase(APITestCase):
 
     def setUp(self):
         """Test case setup."""
-        self.user = User.objects.create(
+        self.user = User.objects.create_user(
             email='test@gmail.com',
             username='test00',
             first_name='test00',
@@ -319,6 +319,28 @@ class UserUpdateAPITestCase(APITestCase):
         self.assertNotEqual(self.user.phone_number, user.phone_number)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_update_email_token_failed(self):
+        """Check endpoint with existing email."""
+        request_body = {
+            'new_email': 'test@gmail.com',
+            'password': 'admin123'
+        }
+        response = self.client.post(
+            reverse('users:users-token-update-email',
+            args=[self.user.username]), request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_email_token(self):
+        """Check that the user can get a token to update his email."""
+        request_body = {
+            'new_email': 'test2@gmail.com',
+            'password': 'admin123'
+        }
+        response = self.client.post(
+            reverse('users:users-token-update-email',
+            args=[self.user.username]), request_body)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_update_user_email(self):
         """Verifies that update email is success."""
         user_data = UserModelSerializer(self.user).data
@@ -334,18 +356,32 @@ class UserUpdateAPITestCase(APITestCase):
         self.assertNotEqual(self.user.email, user.email)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # def test_update_psswd(self):
-    #     """Verifies that update password is success."""
-    #     request_body = {
-    #         'old_password': 'admin123',
-    #         'password': "prueba123",
-    #         'password_confirmation': "prueba123"
-    #     }
-    #     response = self.client.put(
-    #         reverse('users:users-update-psswd', args=[self.user.username]), request_body)
-    #     user = User.objects.get(username=self.user.username)
-    #     self.assertNotEqual(self.user.password, user.password)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_update_password(self):
+        """Verifies that update password is success."""
+        url = reverse('users:users-update-psswd', args=[self.user.username])
+
+        # Check Password don't match
+        request_body = {
+            'old_password': 'admin123',
+            'password': "prueba123",
+            'password_confirmation': "prueba1234"
+        }
+        response = self.client.put(url, request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check Wrong password.
+        request_body['old_password'] = 'admin1234'
+        request_body['password_confirmation'] = 'prueba123'
+        response = self.client.put(url, request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Success
+        request_body['old_password'] = 'admin123'
+        request_body['password_confirmation'] = 'prueba123' 
+        response = self.client.put(url, request_body)
+        user = User.objects.get(username=self.user.username)
+        self.assertNotEqual(self.user.password, user.password)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_restore_password(self):
         """Verifies that the password is set."""
