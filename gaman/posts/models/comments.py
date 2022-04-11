@@ -4,7 +4,7 @@
 from django.db import models
 
 # Managers
-from gaman.posts.managers import PrincipalCommentManager, ReplyManager
+from gaman.posts.managers import PrincipalCommentManager
 
 # Utilities
 from gaman.utils.models import GamanModel
@@ -48,15 +48,4 @@ class PrincipalComment(Comment):
     class Meta:
         """Meta options."""
         ordering = ['-reactions', 'created']
-        proxy = True
-
-
-class Reply(Comment):
-    """Reply proxy model."""
-
-    objects = ReplyManager()
-
-    class Meta:
-        """Meta options."""
-        ordering = ['created']
         proxy = True

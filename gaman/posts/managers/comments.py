@@ -10,11 +10,3 @@ class PrincipalCommentManager(models.Manager):
     def get_queryset(self):
         """Filter the query to Principal Comments."""
         return super().get_queryset().filter(type='Principal-Comment')
-
-
-class ReplyManager(models.Manager):
-    """Reply manager."""
-
-    def get_queryset(self):
-        """Filter the query to replies."""
-        return super().get_queryset().filter(type='Reply')

@@ -62,8 +62,6 @@ class CommentViewSet(viewsets.ModelViewSet):
             permissions = [IsAuthenticated, IsCommentOwner]
         elif self.action in ['destroy']:
             permissions = [IsAuthenticated, IsCommentOrPostOwner]
-        else:
-            permissions = [IsAuthenticated]
         return[p() for p in permissions]
 
     def create(self, request, *args, **kwargs):

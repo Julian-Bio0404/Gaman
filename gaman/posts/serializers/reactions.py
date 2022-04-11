@@ -31,7 +31,8 @@ class PostReactionModelSerializer(serializers.ModelSerializer):
             reaction.delete()
             post.reactions -= 1
             post.save()
-        return data
+        else:
+            return data
 
     def create(self, data):
         """Create a post reaction."""
@@ -69,7 +70,8 @@ class CommentReactionModelSerializer(serializers.ModelSerializer):
             reaction.delete()
             comment.reactions -= 1
             comment.save()
-        return data
+        else:
+            return data
 
     def create(self, data):
         """Create a comment reaction."""

@@ -192,7 +192,7 @@ class PostAPITestCase(APITestCase):
     def test_react_to_post(self):
         """
         Verifies that a follower of the author
-        can react to the post.
+        can react to the post or delete it.
         """
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
         request_body = {'reaction': 'Like'}
@@ -202,6 +202,14 @@ class PostAPITestCase(APITestCase):
             user=self.user3, post=self.post)
         self.assertEqual(reaction.exists(), True)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Delete post reaction
+        response = self.client.post(
+            reverse('posts:posts-react', args=[self.post.pk]), request_body)
+        reaction = PostReaction.objects.filter(
+            user=self.user3, post=self.post)
+        self.assertEqual(reaction.exists(), False)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_share_post_by_other_user(self):
         """

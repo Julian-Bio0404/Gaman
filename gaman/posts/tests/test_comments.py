@@ -173,16 +173,25 @@ class CommentAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_react_to_comment(self):
-        """Cehck that a user can react to a comment."""
+        """Cehck that a user can react to a comment or delete it."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
         request_body = {'reaction': 'Love'}
         response = self.client.post(
-            reverse('posts:comments-react', args=[self.post.pk, self.comment.pk]),
-            request_body)
+            reverse('posts:comments-react',
+            args=[self.post.pk, self.comment.pk]), request_body)
         reaction = CommentReaction.objects.filter(
             user=self.user3, comment=self.comment)
         self.assertEqual(reaction.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Delete comment reation
+        response = self.client.post(
+            reverse('posts:comments-react',
+            args=[self.post.pk, self.comment.pk]), request_body)
+        reaction = CommentReaction.objects.filter(
+            user=self.user3, comment=self.comment)
+        self.assertEqual(reaction.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_react_to_comment_by_other_user(self):
         """
