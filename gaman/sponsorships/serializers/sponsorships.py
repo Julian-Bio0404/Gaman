@@ -60,14 +60,12 @@ class CreateSponsorshipSerializer(serializers.Serializer):
             raise serializers.ValidationError('You must choose an athlete or a club, not both')
         elif athlete:
             try:
-                self.context['athlete'] = User.objects.get(username=athlete)
-                data.pop('athlete')
+                data['athlete'] = User.objects.get(username=athlete)
             except User.DoesNotExist:
                 raise serializers.ValidationError('The user does not exists.')
         elif club:
             try:
-                self.context['club'] = Club.objects.get(slugname=club)
-                data.pop('club')
+                data['club'] = Club.objects.get(slugname=club)
             except Club.DoesNotExist:
                 raise serializers.ValidationError('The club does not exists.')
         else:
@@ -78,8 +76,7 @@ class CreateSponsorshipSerializer(serializers.Serializer):
                 brand = Brand.objects.get(slugname=brand)
                 if brand.sponsor != self.context['sponsor']:
                     raise serializers.ValidationError('You are not the owner this brand.')
-                self.context['brand'] = brand
-                data.pop('brand')
+                data['brand'] = brand
             except Brand.DoesNotExist:
                 raise serializers.ValidationError('The brand does not exists.')
 
@@ -95,14 +92,5 @@ class CreateSponsorshipSerializer(serializers.Serializer):
     def create(self, data):
         """Create a sponsorship."""
         sponsor = self.context['sponsor']
-        if 'athlete' in self.context.keys():
-            athlete = self.context['athlete']
-            sponsorship = Sponsorship.objects.create(sponsor=sponsor, athlete=athlete, **data)
-        elif 'club' in self.context.keys():
-            club = self.context['club']
-            sponsorship = Sponsorship.objects.create(sponsor=sponsor, club=club, **data)
-        
-        if 'brand' in self.context.keys():
-            sponsorship.brand = self.context['brand']
-            sponsorship.save()
+        sponsorship = Sponsorship.objects.create(sponsor=sponsor, **data)
         return sponsorship

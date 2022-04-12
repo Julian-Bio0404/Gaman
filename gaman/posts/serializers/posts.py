@@ -59,7 +59,7 @@ class PostModelSerializer(PostSumaryModelSerializer):
         """Meta options."""
         model = Post
         fields = [
-            'author', 'about',
+            'pk', 'author', 'about',
             'privacy', 'location',
             'feeling', 'pictures',
             'videos', 'tag_users',
@@ -80,8 +80,7 @@ class PostModelSerializer(PostSumaryModelSerializer):
         """Verify tag friends."""
         tag_users = data.get('tag_users', None)
         if tag_users:
-            users = User.objects.filter(username__in=tag_users)
-            self.context['users'] = users
+            self.context['users'] = User.objects.filter(username__in=tag_users)
             data.pop('tag_users')
         return data
 
@@ -90,25 +89,23 @@ class PostModelSerializer(PostSumaryModelSerializer):
         author = self.context['author']
         post = PostAuthorContext.create_post(data, author)
 
-        try:
-            pictures = self.context['request'].data.getlist('pictures')
-            videos = self.context['request'].data.getlist('videos')
+        pictures = self.context['request'].data.getlist('pictures', None)
+        videos = self.context['request'].data.getlist('videos', None)
 
+        if pictures:
             pictures = Picture.objects.bulk_create(
                 [Picture(content=img) for img in pictures])
             post.pictures.set(pictures)
 
+        if videos:
             videos = Video.objects.bulk_create(
                 [Video(content=video) for video in videos])
             post.videos.set(videos)
-        except AttributeError:
-            pass
 
         # Add users tagged
         users = self.context.get('users', None)
         if users:
             post.tag_users.set(users)
-        post.save()
         return post
 
 

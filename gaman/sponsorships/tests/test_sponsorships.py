@@ -13,6 +13,7 @@ from rest_framework.test import APITestCase
 
 # Models
 from gaman.sponsorships.models import Brand, Sponsorship
+from gaman.sports.models import Club
 from gaman.users.models import Profile, User
 
 
@@ -73,6 +74,8 @@ class SponsorshipTestCase(APITestCase):
         self.brand = Brand.objects.create(
             sponsor=self.sponsor, slugname='Nike')
 
+        self.club = Club.objects.create(trainer=self.athlete, slugname='Bushido')
+
     def test_sponsorship_model(self):
         sponsorship = Sponsorship.objects.create(
             sponsor=self.sponsor,
@@ -80,7 +83,18 @@ class SponsorshipTestCase(APITestCase):
             start=datetime.date.today(),
             finish=datetime.date.today() + datetime.timedelta(days=2)
         )
+
+        sponsorship2 = Sponsorship.objects.create(
+            sponsor=self.sponsor,
+            club=self.club,
+            start=datetime.date.today(),
+            finish=datetime.date.today() + datetime.timedelta(days=2)
+        )
+
         self.assertEqual(sponsorship.specify_sponsored(), self.athlete.username)
+        self.assertEqual(sponsorship.__str__(), f'{self.sponsor} -> {self.athlete}')
+        self.assertEqual(sponsorship2.specify_sponsored(), self.club.slugname)
+        self.assertEqual(sponsorship2.__str__(), f'{self.sponsor} -> {self.club}')
 
     def test_create_sponsorship(self):
         """Check that sponsorship creation by sponsor is success."""
@@ -97,6 +111,28 @@ class SponsorshipTestCase(APITestCase):
             sponsor=self.sponsor,athlete=self.athlete)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(sponsorship.exists())
+
+        # Check wihout athlete and club
+        request_body = {
+            'brand': self.brand.slugname,
+            'start': '2022-12-01',
+            'finish': '2023-12-01'
+        }
+        response = self.client.post(
+            reverse('sponsorships:sponsorships-list'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check athlete and club
+        request_body = {
+            'brand': self.brand.slugname,
+            'athlete': self.athlete.username,
+            'club': self.club.slugname,
+            'start': '2022-12-01',
+            'finish': '2023-12-01'
+        }
+        response = self.client.post(
+            reverse('sponsorships:sponsorships-list'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Check with athlete username non-existent
         request_body = {

@@ -72,6 +72,11 @@ class CommentAPITestCase(APITestCase):
             text='Hi this comment is a test',
             type='Principal-Comment'
         )
+    
+    def test_comment_model(self):
+        """Check comment model."""
+        message = f'@{self.user3} has commented: {self.comment.text} on {self.post}'
+        self.assertEqual(self.comment.__str__(), message)
 
     def test_list_post_comments(self):
         """Check that list comments of a post is success."""

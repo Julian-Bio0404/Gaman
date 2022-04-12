@@ -1,8 +1,6 @@
 """Posts tests."""
 
 # Django
-import json
-from tkinter import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
@@ -362,16 +360,22 @@ class PostModelTestCase(APITestCase):
 
     def test_user_post_model(self):
         """Check that default attributes and author is a user."""
+        message = f'{self.user_post.about} by @{self.user1.username}'
+        self.assertEqual(self.user_post.__str__(), message)
         self.assertEqual(self.user_post.privacy, 'Public')
         self.assertEqual(self.user_post.specify_author(), self.user1)
         self.assertEqual(self.user_post.normalize_author(), self.user1)
 
     def test_club_post_model(self):
         """Check that the post author is a club."""
+        message = f'{self.club_post.about} by @{self.club.slugname}'
+        self.assertEqual(self.club_post.__str__(), message)
         self.assertEqual(self.club_post.specify_author(), self.club)
         self.assertEqual(self.club_post.normalize_author(), self.coach)
 
     def test_brand_post_model(self):
         """Check that the post author is a brand."""
+        message = f'{self.brand_post.about} by @{self.brand.slugname}'
+        self.assertEqual(self.brand_post.__str__(), message)
         self.assertEqual(self.brand_post.specify_author(), self.brand)
         self.assertEqual(self.brand_post.normalize_author(), self.sponsor)
