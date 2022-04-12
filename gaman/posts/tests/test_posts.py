@@ -143,6 +143,20 @@ class PostAPITestCase(APITestCase):
         self.assertEqual(post.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_list_brand_post(self):
+        """Check that list club is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        response = self.client.get(reverse(
+            'sponsorships:brand-posts-list', args=[self.brand.slugname]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_club_post(self):
+        """Check that list club is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        response = self.client.get(reverse(
+            'sports:club-posts-list', args=[self.club.slugname]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_update_post(self):
         """Verifies that the author can update a post."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
@@ -183,8 +197,10 @@ class PostAPITestCase(APITestCase):
         can share the post.
         """
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        post2 = Post.objects.create(
+            user=self.user1, post=self.post, about='I love Django!!')
         response = self.client.post(
-            reverse('posts:posts-share', args=[self.post.pk]))
+            reverse('posts:posts-share', args=[post2.pk]))
         post = Post.objects.filter(post=self.post)
         self.assertEqual(post.exists(), True)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

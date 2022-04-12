@@ -24,7 +24,7 @@ class ClubPostViewSet(mixins.CreateModelMixin,
 
     def get_permissions(self):
         """Assign permissions based on action."""
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        if self.action in ['create']:
             permissions = [IsAuthenticated, IsClubOwner]
         else:
             permissions = [IsAuthenticated]
