@@ -3,7 +3,7 @@
 # Django
 from django.db import models
 
-# Utilities
+# Models
 from gaman.utils.models import Reaction
 
 

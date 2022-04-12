@@ -282,6 +282,11 @@ class PostAPITestCase(APITestCase):
             reverse('posts:posts-sads', args=[self.post.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_reaction_model(self):
+        """Check post reaction model."""
+        message = f'@{self.user1.username} reacted to your post.'
+        self.assertEqual(self.reaction.__str__(), message)
+
 
 class PostModelTestCase(APITestCase):
     """Post model test case."""

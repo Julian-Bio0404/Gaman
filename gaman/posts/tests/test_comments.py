@@ -275,3 +275,19 @@ class CommentAPITestCase(APITestCase):
         comment = Comment.objects.filter(author=self.user3, text='This is other test3.')
         self.assertEqual(comment.exists(), True)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_list_reactions(self):
+        """Check that list comment reactions is success."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token3}')
+        CommentReaction.objects.create(
+            user=self.user3, comment=self.comment, reaction='Love')
+        response = self.client.get(
+            reverse('posts:comments-reactions',args=[self.post.pk, self.comment.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_reaction_model(self):
+        """Check post reaction model."""
+        reaction = CommentReaction.objects.create(
+            user=self.user1, comment=self.comment, reaction='Love')
+        message = f'@{self.user1.username} reacted to your comment.'
+        self.assertEqual(reaction.__str__(), message)
