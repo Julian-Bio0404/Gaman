@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 # Permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from gaman.users.permissions import IsProfileOwner
+from gaman.users.permissions import IsFollower, IsProfileOwner
 
 # Models
 from gaman.posts.models import Post
@@ -50,6 +50,8 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
             permissions = [AllowAny]
         elif self.action in ['update', 'partial_update']:
             permissions = [IsAuthenticated, IsProfileOwner]
+        elif self.action in ['followers', 'following', 'invitations']:
+            permissions = [IsAuthenticated, IsFollower]
         else:
             permissions = [IsAuthenticated]
         return[p() for p in permissions]

@@ -131,18 +131,34 @@ class ProfileAPITestCase(APITestCase):
     def test_list_profile_followers(self):
         """Check that list followers of the profile is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
+        self.user.profile.public = False
+        self.user.profile.save()
+
         response = self.client.get(
             reverse('users:profiles-followers', args=[self.user.username]))
-        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # By not follower
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        response = self.client.get(
+            reverse('users:profiles-followers', args=[self.user.username]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_profile_following(self):
         """Check that list following of the profile is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
+        self.user.profile.public = False
+        self.user.profile.save()
+
         response = self.client.get(
             reverse('users:profiles-following', args=[self.user.username]))
-        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # By not follower
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        response = self.client.get(
+            reverse('users:profiles-following', args=[self.user.username]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_sponsorships(self):
         """Check that list sponsorships of the profile is success."""
@@ -157,16 +173,23 @@ class ProfileAPITestCase(APITestCase):
 
         response = self.client.get(
             reverse('users:profiles-sponsorships', args=[self.user.username]))
-        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_club_invitations(self):
         """Check that list club-invitations of the user is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token}')
+        self.user.profile.public = False
+        self.user.profile.save()
+
         response = self.client.get(
             reverse('users:profiles-invitations', args=[self.user.username]))
-        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # By not follower
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
+        response = self.client.get(
+            reverse('users:profiles-invitations', args=[self.user.username]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class FollowProfileAPITestCase(APITestCase):
