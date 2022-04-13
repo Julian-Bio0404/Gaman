@@ -344,6 +344,50 @@ class UserUpdateAPITestCase(APITestCase):
     def test_update_user_email(self):
         """Verifies that update email is success."""
         user_data = UserModelSerializer(self.user).data
+
+        # Invalid token type
+        token = token_generation(
+            user_data=user_data, type='email_confirmation', email='update@email.com')
+        request_body = {
+            'old_email': self.user.email,
+            'new_email':'update@email.com',
+            'token': token
+        }
+        response = self.client.post(reverse('users:users-update-email'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # With invalid token
+        request_body = {
+            'old_email': self.user.email,
+            'new_email':'update@email.com',
+            'token': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        }
+        response = self.client.post(reverse('users:users-update-email'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # New Email != token email
+        token = token_generation(
+            user_data=user_data, type='update_email', email='update@email.com')
+        request_body = {
+            'old_email': self.user.email,
+            'new_email':'update2@email.com',
+            'token': token
+        }
+        response = self.client.post(reverse('users:users-update-email'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # User deos not exists with old email
+        token = token_generation(
+            user_data=user_data, type='update_email', email='update@email.com')
+        request_body = {
+            'old_email': 'xxxx@xxxx.com',
+            'new_email':'update@email.com',
+            'token': token
+        }
+        response = self.client.post(reverse('users:users-update-email'), request_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Success
         token = token_generation(
             user_data=user_data, type='update_email', email='update@email.com')
         request_body = {
