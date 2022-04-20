@@ -7,3 +7,6 @@ django-storages[boto3]==1.12.3
 
 # Email
 django-anymail[mailgun]==8.5
+
+# Flower
+flower==1.0.0

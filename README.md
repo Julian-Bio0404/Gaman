@@ -19,47 +19,47 @@ practicing some sport, find those available in their local area.
 
 to run the project, run:
 ```bash
-docker-compose build
-docker-compose up
+docker-compose -f local.yml build
+docker-compose -f local.yml up
 ```
 
 to fill database, run (optional):
 ```bash
-docker-compose run --rm django bash
+docker-compose -f local.yml run --rm django bash
 cd compose/local/django/
 /fill-db
 ```
 
 to create a superuser, run:
 ```bash
-docker-compose run --rm django createsuperuser
+docker-compose -f local.yml run --rm django createsuperuser
 ```
 
 to run the tests, on other console, run:
 - All tests
   ```bash
-  docker-compose run --rm django coverage run manage.py test -v 2
+  docker-compose -f local.yml run --rm django coverage run manage.py test -v 2
   ```
 - Test of a app
   ```bash
-  docker-compose run --rm django coverage run manage.py test <app-dir>.tests -v 2
+  docker-compose -f local.yml run --rm django coverage run manage.py test <app-dir>.tests -v 2
   ```
 - Tests of a app sub-module
   ```bash
-    docker-compose run --rm django coverage run manage.py test <app-dir>.tests.<file-name> -v 2
+    docker-compose -f local.yml run --rm django coverage run manage.py test <app-dir>.tests.<file-name> -v 2
   ```
 - Tests of a sub-module class
   ```bash
-    docker-compose run --rm django coverage run manage.py test <app-dir>.tests.<file-name>.<Test-class> -v 2
+    docker-compose -f local.yml run --rm django coverage run manage.py test <app-dir>.tests.<file-name>.<Test-class> -v 2
   ```
 - Specific test
   ```bash
-    docker-compose run --rm django coverage run manage.py test <app-dir>.tests.<file-name>.<Test-class>.<test_method> -v 2
+    docker-compose -f local.yml run --rm django coverage run manage.py test <app-dir>.tests.<file-name>.<Test-class>.<test_method> -v 2
   ```
 
 to see test coverage, run:
 ```bash
-docker-compose run --rm django coverage html
+docker-compose -f local.yml run --rm django coverage html
 ```
 
 ## Features
