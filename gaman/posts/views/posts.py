@@ -2,7 +2,6 @@
 
 # Django
 from django.db.models import Q
-import requests
 
 # Django REST framework
 from rest_framework import status, viewsets

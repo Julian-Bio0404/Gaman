@@ -186,3 +186,6 @@ CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 API_MAPS_URL = 'https://geocode.search.hereapi.com/v1/geocode'
 API_MAPS_ID = env('API_MAPS_ID')
 API_MAPS_KEY = env('API_MAPS_KEY')
+
+# Geogaman service
+GEOGAMAN_DOMAIN = env('GEOGAMAN_DOMAIN', 'http://localhost:8001/')
