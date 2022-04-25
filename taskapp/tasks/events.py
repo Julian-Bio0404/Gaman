@@ -40,6 +40,6 @@ def delete_sport_event(self, event_id: int):
     url = settings.GEOGAMAN_DOMAIN + 'events/' + str(event_id)
     try:
         response = requests.delete(url)
-        return 'Success' if response.status_code == 200 else 'Unsuccess'
+        return 'Success' if response.status_code == 204 else 'Unsuccess'
     except:
         return 'Unsuccess'

@@ -3,13 +3,13 @@
 # Django
 from django.db import models
 
-# Utils
-from gaman.utils.models import GamanModel
-
 # Models
 from gaman.sponsorships.models import Brand
 from gaman.sports.models import Club
 from gaman.users.models import User
+
+# Utils
+from gaman.utils.models import GamanModel
 
 
 class SportEvent(GamanModel):
