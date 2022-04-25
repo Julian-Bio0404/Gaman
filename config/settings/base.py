@@ -188,4 +188,4 @@ API_MAPS_ID = env('API_MAPS_ID')
 API_MAPS_KEY = env('API_MAPS_KEY')
 
 # Geogaman service
-GEOGAMAN_DOMAIN = env('GEOGAMAN_DOMAIN', 'http://localhost:8001/')
+GEOGAMAN_DOMAIN = env('GEOGAMAN_DOMAIN', default='http://localhost:8001/')
