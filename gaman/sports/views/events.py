@@ -1,5 +1,12 @@
 """Sport Event views."""
 
+# Utilities
+from urllib import response
+import requests
+
+# Django
+from django.conf import settings
+
 # Django REST Framework
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -75,6 +82,19 @@ class SportEventViewSet(viewsets.ModelViewSet):
         assistants = event.assistants.all().select_related('profile')
         data = AssistantModelSerializer(assistants, many=True).data
         return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], url_path='events-nearby/')
+    def events_nearby(self, request):
+        """Get events nearby from a geolocation."""
+        url = settings.GEOGAMAN_DOMAIN + 'zones/events/'
+        response = requests.post(url, request.data)
+        if response.status_code == 200:
+            ids = response.json()['events_ids']
+            events = SportEvent.objects.filter(id__in=ids)
+            data = SportEventModelSerializer(events, many=True).data
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response(response.content, status=response.status_code)
 
 
 class SportEventClubViewSet(viewsets.ModelViewSet):
