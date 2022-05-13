@@ -95,12 +95,12 @@ class ClubEventsAPITestCase(APITestCase):
     def test_delete_event(self, mock):
         """Check that sport event delete is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
-        mock.return_value.json.return_value = 200
+        mock.return_value.status_code = 200
         response = self.client.delete(
             reverse('sports:club-events-detail',
             args=[self.club.slugname, self.sport_event.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-    
+
     def test_delete_event_by_other_user(self):
         """Check that other user cannot delete the event."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
@@ -117,7 +117,7 @@ class ClubEventsAPITestCase(APITestCase):
             reverse('sports:club-events-detail',
             args=[self.club.slugname, self.sport_event.id]), request_body)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
+
     def test_update_event_by_other_user(self):
         """Check that sport event is fail."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token2}')
@@ -126,7 +126,7 @@ class ClubEventsAPITestCase(APITestCase):
             reverse('sports:club-events-detail',
             args=[self.club.slugname, self.sport_event.id]), request_body)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
+
     @mock.patch('requests.get')
     def test_create_club_event(self, mock):
         """Check that the user can create a sport event."""
@@ -221,7 +221,7 @@ class EventsAPITestCase(APITestCase):
     def test_delete_event(self, mock):
         """Check that sport event delete is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
-        mock.return_value.json.return_value = 200
+        mock.return_value.status_code = 200
         response = self.client.delete(
             reverse('sports:events-detail', args=[self.sport_event.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -339,7 +339,7 @@ class EventsAPITestCase(APITestCase):
             reverse('sports:events-go', args=[self.sport_event.id]))
         self.assertEqual(bool(self.user2 in self.sport_event.assistants.all()), True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
+
     @mock.patch('requests.get')
     def test_create_event(self, mock):
         """Check that the user can create a sport event."""
@@ -369,7 +369,7 @@ class EventsAPITestCase(APITestCase):
             event.place == '10115 Berlin, Deutschland'
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    
+
     def test_create_event_failed(self):
         """
         Check that the user cannot create
@@ -407,6 +407,36 @@ class EventsAPITestCase(APITestCase):
         request_body['finish'] = self.today - datetime.timedelta(days=1)
         response = self.client.post(reverse('sports:events-list'), request_body)
         self.assertEqual(json.loads(response.content), error_message)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @mock.patch('requests.post')
+    def test_events_nearby(self, mock):
+        """Check get events nearby."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        mock.return_value.json.return_value = {'events_ids': [self.sport_event.pk]}
+        mock.return_value.status_code = 200
+        request_body = {
+            'lat': '6.26864',
+            'lng': '-75.55615'
+        }
+        response = self.client.post(
+            reverse('sports:events-events-nearby'), request_body)
+        events = SportEvent.objects.filter(pk=self.sport_event.pk)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), events.count())
+
+    @mock.patch('requests.post')
+    def test_events_nearby_failed(self, mock):
+        """Check failed events nearby."""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        mock.return_value.content = {'error': 'error'}
+        mock.return_value.status_code = 400
+        request_body = {
+            'lat': 'zzz',
+            'lng': '-zzz'
+        }
+        response = self.client.post(
+            reverse('sports:events-events-nearby'), request_body)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
