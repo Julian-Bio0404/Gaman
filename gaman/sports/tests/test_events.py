@@ -91,9 +91,11 @@ class ClubEventsAPITestCase(APITestCase):
             args=[self.club.slugname, self.sport_event.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_event(self):
+    @mock.patch('requests.post')
+    def test_delete_event(self, mock):
         """Check that sport event delete is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        mock.return_value.json.return_value = 200
         response = self.client.delete(
             reverse('sports:club-events-detail',
             args=[self.club.slugname, self.sport_event.id]))
@@ -215,9 +217,11 @@ class EventsAPITestCase(APITestCase):
             reverse('sports:events-detail', args=[self.sport_event.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_event(self):
+    @mock.patch('requests.post')
+    def test_delete_event(self, mock):
         """Check that sport event delete is success."""
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token1}')
+        mock.return_value.json.return_value = 200
         response = self.client.delete(
             reverse('sports:events-detail', args=[self.sport_event.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

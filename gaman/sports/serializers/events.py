@@ -16,9 +16,6 @@ from gaman.users.serializers import ProfileSumaryModelSerializer
 # Utils
 from gaman.utils.services import get_ubication
 
-# Tasks
-from taskapp.tasks.events import update_sport_event
-
 
 class SportEventModelSerializer(serializers.ModelSerializer):
     """SportEvent model serializer."""
@@ -82,8 +79,6 @@ class SportEventModelSerializer(serializers.ModelSerializer):
         if place:
             ubication = get_ubication(place)
             data.update(ubication)
-
-        update_sport_event.delay(data, instance.id)
         return super().update(instance, data)
 
 

@@ -1,7 +1,6 @@
 """Sport Event views."""
 
 # Utilities
-from urllib import response
 import requests
 
 # Django

@@ -13,4 +13,4 @@ from taskapp.tasks.events import delete_sport_event
 
 @receiver(pre_delete, sender=SportEvent)
 def post_delete_event(sender, instance, *args, **kwargs):
-    delete_sport_event.delay(instance)
+    delete_sport_event.delay(pk=instance.pk, geolocation=instance.geolocation)

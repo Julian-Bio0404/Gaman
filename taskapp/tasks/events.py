@@ -16,12 +16,12 @@ from gaman.sports.models import SportEvent
 
 
 @app.task(bind=True)
-def delete_sport_event(self, instance: SportEvent):
+def delete_sport_event(self, pk: int, geolocation: str):
     """Delete sport event in geogaman service."""
     url = settings.GEOGAMAN_DOMAIN + 'zones/delete_events/'
     data = {
-        'event_id': instance.pk,
-        'geolocation': instance.geolocation
+        'event_id': pk,
+        'geolocation': geolocation
     }
     try:
         response = requests.post(url, data=data)
